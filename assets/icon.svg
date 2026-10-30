@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#09090b"/>
+  <rect x="24" y="24" width="464" height="464" rx="76" fill="#18181b" stroke="#0ea5e9" stroke-width="16"/>
+  <polygon points="75,140 437,140 405,295 45,295" fill="#facc15"/>
+  <text x="245" y="252" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-style="italic" font-size="118" fill="#09090b" text-anchor="middle">BMX</text>
+  <text x="256" y="388" font-family="Arial Black, sans-serif" font-weight="900" font-size="52" fill="#38bdf8" text-anchor="middle">LOS BOYACÁ</text>
+  <rect x="116" y="420" width="280" height="18" rx="9" fill="#22c55e"/>
+</svg>

@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscripción Copa Los Boyacá BMX Race | Escuela de Bicicross Los Boyacá</title>
+  <meta name="description" content="Inscripción oficial para la Copa Los Boyacá BMX Race. Cálculo automático de categoría por año calendario, placa de corredor y reporte de pago.">
+  <meta property="og:title" content="Inscripción Copa Los Boyacá BMX Race">
+  <meta property="og:image" content="./assets/flyer-valida.jpg">
+  <meta name="theme-color" content="#22c55e">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/svg+xml" href="./assets/icon.svg">
+  <link rel="apple-touch-icon" href="./assets/icon-192.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,700&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100vw;
+    }
+    img, picture, svg, video {
+      max-width: 100%;
+      height: auto;
+    }
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, .font-racing { font-family: 'Chakra Petch', sans-serif; }
+  </style>
+</head>
+<body class="bg-zinc-950 text-white antialiased selection:bg-green-400 selection:text-black min-h-screen">
+
+  <!-- HEADER & NAVBAR SEMÁNTICO -->
+  <header>
+    <nav class="bg-black text-white p-4 border-b-4 border-green-500">
+      <div class="container mx-auto px-4 max-w-6xl flex justify-between items-center">
+        <a href="index.html" class="flex items-center gap-2.5">
+          <div class="w-9 h-9 bg-green-400 flex items-center justify-center transform -skew-x-12">
+            <span class="font-racing font-black text-black text-sm">BMX</span>
+          </div>
+          <span class="font-racing text-2xl font-black italic tracking-wider text-white transform -skew-x-6">
+            LOS <span class="text-green-400">BOYACÁ</span>
+          </span>
+        </a>
+        <div class="flex items-center gap-3">
+          <a href="admin.html" class="text-zinc-400 hover:text-white text-xs font-black uppercase border border-zinc-700 px-3 py-2 transform -skew-x-6">🔐 Admin</a>
+          <a href="index.html" class="text-green-400 font-black italic uppercase text-xs border border-green-500 px-3.5 py-2 hover:bg-green-500 hover:text-black transition transform -skew-x-6">
+            ← Volver
+          </a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container mx-auto px-4 py-12 max-w-5xl relative">
+    <div class="absolute top-0 right-0 w-72 h-72 bg-green-500 rounded-full mix-blend-screen filter blur-[110px] opacity-20 pointer-events-none"></div>
+
+    <!-- PANTALLA DE ÉXITO -->
+    <div id="pantallaExito" class="hidden flex-col items-center justify-center text-center py-14">
+      <div class="text-7xl mb-5">🏆</div>
+      <h1 class="text-5xl md:text-6xl font-black text-white uppercase italic transform -skew-x-6 mb-4">
+        ¡Inscripción <span class="text-green-400">Exitosa!</span>
+      </h1>
+      <p class="text-xl text-zinc-300 font-medium mb-2">
+        Piloto: <span id="exitoNombre" class="text-white font-black uppercase"></span>
+      </p>
+      <p class="text-xl text-zinc-300 font-medium mb-2">
+        Placa BMX: <span id="exitoPlaca" class="text-yellow-400 font-racing font-black uppercase"></span>
+      </p>
+      <p class="text-xl text-zinc-300 font-medium mb-8">
+        Categoría Oficial: <span id="exitoCategoria" class="text-green-400 font-black uppercase"></span>
+      </p>
+
+      <div class="bg-zinc-900 border-2 border-green-500 px-10 py-6 transform -skew-x-2 shadow-[8px_8px_0px_#22c55e] mb-8">
+        <p class="text-2xl font-black italic text-white uppercase">"Nos vemos en el Partidor de 8 Carriles"</p>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-4">
+        <a id="btnWaValida" href="#" target="_blank" class="bg-green-500 hover:bg-yellow-400 text-black font-black italic uppercase text-lg px-8 py-4 transform -skew-x-6 shadow-[4px_4px_0px_#fff] transition">
+          📲 Confirmar por WhatsApp
+        </a>
+        <a href="admin.html" class="bg-sky-400 hover:bg-sky-300 text-black font-black italic uppercase text-lg px-8 py-4 transform -skew-x-6 transition">
+          ⚡ Ver en Mangas de Carrera
+        </a>
+        <a href="index.html" class="bg-zinc-900 border border-zinc-700 text-zinc-300 hover:text-white font-black italic uppercase text-lg px-8 py-4 transform -skew-x-6 transition">
+          Volver al Inicio
+        </a>
+      </div>
+    </div>
+
+    <!-- FORMULARIO DE INSCRIPCIÓN A LA VÁLIDA -->
+    <div id="contenedorFormulario">
+      <div class="text-center mb-10">
+        <span class="inline-block bg-green-500/20 border border-green-400 text-green-300 font-black uppercase text-xs px-3 py-1 mb-2 tracking-widest">
+          VÁLIDA OFICIAL DE BICICROSS Y BALANCE
+        </span>
+        <h1 class="text-4xl md:text-6xl font-black text-white uppercase italic transform -skew-x-6 mb-2">
+          Copa Los Boyacá <span class="text-green-400">BMX Race</span>
+        </h1>
+        <p class="text-zinc-400 italic text-lg font-medium">
+          Pista de Bicicross Los Boyacá • Sector Boyacá, Barcelona
+        </p>
+      </div>
+
+      <form id="formValida" class="bg-zinc-900 p-6 md:p-12 shadow-[8px_8px_0px_#22c55e] border-2 border-green-500 flex flex-col gap-10 relative z-10">
+
+        <div>
+          <div class="bg-black inline-block px-8 py-3 transform -skew-x-6 shadow-[4px_4px_0px_#22c55e] mb-8">
+            <h2 class="text-2xl font-black uppercase italic text-green-400">1. Datos del Piloto</h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="nombre" class="block text-sm font-black uppercase text-zinc-300 mb-2">Nombre *</label>
+              <input type="text" id="nombre" required class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:border-green-500 focus:outline-none">
+            </div>
+
+            <div>
+              <label for="apellido" class="block text-sm font-black uppercase text-zinc-300 mb-2">Apellido *</label>
+              <input type="text" id="apellido" required class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:border-green-500 focus:outline-none">
+            </div>
+
+            <div>
+              <label for="cedula" class="block text-sm font-black uppercase text-zinc-300 mb-2">
+                Cédula * <span class="text-zinc-400 font-normal lowercase italic text-xs">(Si es menor, colocar la del Representante)</span>
+              </label>
+              <input type="text" id="cedula" required class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:border-green-500 focus:outline-none">
+            </div>
+
+            <div>
+              <label for="fecha_nacimiento" class="block text-sm font-black uppercase text-zinc-300 mb-2">Fecha de Nacimiento *</label>
+              <input type="date" id="fecha_nacimiento" required class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-green-500 focus:outline-none">
+            </div>
+
+            <div>
+              <label for="numero_placa" class="block text-sm font-black uppercase text-zinc-300 mb-2">Número de Placa BMX *</label>
+              <input type="text" id="numero_placa" required placeholder="EJ. #77" class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-yellow-400 font-racing font-black text-xl uppercase focus:border-green-500 focus:outline-none">
+            </div>
+
+            <div>
+              <label for="modalidad_aro" class="block text-sm font-black uppercase text-zinc-300 mb-2">Modalidad / Aro de Bicicleta *</label>
+              <select id="modalidad_aro" required class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-green-500 focus:outline-none">
+                <option value="Rin 20">Estándar BMX (Rin 20" / Balance)</option>
+                <option value="Cruiser 24">Cruiser BMX (Rin 24")</option>
+              </select>
+            </div>
+
+            <div class="md:col-span-2">
+              <span class="block text-sm font-black uppercase text-zinc-300 mb-2">Género del Corredor *</span>
+              <div class="flex gap-6">
+                <input type="hidden" id="genero_atleta" required>
+                <button type="button" id="btnMasc" class="flex-1 px-6 py-4 bg-zinc-950 border border-zinc-700 text-zinc-400 font-black uppercase transition hover:border-zinc-500">
+                  MASCULINO
+                </button>
+                <button type="button" id="btnFem" class="flex-1 px-6 py-4 bg-zinc-950 border border-zinc-700 text-zinc-400 font-black uppercase transition hover:border-zinc-500">
+                  FEMENINO
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label for="club_escuela" class="block text-sm font-black uppercase text-zinc-300 mb-2">Escuela / Club o Independiente *</label>
+              <input type="text" id="club_escuela" required value="ESCUELA LOS BOYACÁ" class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:border-green-500 focus:outline-none">
+            </div>
+
+            <div>
+              <label for="telefono" class="block text-sm font-black uppercase text-zinc-300 mb-2">Teléfono WhatsApp *</label>
+              <input type="tel" id="telefono" required class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-green-500 focus:outline-none">
+            </div>
+
+            <div>
+              <label for="estado_res" class="block text-sm font-black uppercase text-zinc-300 mb-2">Estado *</label>
+              <input type="text" id="estado_res" required value="ANZOÁTEGUI" class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:border-green-500 focus:outline-none">
+            </div>
+
+            <div>
+              <label for="ciudad" class="block text-sm font-black uppercase text-zinc-300 mb-2">Ciudad *</label>
+              <input type="text" id="ciudad" required value="BARCELONA" class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:border-green-500 focus:outline-none">
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-zinc-950 p-6 border border-zinc-800 text-center transform -skew-x-2">
+          <p class="text-sm font-black text-zinc-400 uppercase tracking-wider mb-2">
+            Categoría Asignada (Año Calendario 2026)
+          </p>
+          <p id="categoriaDisplay" class="text-3xl md:text-4xl font-racing font-black italic uppercase text-green-400">
+            Ingrese fecha y género
+          </p>
+          <input type="hidden" id="categoria_final" required>
+        </div>
+
+        <div>
+          <div class="bg-black inline-block px-8 py-3 transform -skew-x-6 shadow-[4px_4px_0px_#22c55e] mb-8">
+            <h2 class="text-2xl font-black uppercase italic text-green-400">2. Reporte de Pago</h2>
+          </div>
+
+          <div class="bg-zinc-950 p-6 md:p-8 border-l-4 border-green-500 mb-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex-1 w-full md:pr-6 md:border-r border-zinc-800">
+              <div class="mb-4 pb-4 border-b border-zinc-800">
+                <span class="block text-sm font-black uppercase text-zinc-400 tracking-wider mb-2">TOTAL INSCRIPCIÓN VÁLIDA</span>
+                <div class="flex items-center gap-3">
+                  <span id="montoBolivares" class="text-3xl font-racing font-black italic text-green-400">Calculando...</span>
+                  <span id="montoUsdValida" class="text-white font-bold text-xl bg-zinc-800 px-3 py-1">( $8.00 )</span>
+                </div>
+                <span id="tasaDisplay" class="text-xs text-zinc-300 font-bold uppercase mt-3 block">TASA BCV: Cargando...</span>
+              </div>
+              <h3 class="text-white font-black italic uppercase mb-1">PAGO MÓVIL OFICIAL</h3>
+              <p id="avisoCopiado" class="text-xs text-zinc-400 font-medium">Haz clic en los datos para copiarlos.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm w-full md:w-auto flex-1">
+              <button type="button" id="copyBanco" data-copy="0102" data-label="Banco" class="btn-copy-dato text-left bg-black p-4 border border-zinc-800 hover:border-green-500 transition">
+                <span class="block text-xs text-zinc-400 font-black uppercase mb-1">Banco</span>
+                <span id="txtBanco" class="text-white font-bold text-base">Banco de Venezuela (0102)</span>
+              </button>
+              <button type="button" id="copyTel" data-copy="04129861147" data-label="Teléfono" class="btn-copy-dato text-left bg-black p-4 border border-zinc-800 hover:border-green-500 transition">
+                <span class="block text-xs text-zinc-400 font-black uppercase mb-1">Teléfono</span>
+                <span id="txtTel" class="text-white font-bold text-base">0412-9861147</span>
+              </button>
+              <button type="button" id="copyCed" data-copy="21387698" data-label="Cédula" class="btn-copy-dato text-left bg-black p-4 border border-zinc-800 hover:border-green-500 transition">
+                <span class="block text-xs text-zinc-400 font-black uppercase mb-1">Cédula</span>
+                <span id="txtCed" class="text-white font-bold text-base">V-21.387.698</span>
+              </button>
+              <div class="bg-black p-4 border border-zinc-800">
+                <span class="block text-xs text-zinc-400 font-black uppercase mb-1">Titular</span>
+                <span id="txtTitular" class="text-white font-bold text-sm">Michael Morocoima</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="metodo_pago" class="block text-sm font-black uppercase text-zinc-300 mb-2">Método de Pago *</label>
+              <select id="metodo_pago" required class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-green-500 focus:outline-none">
+                <option value="Pago Movil">Pago Móvil</option>
+                <option value="Efectivo Pista">Efectivo en Pista</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="fecha_pago" class="block text-sm font-black uppercase text-zinc-300 mb-2">Fecha del Pago *</label>
+              <input type="date" id="fecha_pago" required class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-green-500 focus:outline-none">
+            </div>
+
+            <div id="grupoBancoOrigen">
+              <label for="banco_origen" class="block text-sm font-black uppercase text-zinc-300 mb-2">Banco Origen del Pago Móvil *</label>
+              <select id="banco_origen" class="w-full px-5 py-4 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-green-500 focus:outline-none">
+                <option value="0102">0102 - Banco de Venezuela (BDV)</option>
+                <option value="0134">0134 - Banesco</option>
+                <option value="0105">0105 - Banco Mercantil</option>
+                <option value="0191">0191 - BNC (Banco Nacional de Crédito)</option>
+                <option value="0108">0108 - BBVA Provincial</option>
+                <option value="0172">0172 - Bancamiga</option>
+                <option value="0114">0114 - Bancaribe</option>
+                <option value="0175">0175 - Banco Bicentenario</option>
+              </select>
+            </div>
+
+            <div id="grupoReferencia">
+              <label for="referencia" class="block text-sm font-black uppercase text-yellow-400 mb-2">Número de Referencia (Últimos 6 dígitos) *</label>
+              <div class="flex gap-2">
+                <input type="text" id="referencia" required placeholder="Ej: 854321" class="flex-1 px-5 py-4 bg-zinc-950 border-2 border-yellow-400 text-yellow-300 font-bold uppercase focus:border-green-500 focus:outline-none">
+                <button type="button" id="btnVerificarBancoValida" class="bg-sky-400 hover:bg-yellow-400 text-black font-black uppercase italic text-xs px-4 py-2 transition shrink-0 cursor-pointer">
+                  🏦 Verificar en Banco
+                </button>
+              </div>
+              <span class="text-[11px] text-zinc-400 mt-1 block">💡 Prueba cualquier referencia de 6 dígitos (ej. <strong class="text-white">854321</strong>) para aprobar, <strong class="text-red-400">948271</strong> para ver bloqueo por duplicado, o terminada en <strong class="text-red-400">0000</strong> para simular rechazo del banco.</span>
+            </div>
+
+            <!-- CAJA DE ESTADO DE CONCILIACIÓN BANCARIA EN VIVO -->
+            <div id="boxEstadoBancoValida" class="hidden md:col-span-2 bg-zinc-950 border-2 border-sky-400 p-5">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                <span class="text-xs font-black uppercase tracking-widest text-sky-400">🏦 CONEXIÓN INTERBANCARIA P2C (SUICHE 7B / CONEXUS → BDV 0102)</span>
+                <span id="badgeEstadoBancoValida" class="text-xs font-black uppercase px-3 py-1 bg-yellow-400 text-black">CONECTANDO CON EL BANCO...</span>
+              </div>
+              <p id="txtEstadoBancoValida" class="text-sm font-bold text-white"></p>
+            </div>
+
+            <div id="grupoCapture" class="md:col-span-2">
+              <label for="comprobante" class="block text-sm font-black uppercase text-zinc-300 mb-2">Capture de Pago (Opcional si verificas con el Banco)</label>
+              <div class="relative w-full h-14 bg-zinc-950 border-2 border-dashed border-zinc-700 hover:border-green-500 transition flex items-center justify-center cursor-pointer">
+                <input type="file" id="comprobante" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                <div class="text-center pointer-events-none flex items-center gap-3 px-2 truncate">
+                  <span class="text-2xl">📸</span>
+                  <span id="nombreArchivo" class="text-sm font-bold text-zinc-400 uppercase truncate">Toca aquí para adjuntar capture (Opcional con validación bancaria)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-zinc-950 p-6 border border-zinc-800 text-center">
+          <button type="button" id="btnAbrirModalTerminos" class="text-green-400 hover:text-green-300 font-black italic uppercase underline text-base mb-4">
+            📖 Leer y Aceptar Exención de Responsabilidad
+          </button>
+          <div class="flex items-center justify-center gap-3">
+            <input type="checkbox" id="checkTerminos" required class="w-6 h-6 accent-green-500 cursor-pointer">
+            <label for="checkTerminos" class="text-zinc-300 font-bold text-base cursor-pointer">
+              Acepto los términos, reglamento BMX y condiciones de la competencia.
+            </label>
+          </div>
+        </div>
+
+        <div id="mensajeError" class="hidden text-center bg-red-600 text-white font-black text-lg uppercase p-4 transform -skew-x-2"></div>
+
+        <button type="submit" id="btnProcesar" class="bg-green-500 hover:bg-yellow-400 text-black font-black italic uppercase text-2xl py-6 transition-all transform -skew-x-6 shadow-[6px_6px_0px_#fff] cursor-pointer">
+          🏦 Verificar en el Banco y Completar Inscripción →
+        </button>
+      </form>
+    </div>
+
+    <!-- MODAL TÉRMINOS -->
+    <div id="modalTerminos" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4">
+      <div class="bg-zinc-900 border-2 border-green-500 max-w-2xl w-full p-6 md:p-8 transform -skew-x-2 shadow-[8px_8px_0px_#22c55e]">
+        <h2 class="text-2xl font-black uppercase italic text-green-400 mb-4">Exención de Responsabilidad - Copa Los Boyacá</h2>
+        <div class="space-y-4 text-zinc-300 text-base mb-6">
+          <p>Al inscribirme en la Copa Los Boyacá BMX Race, declaro que participo de forma voluntaria y asumo todos los riesgos inherentes a la práctica del Bicicross competitivo.</p>
+          <p>Libero de toda responsabilidad legal, civil y penal a la Escuela de Bicicross Los Boyacá, sus entrenadores, organizadores y patrocinadores ante cualquier accidente, caída o pérdida material que pudiera ocurrir durante el evento.</p>
+          <p>Confirmo que el corredor utilizará casco integral (Full Face), guantes, manga larga y pantalón largo, y que la categoría asignada corresponde al año calendario oficial de nacimiento.</p>
+        </div>
+        <button type="button" id="btnAceptarTerminos" class="w-full bg-green-500 text-black font-black text-lg uppercase italic py-4 hover:bg-green-400 transition">
+          Sí, Acepto la Responsabilidad
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- BOTÓN FLOTANTE DE WHATSAPP -->
+  <a href="https://wa.me/584129861147" target="_blank" rel="noopener" class="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-green-500 hover:bg-yellow-400 text-black font-black italic uppercase text-xs px-4 py-3 transform -skew-x-6 shadow-[4px_4px_0px_#000] border-2 border-white">
+    <span>💬</span> <span>WhatsApp Copa BMX</span>
+  </a>
+
+  <script type="module">
+    import { getConfig, fetchTasaBcv, formatBs, calcularCategoriaBmx, guardarInscripcionValida, procesarYSubirCapture, verificarPagoEnBanco } from './js/store.js?v=8';
+
+    const config = getConfig();
+    const hoy = new Date().toISOString().split('T')[0];
+    const fechaPago = document.getElementById('fecha_pago');
+    const fechaNac = document.getElementById('fecha_nacimiento');
+    fechaPago.value = hoy;
+    fechaNac.max = hoy;
+
+    document.getElementById('montoUsdValida').textContent = `( $${config.precioValida.toFixed(2)} )`;
+    document.getElementById('txtBanco').textContent = config.pagoMovil.banco;
+    document.getElementById('copyBanco').setAttribute('data-copy', config.pagoMovil.codigoBanco);
+    document.getElementById('txtTel').textContent = config.pagoMovil.telefonoDisplay;
+    document.getElementById('copyTel').setAttribute('data-copy', config.pagoMovil.telefono);
+    document.getElementById('txtCed').textContent = config.pagoMovil.cedulaDisplay;
+    document.getElementById('copyCed').setAttribute('data-copy', config.pagoMovil.cedula);
+    document.getElementById('txtTitular').textContent = config.pagoMovil.titular;
+
+    fetchTasaBcv().then(tasa => {
+      document.getElementById('montoBolivares').textContent = `${formatBs(config.precioValida, tasa)} Bs.`;
+      document.getElementById('tasaDisplay').textContent = `TASA BCV: ${tasa.toLocaleString('es-VE')} Bs.`;
+    });
+
+    const avisoCopiado = document.getElementById('avisoCopiado');
+    document.querySelectorAll('.btn-copy-dato').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const t = btn.getAttribute('data-copy');
+        const r = btn.getAttribute('data-label');
+        navigator.clipboard.writeText(t);
+        avisoCopiado.textContent = `✓ ¡${r} (${t}) copiado al portapapeles!`;
+        avisoCopiado.className = 'text-xs text-green-400 font-black uppercase';
+      });
+    });
+
+    const generoInput = document.getElementById('genero_atleta');
+    const modalidadInput = document.getElementById('modalidad_aro');
+    const btnMasc = document.getElementById('btnMasc');
+    const btnFem = document.getElementById('btnFem');
+    const catDisplay = document.getElementById('categoriaDisplay');
+    const catFinal = document.getElementById('categoria_final');
+
+    function actualizarCategoria() {
+      const cat = calcularCategoriaBmx(fechaNac.value, generoInput.value, modalidadInput.value);
+      if (cat) {
+        catDisplay.textContent = cat;
+        catFinal.value = cat;
+      } else {
+        catDisplay.textContent = 'Ingrese fecha válida y género';
+        catFinal.value = '';
+      }
+    }
+
+    function setGenero(g) {
+      generoInput.value = g;
+      btnMasc.className = 'flex-1 px-6 py-4 bg-zinc-950 border border-zinc-700 text-zinc-400 font-black uppercase transition';
+      btnFem.className = 'flex-1 px-6 py-4 bg-zinc-950 border border-zinc-700 text-zinc-400 font-black uppercase transition';
+      if (g === 'Masculino') {
+        btnMasc.classList.add('border-green-500', 'text-green-400');
+      } else {
+        btnFem.classList.add('border-yellow-400', 'text-yellow-400');
+      }
+      actualizarCategoria();
+    }
+
+    btnMasc.addEventListener('click', () => setGenero('Masculino'));
+    btnFem.addEventListener('click', () => setGenero('Femenino'));
+    fechaNac.addEventListener('change', actualizarCategoria);
+    modalidadInput.addEventListener('change', actualizarCategoria);
+
+    const metodoPago = document.getElementById('metodo_pago');
+    const grupoRef = document.getElementById('grupoReferencia');
+    const grupoBancoOrigen = document.getElementById('grupoBancoOrigen');
+    const inputRef = document.getElementById('referencia');
+    const grupoCap = document.getElementById('grupoCapture');
+    const boxEstadoBanco = document.getElementById('boxEstadoBancoValida');
+    const badgeEstadoBanco = document.getElementById('badgeEstadoBancoValida');
+    const txtEstadoBanco = document.getElementById('txtEstadoBancoValida');
+
+    let ultimaVerificacionBancaria = null;
+
+    metodoPago.addEventListener('change', e => {
+      if (e.target.value === 'Efectivo Pista') {
+        grupoRef.classList.add('hidden');
+        grupoBancoOrigen.classList.add('hidden');
+        grupoCap.classList.add('hidden');
+        boxEstadoBanco.classList.add('hidden');
+        inputRef.required = false;
+        inputRef.value = 'PAGO EN PISTA';
+      } else {
+        grupoRef.classList.remove('hidden');
+        grupoBancoOrigen.classList.remove('hidden');
+        grupoCap.classList.remove('hidden');
+        inputRef.required = true;
+        if (inputRef.value === 'PAGO EN PISTA') inputRef.value = '';
+      }
+    });
+
+    async function ejecutarVerificacionBanco() {
+      const ref = inputRef.value.trim();
+      const bancoOrigen = document.getElementById('banco_origen').value;
+      const tel = document.getElementById('telefono').value.trim();
+
+      boxEstadoBanco.classList.remove('hidden');
+      badgeEstadoBanco.textContent = 'CONSULTANDO BANCO...';
+      badgeEstadoBanco.className = 'text-xs font-black uppercase px-3 py-1 bg-yellow-400 text-black';
+
+      const verif = await verificarPagoEnBanco({
+        referencia: ref,
+        bancoOrigen,
+        telefonoOrigen: tel,
+        montoUsd: config.precioValida,
+        concepto: 'INSCRIPCIÓN COPA LOS BOYACÁ BMX',
+        onStep: msg => {
+          txtEstadoBanco.textContent = msg;
+        }
+      });
+
+      if (!verif.ok) {
+        ultimaVerificacionBancaria = null;
+        badgeEstadoBanco.textContent = `RECHAZADO (${verif.codigo})`;
+        badgeEstadoBanco.className = 'text-xs font-black uppercase px-3 py-1 bg-red-600 text-white';
+        txtEstadoBanco.textContent = verif.mensaje;
+        return verif;
+      }
+
+      ultimaVerificacionBancaria = verif;
+      badgeEstadoBanco.textContent = '✓ PAGO CONCILIADO EN BANCO (CÓD. 00)';
+      badgeEstadoBanco.className = 'text-xs font-black uppercase px-3 py-1 bg-green-500 text-black';
+      txtEstadoBanco.textContent = verif.mensaje;
+      return verif;
+    }
+
+    document.getElementById('btnVerificarBancoValida').addEventListener('click', ejecutarVerificacionBanco);
+
+    document.getElementById('comprobante').addEventListener('change', e => {
+      const f = e.target.files[0];
+      if (!f) return;
+      document.getElementById('nombreArchivo').textContent = f.name;
+      document.getElementById('nombreArchivo').classList.add('text-green-400');
+    });
+
+    const modalTerminos = document.getElementById('modalTerminos');
+    document.getElementById('btnAbrirModalTerminos').addEventListener('click', () => {
+      modalTerminos.classList.remove('hidden');
+      modalTerminos.classList.add('flex');
+    });
+    document.getElementById('btnAceptarTerminos').addEventListener('click', () => {
+      modalTerminos.classList.add('hidden');
+      modalTerminos.classList.remove('flex');
+      document.getElementById('checkTerminos').checked = true;
+    });
+
+    document.getElementById('formValida').addEventListener('submit', async e => {
+      e.preventDefault();
+      const errBox = document.getElementById('mensajeError');
+      errBox.classList.add('hidden');
+
+      if (!generoInput.value) {
+        errBox.textContent = 'Por favor seleccione el género del corredor.';
+        errBox.classList.remove('hidden');
+        return;
+      }
+
+      const btn = document.getElementById('btnProcesar');
+      btn.textContent = '🏦 VERIFICANDO REFERENCIA CON EL BANCO...';
+      btn.disabled = true;
+
+      let estadoVerificacion = 'PENDIENTE';
+      let codigoConcil = '';
+      let voucherBancario = '';
+      const bancoOrigen = document.getElementById('banco_origen').value;
+
+      if (metodoPago.value === 'Pago Movil') {
+        const verif = await ejecutarVerificacionBanco();
+        if (!verif.ok) {
+          errBox.textContent = verif.mensaje;
+          errBox.classList.remove('hidden');
+          btn.textContent = '🏦 Verificar en el Banco y Completar Inscripción →';
+          btn.disabled = false;
+          return;
+        }
+        estadoVerificacion = 'VERIFICADO';
+        codigoConcil = verif.codigoAprobacion;
+        voucherBancario = verif.voucherSvg;
+      }
+
+      const file = document.getElementById('comprobante').files[0];
+      const urlCapture = file ? await procesarYSubirCapture(file, 'valida') : voucherBancario;
+      const rawPlaca = document.getElementById('numero_placa').value.trim().toUpperCase();
+      const placaFormateada = rawPlaca.startsWith('#') ? rawPlaca : `#${rawPlaca}`;
+
+      const registro = {
+        nombre: document.getElementById('nombre').value.trim().toUpperCase(),
+        apellido: document.getElementById('apellido').value.trim().toUpperCase(),
+        cedula: document.getElementById('cedula').value.trim().toUpperCase(),
+        fecha_nacimiento: fechaNac.value,
+        genero: generoInput.value,
+        numero_placa: placaFormateada,
+        modalidad: modalidadInput.value,
+        categoria: catFinal.value,
+        club: document.getElementById('club_escuela').value.trim().toUpperCase(),
+        telefono: document.getElementById('telefono').value.trim(),
+        estado: document.getElementById('estado_res').value.trim().toUpperCase(),
+        ciudad: document.getElementById('ciudad').value.trim().toUpperCase(),
+        metodo_pago: metodoPago.value === 'Pago Movil' ? `Pago Móvil (${bancoOrigen})` : metodoPago.value,
+        referencia: inputRef.value.trim().toUpperCase() || 'PAGO EN PISTA',
+        codigo_conciliacion: codigoConcil,
+        fecha_pago: fechaPago.value,
+        comprobante_img: urlCapture,
+        estado_verificacion: estadoVerificacion
+      };
+
+      try {
+        await guardarInscripcionValida(registro);
+      } catch (err) {
+        alert(err.message || "Error al procesar la inscripción de la Válida");
+        btn.disabled = false;
+        btn.innerHTML = '🏁 ¡COMPLETAR INSCRIPCIÓN OFICIAL EN LA VÁLIDA ($8)! →';
+        return;
+      }
+
+      document.getElementById('contenedorFormulario').classList.add('hidden');
+      const exito = document.getElementById('pantallaExito');
+      exito.classList.remove('hidden');
+      exito.classList.add('flex');
+
+      document.getElementById('exitoNombre').textContent = `${registro.nombre} ${registro.apellido}`;
+      document.getElementById('exitoPlaca').textContent = `PLACA ${registro.numero_placa} (${registro.modalidad}) • ${estadoVerificacion === 'VERIFICADO' ? '✓ PAGO CONCILIADO EN BANCO (' + codigoConcil + ')' : 'PENDIENTE EN PISTA'}`;
+      document.getElementById('exitoCategoria').textContent = registro.categoria;
+
+      const msg = encodeURIComponent(
+        `🏆 *INSCRIPCIÓN APROBADA - COPA LOS BOYACÁ BMX*\n` +
+        `• *Piloto:* ${registro.nombre} ${registro.apellido}\n` +
+        `• *Placa:* ${registro.numero_placa}\n` +
+        `• *Categoría:* ${registro.categoria}\n` +
+        `• *Club:* ${registro.club}\n` +
+        `• *Pago:* ${registro.metodo_pago} (Ref: #${registro.referencia})\n` +
+        `• *Conciliación Bancaria:* ${codigoConcil || 'Pago en Pista'}`
+      );
+      document.getElementById('btnWaValida').href = `https://wa.me/${config.whatsapp}?text=${msg}`;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+  <footer class="bg-black border-t-2 border-zinc-800 py-6 text-center text-xs text-zinc-500 mt-12">
+    <p>© 2026 Escuela de Bicicross Los Boyacá — Copa Los Boyacá BMX Race</p>
+  </footer>
+</body>
+</html>

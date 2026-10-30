@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Boyacá BMX — App Móvil Oficial</title>
+  <meta name="description" content="Aplicación Móvil Oficial de la Escuela de Bicicross Los Boyacá. Carnet Digital QR, Solvencia, Partidor Pro-Gate, Mangas en Vivo e Inscripciones.">
+  <meta name="theme-color" content="#09090b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Boyacá BMX">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/svg+xml" href="./assets/icon.svg">
+  <link rel="apple-touch-icon" href="./assets/icon-192.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,700&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { -webkit-tap-highlight-color: transparent; }
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100vw;
+    }
+    img, picture, svg, video {
+      max-width: 100%;
+      height: auto;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      overscroll-behavior-y: none;
+      user-select: none;
+    }
+    input, select, textarea { user-select: text; }
+    h1, h2, h3, h4, .font-racing { font-family: 'Chakra Petch', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* En escritorio simula un iPhone Pro Max a menos que se active pantalla completa */
+    @media (min-width: 1024px) {
+      body.phone-frame-mode {
+        background: radial-gradient(circle at 20% 20%, rgba(14, 165, 233, 0.18), transparent 45%),
+                    radial-gradient(circle at 80% 80%, rgba(34, 197, 94, 0.15), transparent 45%),
+                    #050507;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+        gap: 36px;
+      }
+      body.phone-frame-mode #appShell {
+        width: 412px;
+        height: 860px;
+        max-height: 93vh;
+        border-radius: 46px;
+        border: 10px solid #27272a;
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.85), 0 0 0 2px #0ea5e9, 0 0 40px rgba(14, 165, 233, 0.25);
+        overflow: hidden;
+        position: relative;
+      }
+    }
+  </style>
+</head>
+<body class="bg-zinc-950 text-white antialiased phone-frame-mode">
+
+  <!-- ====================================================================== -->
+  <!-- PANEL LATERAL DE ESCRITORIO (CÓDIGO QR PARA ABRIR EN TU CELULAR REAL)  -->
+  <!-- ====================================================================== -->
+  <aside id="desktopHelper" class="hidden lg:flex flex-col justify-between bg-zinc-900/95 border-2 border-sky-400 p-7 max-w-sm w-full transform -skew-x-1 shadow-[10px_10px_0px_#facc15]">
+    <div>
+      <div class="flex items-center gap-3 mb-4">
+        <img src="./assets/icon.svg" alt="Boyacá BMX" class="w-12 h-12 rounded-xl border border-yellow-400">
+        <div>
+          <span class="text-[10px] font-black uppercase tracking-widest text-green-400 block">MODO SIMULADOR MÓVIL</span>
+          <h1 class="text-2xl font-black uppercase italic text-white leading-none">APP LOS BOYACÁ BMX</h1>
+        </div>
+      </div>
+
+      <p class="text-xs text-zinc-300 leading-relaxed mb-5">
+        Estás viendo la <strong>Aplicación Móvil Nativa</strong> en el simulador interactivo. Puedes usarla aquí mismo o <strong>escanear este Código QR con la cámara de tu celular</strong> (conectado al mismo Wi-Fi) para abrirla e instalarla directamente en tu teléfono:
+      </p>
+
+      <!-- Código QR Dinámico hacia la IP Wi-Fi local -->
+      <div class="bg-white p-4 rounded-lg flex flex-col items-center justify-center mb-4 border-4 border-yellow-400">
+        <img id="qrPhoneUrl" src="https://api.qrserver.com/v1/create-qr-code/?size=190x190&data=http://192.168.100.145:8090/app.html?v=4" alt="QR para abrir en el celular" class="w-44 h-44">
+        <span id="txtWifiUrl" class="text-[11px] font-mono font-black text-zinc-900 mt-2 bg-yellow-300 px-2.5 py-0.5 rounded">
+          http://192.168.100.145:8090/app.html
+        </span>
+      </div>
+
+      <div class="space-y-2 text-xs text-zinc-300 bg-zinc-950 p-3.5 border border-zinc-800 mb-5">
+        <p class="font-black text-sky-400 uppercase">✨ Funciones de la App Móvil:</p>
+        <p>• <strong>🏠 Inicio:</strong> Estado de pista en vivo y accesos en 1 toque.</p>
+        <p>• <strong>🚦 Partidor:</strong> Juego/Entrenador de reacción con récord personal.</p>
+        <p>• <strong>🪪 Carnet QR:</strong> Carnet digital del piloto + solvencia y pago en 15s.</p>
+        <p>• <strong>🏆 Mangas:</strong> Consulta de carriles (1 al 8) e inscripción a la Copa.</p>
+        <p>• <strong>🔐 Coach:</strong> Aprobar pagos y sortear mangas desde el celular.</p>
+      </div>
+    </div>
+
+    <div class="space-y-2.5">
+      <button type="button" id="btnToggleFrame" class="w-full bg-sky-400 hover:bg-yellow-400 text-black font-black uppercase italic text-xs py-3 transform -skew-x-6 transition cursor-pointer">
+        🖥️ Expandir App a Pantalla Completa
+      </button>
+      <a href="index.html" class="block text-center bg-zinc-950 border border-zinc-700 hover:border-white text-zinc-300 font-black uppercase italic text-xs py-2.5 transform -skew-x-6 transition">
+        🌐 Ir a la Versión Web de Escritorio
+      </a>
+    </div>
+  </aside>
+
+  <!-- ====================================================================== -->
+  <!-- CONTENEDOR PRINCIPAL DE LA APP MÓVIL (#appShell)                       -->
+  <!-- ====================================================================== -->
+  <div id="appShell" class="w-full h-[100dvh] bg-zinc-950 flex flex-col justify-between relative overflow-hidden">
+
+    <!-- SPLASH SCREEN DE ARRANQUE DE LA APP (CON CIERRE AUTOMÁTICO INMEDIATO) -->
+    <div id="appSplash" onclick="this.style.display='none'" class="absolute inset-0 z-[100] bg-zinc-950 flex flex-col items-center justify-center p-6 text-center transition-opacity duration-300 cursor-pointer">
+      <div class="w-24 h-24 bg-yellow-400 border-4 border-white transform -skew-x-12 flex items-center justify-center shadow-[8px_8px_0px_#0ea5e9] mb-5 animate-bounce">
+        <span class="font-racing font-black italic text-black text-4xl">BMX</span>
+      </div>
+      <h2 class="text-3xl font-racing font-black uppercase italic text-white tracking-wider">
+        LOS <span class="text-sky-400">BOYACÁ</span>
+      </h2>
+      <p class="text-xs font-black uppercase tracking-[0.25em] text-yellow-400 mt-1 mb-6">
+        OFFICIAL MOBILE APP
+      </p>
+      <div class="w-40 h-1.5 bg-zinc-800 rounded-full overflow-hidden mb-4">
+        <div class="h-full bg-gradient-to-r from-sky-400 via-yellow-400 to-green-400 w-full animate-pulse"></div>
+      </div>
+      <span class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Toca para entrar</span>
+    </div>
+    <script>
+      // Cierre garantizado del Splash Screen a los 550ms sin esperar módulos externos
+      (function() {
+        function hideSplash() {
+          var s = document.getElementById('appSplash');
+          if (s) {
+            s.style.opacity = '0';
+            s.style.pointerEvents = 'none';
+            setTimeout(function() { s.style.display = 'none'; }, 300);
+          }
+        }
+        setTimeout(hideSplash, 550);
+        window.addEventListener('DOMContentLoaded', function() { setTimeout(hideSplash, 450); });
+      })();
+    </script>
+
+    <!-- BARRA DE ESTADO + HEADER FIJO DE LA APP -->
+    <header class="bg-black/95 backdrop-blur-md border-b-2 border-sky-500 px-4 pt-3 pb-3 flex items-center justify-between shrink-0 z-30">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 bg-yellow-400 border border-white transform -skew-x-12 flex items-center justify-center shadow-[3px_3px_0px_#0ea5e9]">
+          <span class="font-racing font-black italic text-black text-sm">BMX</span>
+        </div>
+        <div>
+          <span class="block font-racing text-lg font-black italic uppercase leading-none text-white">
+            LOS <span class="text-sky-400">BOYACÁ</span>
+          </span>
+          <span class="flex items-center gap-1 text-[10px] font-bold text-green-400 uppercase">
+            <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-ping"></span> Pista Abierta Hoy 4:00 PM
+          </span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="bg-zinc-900 border border-zinc-800 px-2.5 py-1 text-right rounded">
+          <span class="block text-[9px] font-black uppercase text-zinc-400 leading-none">TASA BCV</span>
+          <span id="appHeaderTasa" class="font-racing font-black text-xs text-yellow-400">881,06 Bs</span>
+        </div>
+        <button type="button" id="btnAppInstallTop" class="bg-sky-500 text-black font-black text-[11px] uppercase px-2.5 py-1.5 rounded shadow">
+          📲 Instalar
+        </button>
+      </div>
+    </header>
+
+    <!-- ==================================================================== -->
+    <!-- ÁREA DE CONTENIDO DESLIZABLE (5 PANTALLAS DE LA APP)                 -->
+    <!-- ==================================================================== -->
+    <main id="appViewport" class="flex-1 overflow-y-auto no-scrollbar pb-24">
+
+      <!-- ================================================================== -->
+      <!-- PANTALLA 1: 🏠 INICIO (DASHBOARD DEL PILOTO Y REPRESENTANTE)       -->
+      <!-- ================================================================== -->
+      <section id="screen-home" class="app-screen p-4 space-y-5">
+
+        <!-- Banner Hero Compacto App -->
+        <div class="relative rounded-2xl overflow-hidden border-2 border-yellow-400 shadow-[0_8px_25px_rgba(0,0,0,0.6)]">
+          <img src="./assets/hero-bmx.jpg" alt="Pista Los Boyacá" class="w-full h-44 object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent p-4 flex flex-col justify-between">
+            <div class="flex justify-between items-center">
+              <span class="bg-yellow-400 text-black font-black text-[10px] uppercase px-2.5 py-0.5 transform -skew-x-6">
+                BARCELONA • ANZOÁTEGUI
+              </span>
+              <span class="bg-black/80 border border-green-400 text-green-400 font-black text-[10px] uppercase px-2 py-0.5 rounded">
+                ⚡ PRO-GATE 8 CARRILES
+              </span>
+            </div>
+            <div>
+              <h1 class="text-2xl font-racing font-black uppercase italic text-white leading-tight">
+                ESCUELA DE BICICROSS <span class="text-sky-400">LOS BOYACÁ</span>
+              </h1>
+              <p class="text-xs text-zinc-200 mb-2">Formación desde los 2 años (Balance) hasta Élite.</p>
+              <div class="flex gap-2">
+                <button type="button" data-goto="screen-carnet" class="bg-green-400 text-black font-black uppercase italic text-xs px-3.5 py-2 rounded shadow">
+                  🪪 Mi Carnet / Pagar Mes
+                </button>
+                <button type="button" data-goto="screen-copa" class="bg-yellow-400 text-black font-black uppercase italic text-xs px-3.5 py-2 rounded shadow">
+                  🏆 Copa BMX
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cuadrícula de Acciones Rápidas de la App (6 botones tipo App Bancaria/Deportiva) -->
+        <div>
+          <h2 class="text-xs font-black uppercase tracking-wider text-zinc-400 mb-2.5 px-1">ACCESOS RÁPIDOS</h2>
+          <div class="grid grid-cols-3 gap-2.5">
+            <button type="button" data-goto="screen-carnet" class="bg-zinc-900 border border-zinc-800 active:border-green-400 p-3 rounded-xl flex flex-col items-center text-center gap-1.5">
+              <span class="w-10 h-10 rounded-full bg-green-500/20 border border-green-400 flex items-center justify-center text-lg">🪪</span>
+              <span class="text-[11px] font-black uppercase text-white leading-tight">Carnet QR y Solvencia</span>
+            </button>
+            <button type="button" data-goto="screen-copa" class="bg-zinc-900 border border-zinc-800 active:border-yellow-400 p-3 rounded-xl flex flex-col items-center text-center gap-1.5">
+              <span class="w-10 h-10 rounded-full bg-yellow-400/20 border border-yellow-400 flex items-center justify-center text-lg">🏁</span>
+              <span class="text-[11px] font-black uppercase text-white leading-tight">Mangas y Copa BMX</span>
+            </button>
+            <button type="button" data-goto="screen-gate" class="bg-zinc-900 border border-zinc-800 active:border-sky-400 p-3 rounded-xl flex flex-col items-center text-center gap-1.5">
+              <span class="w-10 h-10 rounded-full bg-sky-500/20 border border-sky-400 flex items-center justify-center text-lg">🚦</span>
+              <span class="text-[11px] font-black uppercase text-white leading-tight">Simulador Partidor</span>
+            </button>
+            <button type="button" id="btnOpenNuevoIngresoModal" class="bg-zinc-900 border border-zinc-800 active:border-sky-400 p-3 rounded-xl flex flex-col items-center text-center gap-1.5">
+              <span class="w-10 h-10 rounded-full bg-sky-500/20 border border-sky-400 flex items-center justify-center text-lg">🚲</span>
+              <span class="text-[11px] font-black uppercase text-white leading-tight">Inscribir Escuela ($10)</span>
+            </button>
+            <a href="https://www.google.com/maps/search/?api=1&query=Pista+de+Bicicross+Boyaca+Barcelona+Anzoategui" target="_blank" class="bg-zinc-900 border border-zinc-800 active:border-yellow-400 p-3 rounded-xl flex flex-col items-center text-center gap-1.5">
+              <span class="w-10 h-10 rounded-full bg-yellow-400/20 border border-yellow-400 flex items-center justify-center text-lg">📍</span>
+              <span class="text-[11px] font-black uppercase text-white leading-tight">Mapa GPS Pista</span>
+            </a>
+            <a id="appHomeWaLink" href="https://wa.me/584129861147" target="_blank" class="bg-zinc-900 border border-zinc-800 active:border-green-400 p-3 rounded-xl flex flex-col items-center text-center gap-1.5">
+              <span class="w-10 h-10 rounded-full bg-green-500/20 border border-green-400 flex items-center justify-center text-lg">💬</span>
+              <span class="text-[11px] font-black uppercase text-white leading-tight">WhatsApp Escuela</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Carrusel Horizontal Deslizable de Niveles y Horarios -->
+        <div>
+          <div class="flex justify-between items-center mb-2.5 px-1">
+            <h2 class="text-xs font-black uppercase tracking-wider text-zinc-400">NIVELES Y TURNOS EN PISTA</h2>
+            <span class="text-[10px] text-sky-400 font-bold">Desliza →</span>
+          </div>
+          <div class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
+            <div class="min-w-[210px] bg-zinc-900 border-l-4 border-sky-400 p-3.5 rounded-r-xl shrink-0">
+              <span class="text-[10px] font-black uppercase bg-sky-400 text-black px-2 py-0.5">2 A 4 AÑOS</span>
+              <h3 class="font-racing font-black uppercase italic text-lg text-white mt-1">Balance / Strider</h3>
+              <p class="text-xs text-zinc-400 mt-0.5">Lun a Vie • 4:00 PM a 5:00 PM</p>
+              <p class="text-[11px] text-sky-300 mt-2 font-semibold">Equilibrio sin pedales y morros bajos.</p>
+            </div>
+            <div class="min-w-[210px] bg-zinc-900 border-l-4 border-yellow-400 p-3.5 rounded-r-xl shrink-0">
+              <span class="text-[10px] font-black uppercase bg-yellow-400 text-black px-2 py-0.5">5 A 7 AÑOS</span>
+              <h3 class="font-racing font-black uppercase italic text-lg text-white mt-1">Semillitas BMX</h3>
+              <p class="text-xs text-zinc-400 mt-0.5">Lun a Vie • 4:00 PM a 5:00 PM</p>
+              <p class="text-[11px] text-yellow-300 mt-2 font-semibold">Pedal de pie, bombeo y partidor.</p>
+            </div>
+            <div class="min-w-[210px] bg-zinc-900 border-l-4 border-green-400 p-3.5 rounded-r-xl shrink-0">
+              <span class="text-[10px] font-black uppercase bg-green-400 text-black px-2 py-0.5">8 A 12 AÑOS</span>
+              <h3 class="font-racing font-black uppercase italic text-lg text-white mt-1">Novatos Desarrollo</h3>
+              <p class="text-xs text-zinc-400 mt-0.5">Lun a Vie • 5:00 PM a 6:00 PM</p>
+              <p class="text-[11px] text-green-300 mt-2 font-semibold">Mesetas, peraltes y ritmo de carrera.</p>
+            </div>
+            <div class="min-w-[210px] bg-zinc-900 border-l-4 border-sky-400 p-3.5 rounded-r-xl shrink-0">
+              <span class="text-[10px] font-black uppercase bg-sky-400 text-black px-2 py-0.5">COMPETENCIA</span>
+              <h3 class="font-racing font-black uppercase italic text-lg text-white mt-1">Expertos & Open</h3>
+              <p class="text-xs text-zinc-400 mt-0.5">Lun a Vie • 5:30 PM a 7:00 PM</p>
+              <p class="text-[11px] text-sky-300 mt-2 font-semibold">Vuelos, manuales y mangas de 8.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calculadora Rápida de Talla de Bici BMX en la App -->
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-[10px] font-black uppercase text-green-400 block">HERRAMIENTA TÉCNICA</span>
+              <h3 class="font-racing font-black uppercase italic text-base text-white">📏 Calculadora de Talla BMX</h3>
+            </div>
+            <span class="text-xs font-bold text-zinc-400">Estatura (cm)</span>
+          </div>
+          <div class="flex gap-2">
+            <input type="number" id="appInputEstatura" value="120" min="80" max="210" class="w-24 bg-black border border-sky-400 rounded-lg text-center font-racing font-black text-xl text-yellow-400 py-2">
+            <div class="flex-1 bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 flex flex-col justify-center">
+              <span id="appTallaResultado" class="font-racing font-black text-sm text-green-400 uppercase">Junior BMX Race</span>
+              <span id="appTallaDetalle" class="text-[11px] text-zinc-300">Top Tube: 18.25"–19.0" • Rin 20x1-1/8"</span>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================================================================== -->
+      <!-- PANTALLA 2: 🚦 SIMULADOR DE PARTIDOR PRO-GATE MODO APP             -->
+      <!-- ================================================================== -->
+      <section id="screen-gate" class="app-screen hidden p-4 space-y-4">
+        <div class="bg-zinc-900 border-2 border-sky-400 rounded-2xl p-5 text-center shadow-[0_10px_30px_rgba(14,165,233,0.18)]">
+          <div class="flex justify-between items-center mb-3">
+            <span class="bg-sky-500/20 border border-sky-400 text-sky-300 text-[10px] font-black uppercase px-2.5 py-0.5 rounded">
+              UCI RANDOM START
+            </span>
+            <span class="text-xs font-bold text-zinc-400">
+              🏆 Mejor Reacción: <strong id="bestReactionDisplay" class="text-yellow-400">-- ms</strong>
+            </span>
+          </div>
+
+          <h2 class="text-2xl font-racing font-black uppercase italic text-white mb-1">
+            ENTRENADOR DE <span class="text-yellow-400">PARTIDOR BMX</span>
+          </h2>
+          <p class="text-xs text-zinc-400 mb-4">
+            Toca <strong>"1. Iniciar Gate"</strong>, escucha los tonos y presiona el botón gigante <strong>"¡SNAP / PEDALEA!"</strong> apenas prenda la luz verde:
+          </p>
+
+          <!-- Semáforo Grande Táctil -->
+          <div class="bg-black border-2 border-zinc-800 rounded-2xl p-5 mb-4 flex justify-around items-center">
+            <div id="appLight1" class="w-14 h-14 rounded-full bg-zinc-900 border-2 border-zinc-700 transition-all duration-75"></div>
+            <div id="appLight2" class="w-14 h-14 rounded-full bg-zinc-900 border-2 border-zinc-700 transition-all duration-75"></div>
+            <div id="appLight3" class="w-14 h-14 rounded-full bg-zinc-900 border-2 border-zinc-700 transition-all duration-75"></div>
+            <div id="appLight4" class="w-14 h-14 rounded-full bg-zinc-900 border-2 border-zinc-700 transition-all duration-75"></div>
+          </div>
+
+          <div id="appGateStatus" class="bg-zinc-950 border border-zinc-800 rounded-xl py-3 px-3 font-racing font-black italic uppercase text-base text-yellow-400 mb-4">
+            "RIDERS READY... WATCH THE GATE"
+          </div>
+
+          <button type="button" id="btnAppGateStart" class="w-full bg-sky-400 active:bg-sky-300 text-black font-racing font-black uppercase italic text-lg py-3.5 rounded-xl mb-3 shadow">
+            🔊 1. Iniciar Secuencia de Partidor
+          </button>
+
+          <button type="button" id="btnAppGateSnap" disabled class="w-full h-28 bg-zinc-800 text-zinc-500 font-racing font-black uppercase italic text-2xl rounded-2xl border-2 border-zinc-700 transition flex flex-col items-center justify-center">
+            <span>⚡ ¡PEDALEA! (SNAP)</span>
+            <span class="text-[11px] font-sans font-bold not-italic mt-1">Toca aquí al encender el verde</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ================================================================== -->
+      <!-- PANTALLA 3: 🪪 MI CARNET QR, SOLVENCIA Y PAGO DE MENSUALIDAD       -->
+      <!-- ================================================================== -->
+      <section id="screen-carnet" class="app-screen hidden p-4 space-y-4">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
+          <h2 class="text-xl font-racing font-black uppercase italic text-white mb-1">
+            🪪 Carnet Digital QR y <span class="text-green-400">Solvencia</span>
+          </h2>
+          <p class="text-xs text-zinc-400 mb-3">
+            Busca por <strong>Placa BMX</strong> o <strong>Cédula</strong> para mostrar el Carnet Digital en la entrada de la pista o reportar el pago del mes:
+          </p>
+
+          <div class="flex gap-2 mb-3">
+            <input type="text" id="appSearchInput" placeholder="Placa (#07, #12) o Cédula..." class="flex-1 bg-zinc-950 border border-sky-400 rounded-xl px-3.5 py-2.5 text-sm font-bold uppercase text-white focus:outline-none">
+            <button type="button" id="btnAppSearch" class="bg-sky-400 text-black font-black uppercase text-xs px-4 rounded-xl">
+              Buscar
+            </button>
+          </div>
+
+          <!-- Chips rápidos de pilotos precargados -->
+          <div class="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
+            <button type="button" data-chip="#07" class="app-chip bg-zinc-950 border border-zinc-700 text-yellow-400 text-[11px] font-bold px-2.5 py-1 rounded-lg shrink-0">#07 Santiago</button>
+            <button type="button" data-chip="#12" class="app-chip bg-zinc-950 border border-zinc-700 text-yellow-400 text-[11px] font-bold px-2.5 py-1 rounded-lg shrink-0">#12 Valentina (Pendiente)</button>
+            <button type="button" data-chip="#25" class="app-chip bg-zinc-950 border border-zinc-700 text-yellow-400 text-[11px] font-bold px-2.5 py-1 rounded-lg shrink-0">#25 Matías</button>
+            <button type="button" data-chip="#88" class="app-chip bg-zinc-950 border border-zinc-700 text-yellow-400 text-[11px] font-bold px-2.5 py-1 rounded-lg shrink-0">#88 Liam</button>
+          </div>
+        </div>
+
+        <!-- CARNET DIGITAL OFICIAL CON CÓDIGO QR DE VERIFICACIÓN -->
+        <div id="appCarnetCard" class="bg-gradient-to-br from-zinc-900 via-zinc-950 to-zinc-900 border-2 border-sky-400 rounded-2xl p-5 shadow-[0_10px_25px_rgba(14,165,233,0.2)]">
+          <div class="flex justify-between items-start border-b border-zinc-800 pb-3 mb-4">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 bg-yellow-400 flex items-center justify-center transform -skew-x-12">
+                <span class="font-racing font-black text-black text-xs">BMX</span>
+              </div>
+              <div>
+                <span class="block font-racing font-black italic text-sm text-white leading-none">ESCUELA LOS BOYACÁ</span>
+                <span class="text-[10px] font-bold text-sky-400 uppercase">CARNET OFICIAL DE PILOTO 2026</span>
+              </div>
+            </div>
+            <span id="carnetPlacaBadge" class="bg-yellow-400 text-black font-racing font-black italic text-lg px-3 py-0.5 transform -skew-x-6">#07</span>
+          </div>
+
+          <div class="grid grid-cols-12 gap-3 items-center">
+            <div class="col-span-8 space-y-1.5">
+              <h3 id="carnetNombre" class="text-xl font-racing font-black uppercase italic text-white leading-none">SANTIAGO GÓMEZ</h3>
+              <p id="carnetCategoria" class="text-xs font-bold text-sky-400 uppercase">SEMILLITAS • 5 y 6 años</p>
+              <div class="pt-1 text-[11px] text-zinc-300 space-y-0.5">
+                <p><strong>Rep:</strong> <span id="carnetRep">CARLOS GÓMEZ</span></p>
+                <p><strong>Salud / Sangre:</strong> <span id="carnetSalud" class="text-yellow-300">O+ / NINGUNA</span></p>
+                <p><strong>Último Mes:</strong> <span id="carnetMes">OCTUBRE 2026</span></p>
+              </div>
+              <div class="pt-2">
+                <span id="carnetSolvencia" class="inline-block px-3 py-1 rounded font-racing font-black uppercase text-xs bg-green-500 text-black">
+                  🟢 SOLVENTE EN PISTA
+                </span>
+              </div>
+            </div>
+
+            <!-- QR del Carnet -->
+            <div class="col-span-4 bg-white p-2 rounded-xl flex flex-col items-center justify-center">
+              <img id="carnetQrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=BOYACA-BMX-ESC-101-SOLVENTE" alt="QR Piloto" class="w-20 h-20">
+              <span id="carnetIdCode" class="text-[9px] font-mono font-black text-black mt-1">ESC-101</span>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-zinc-800 flex flex-wrap gap-2">
+            <button type="button" id="btnDescargarPlacaPng" class="w-full bg-gradient-to-r from-yellow-400 via-amber-300 to-yellow-500 hover:from-green-400 hover:to-emerald-500 text-black font-racing font-black uppercase italic text-xs py-3 rounded-xl shadow-[0_4px_15px_rgba(250,204,21,0.3)] transition flex items-center justify-center gap-2 cursor-pointer">
+              <span>📥 Descargar Mi Placa BMX Virtual (PNG)</span>
+            </button>
+            <a href="registro.html?tab=usuario" target="_blank" class="flex-1 text-center bg-sky-500 hover:bg-yellow-400 text-black font-black uppercase text-xs py-2.5 rounded-xl shadow transition">
+              👤 Ver Mis Pagos y Competencias →
+            </a>
+            <a href="admin.html" target="_blank" class="text-center bg-zinc-900 border border-zinc-700 hover:border-yellow-400 text-zinc-300 font-bold uppercase text-xs px-3 py-2.5 rounded-xl transition">
+              🔐 Director / Admin
+            </a>
+          </div>
+        </div>
+
+        <!-- PAGO MÓVIL RÁPIDO EN 15 SEGUNDOS DESDE LA APP -->
+        <form id="appFormMensualidad" class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-3">
+          <div class="flex justify-between items-center">
+            <h3 class="font-racing font-black uppercase italic text-base text-yellow-400">⚡ Reportar Mensualidad (15 seg)</h3>
+            <span id="appMesMontoBs" class="text-xs font-black text-green-400">35.242,40 Bs ($40)</span>
+          </div>
+
+          <!-- Botones de Copiado Rápido Pago Móvil (Michael Morocoima) -->
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 space-y-2">
+            <div class="flex justify-between items-center text-[10px]">
+              <span class="text-zinc-400 font-bold uppercase">Titular Pago Móvil:</span>
+              <span class="text-yellow-400 font-black uppercase">Michael Morocoima</span>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-[11px]">
+              <button type="button" data-copy="0102" class="app-copy-btn bg-black border border-zinc-800 p-2 rounded-lg text-left">
+                <span class="block text-[9px] text-zinc-400 uppercase">Banco</span>
+                <span class="font-bold text-white">0102 BDV 📋</span>
+              </button>
+              <button type="button" data-copy="04129861147" class="app-copy-btn bg-black border border-zinc-800 p-2 rounded-lg text-left">
+                <span class="block text-[9px] text-zinc-400 uppercase">Teléfono</span>
+                <span class="font-bold text-white">04129861147 📋</span>
+              </button>
+              <button type="button" data-copy="21387698" class="app-copy-btn bg-black border border-zinc-800 p-2 rounded-lg text-left">
+                <span class="block text-[9px] text-zinc-400 uppercase">Cédula</span>
+                <span class="font-bold text-white">V-21387698 📋</span>
+              </button>
+            </div>
+          </div>
+          <p id="appCopyToast" class="hidden text-[11px] text-green-400 font-black uppercase text-center"></p>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <select id="appMesSelect" class="bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2.5 text-xs font-bold text-white">
+              <option value="OCTUBRE 2026">OCTUBRE 2026</option>
+              <option value="NOVIEMBRE 2026" selected>NOVIEMBRE 2026</option>
+              <option value="DICIEMBRE 2026">DICIEMBRE 2026</option>
+            </select>
+            <select id="appBancoMes" class="bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2.5 text-xs font-bold text-white">
+              <option value="0102">0102 - BDV</option>
+              <option value="0134">0134 - Banesco</option>
+              <option value="0105">0105 - Mercantil</option>
+              <option value="0191">0191 - BNC</option>
+              <option value="0108">0108 - Provincial</option>
+              <option value="0172">0172 - Bancamiga</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <input type="tel" id="appTelMes" placeholder="Teléfono Pagador" value="04248112233" class="bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2.5 text-xs font-bold text-white">
+            <input type="text" id="appRefMes" required placeholder="Nro. Referencia (Ej. 854321)" class="bg-zinc-950 border border-yellow-400 rounded-xl px-3 py-2.5 text-xs font-bold uppercase text-yellow-300">
+          </div>
+
+          <!-- Estado de Conexión Bancaria en Tiempo Real -->
+          <div id="appMesBankBox" class="hidden bg-zinc-950 border border-sky-400/60 rounded-xl p-3 text-xs space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-black uppercase text-sky-400">🏦 CONEXIÓN BANCARIA P2C (SUICHE 7B / BDV)</span>
+              <span id="appMesBankBadge" class="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-yellow-400 text-black">CONSULTANDO...</span>
+            </div>
+            <p id="appMesBankText" class="text-zinc-200 font-semibold leading-snug"></p>
+          </div>
+
+          <label class="flex items-center justify-center gap-2 bg-zinc-950 border border-dashed border-zinc-700 rounded-xl py-2 px-3 text-[11px] font-bold text-zinc-400 cursor-pointer">
+            <span>📸</span>
+            <span id="appFileLabelMes">Capture Opcional (El banco valida con la referencia)</span>
+            <input type="file" id="appFileMes" accept="image/*" class="hidden">
+          </label>
+
+          <button type="submit" id="btnSubmitMes" class="w-full bg-green-500 active:bg-green-400 text-black font-racing font-black uppercase italic py-3.5 rounded-xl text-sm shadow flex items-center justify-center gap-2">
+            <span>🏦 Verificar en Banco y Activar Solvencia</span>
+          </button>
+        </form>
+      </section>
+
+      <!-- ================================================================== -->
+      <!-- PANTALLA 4: 🏆 COPA BMX Y MANGAS EN VIVO (PARTIDOR 8 CARRILES)     -->
+      <!-- ================================================================== -->
+      <section id="screen-copa" class="app-screen hidden p-4 space-y-4">
+        <div class="flex gap-2 bg-zinc-900 p-1.5 rounded-xl border border-zinc-800">
+          <button type="button" id="subTabMangasBtn" class="flex-1 py-2 rounded-lg font-racing font-black uppercase italic text-xs bg-yellow-400 text-black">
+            📋 Mangas y Carriles en Vivo
+          </button>
+          <button type="button" id="subTabInscribirCopaBtn" class="flex-1 py-2 rounded-lg font-racing font-black uppercase italic text-xs text-zinc-300">
+            ✍️ Inscribir en la Copa
+          </button>
+        </div>
+
+        <!-- SUB-VISTA A: MANGAS Y CARRILES DEL PARTIDOR EN VIVO -->
+        <div id="subViewMangas" class="space-y-3">
+          <div class="bg-zinc-900 border border-yellow-400/50 rounded-2xl p-4">
+            <span class="text-[10px] font-black uppercase text-yellow-400 block">PISTA LOS BOYACÁ • MESA TÉCNICA EN VIVO</span>
+            <h2 class="text-lg font-racing font-black uppercase italic text-white">
+              Carriles Asignados (Manga 1, 2 y 3)
+            </h2>
+            <p class="text-xs text-zinc-400">
+              Revisa desde las gradas en qué carril del partidor (1 al 8) sale tu piloto en cada manga clasificatoria:
+            </p>
+          </div>
+          <div id="appMangasContainer" class="space-y-3"></div>
+        </div>
+
+        <!-- SUB-VISTA B: INSCRIPCIÓN RÁPIDA EN LA COPA DESDE LA APP -->
+        <form id="subViewInscribirCopa" class="hidden bg-zinc-900 border-2 border-green-500 rounded-2xl p-4 space-y-3">
+          <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
+            <div>
+              <span class="text-[10px] font-black uppercase text-green-400 block">VALIDACIÓN BANCARIA AUTOMÁTICA</span>
+              <h3 class="text-lg font-racing font-black uppercase italic text-white">Copa Los Boyacá BMX</h3>
+            </div>
+            <span id="appCopaMontoBs" class="text-xs font-black bg-green-500/20 border border-green-400 text-green-300 px-2.5 py-1 rounded">
+              $8.00
+            </span>
+          </div>
+
+          <!-- Datos Pago Móvil en Inscripción Copa App -->
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 space-y-1.5">
+            <div class="flex justify-between items-center text-[10px]">
+              <span class="text-zinc-400 font-bold uppercase">Pago Móvil Oficial:</span>
+              <span class="text-yellow-400 font-black uppercase">Michael Morocoima</span>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-[11px]">
+              <button type="button" data-copy="0102" class="app-copy-btn bg-black border border-zinc-800 p-2 rounded-lg text-left">
+                <span class="block text-[9px] text-zinc-400 uppercase">Banco</span>
+                <span class="font-bold text-white">0102 BDV 📋</span>
+              </button>
+              <button type="button" data-copy="04129861147" class="app-copy-btn bg-black border border-zinc-800 p-2 rounded-lg text-left">
+                <span class="block text-[9px] text-zinc-400 uppercase">Teléfono</span>
+                <span class="font-bold text-white">04129861147 📋</span>
+              </button>
+              <button type="button" data-copy="21387698" class="app-copy-btn bg-black border border-zinc-800 p-2 rounded-lg text-left">
+                <span class="block text-[9px] text-zinc-400 uppercase">Cédula</span>
+                <span class="font-bold text-white">V-21387698 📋</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <input type="text" id="copaNombre" required placeholder="Nombre Piloto" class="bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2.5 text-xs font-bold uppercase text-white">
+            <input type="text" id="copaApellido" required placeholder="Apellido Piloto" class="bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2.5 text-xs font-bold uppercase text-white">
+            <input type="text" id="copaPlaca" required placeholder="Placa (Ej. #77)" class="bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2.5 text-xs font-racing font-black uppercase text-yellow-400">
+            <input type="text" id="copaCedula" required placeholder="Cédula Rep." class="bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2.5 text-xs font-bold uppercase text-white">
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Fecha Nacimiento</label>
+              <input type="date" id="copaFechaNac" required class="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs font-bold text-white">
+            </div>
+            <div>
+              <label class="block text-[10px] font-black uppercase text-zinc-400 mb-1">Género</label>
+              <select id="copaGenero" required class="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs font-bold text-white">
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-center">
+            <span class="block text-[9px] font-black uppercase text-zinc-400">CATEGORÍA ASIGNADA (AÑO CALENDARIO 2026)</span>
+            <span id="copaCatPreview" class="font-racing font-black italic text-sm text-green-400 uppercase">Seleccione fecha de nacimiento</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <input type="text" id="copaClub" value="ESCUELA LOS BOYACÁ" required placeholder="Club / Escuela" class="bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2.5 text-xs font-bold uppercase text-white">
+            <input type="tel" id="copaTel" required placeholder="Teléfono Pagador / WhatsApp" class="bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2.5 text-xs font-bold text-white">
+          </div>
+
+          <div class="grid grid-cols-3 gap-2">
+            <select id="copaMetodo" class="bg-zinc-950 border border-zinc-700 rounded-xl px-2.5 py-2.5 text-xs font-bold text-white">
+              <option value="Pago Movil">Pago Móvil</option>
+              <option value="Efectivo Pista">Efectivo Pista</option>
+            </select>
+            <select id="copaBancoOrigen" class="bg-zinc-950 border border-zinc-700 rounded-xl px-2.5 py-2.5 text-xs font-bold text-white">
+              <option value="0102">0102 BDV</option>
+              <option value="0134">0134 Banesco</option>
+              <option value="0105">0105 Mercantil</option>
+              <option value="0191">0191 BNC</option>
+              <option value="0108">0108 Provincial</option>
+              <option value="0172">0172 Bancamiga</option>
+            </select>
+            <input type="text" id="copaRef" required placeholder="Referencia" class="bg-zinc-950 border border-yellow-400 rounded-xl px-2.5 py-2.5 text-xs font-bold uppercase text-yellow-300">
+          </div>
+
+          <!-- Estado de Validación Bancaria en Vivo para la Copa -->
+          <div id="appCopaBankBox" class="hidden bg-zinc-950 border border-sky-400/60 rounded-xl p-3 text-xs space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-black uppercase text-sky-400">🏦 CONCILIACIÓN BANCARIA EN TIEMPO REAL</span>
+              <span id="appCopaBankBadge" class="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-yellow-400 text-black">VERIFICANDO...</span>
+            </div>
+            <p id="appCopaBankText" class="text-zinc-200 font-semibold leading-snug"></p>
+          </div>
+
+          <button type="submit" id="btnSubmitCopaApp" class="w-full bg-green-500 text-black font-racing font-black uppercase italic py-3.5 rounded-xl text-sm shadow">
+            🏦 Verificar Referencia en Banco e Inscribir
+          </button>
+        </form>
+      </section>
+
+      <!-- ================================================================== -->
+      <!-- PANTALLA 5: 🔐 PANEL MÓVIL DE ENTRENADOR / ADMIN                   -->
+      <!-- ================================================================== -->
+      <section id="screen-admin" class="app-screen hidden p-4 space-y-4">
+        <div class="bg-zinc-900 border-2 border-sky-400 rounded-2xl p-4 space-y-3">
+          <div class="flex justify-between items-center">
+            <div>
+              <span class="text-[10px] font-black uppercase text-sky-400 block">GESTIÓN DESDE PISTA</span>
+              <h2 class="text-lg font-racing font-black uppercase italic text-white">Panel Móvil de Entrenador</h2>
+            </div>
+            <button type="button" id="btnAppResortear" class="bg-yellow-400 text-black font-black text-[11px] uppercase px-3 py-1.5 rounded-lg">
+              🎲 Re-sortear Mangas
+            </button>
+          </div>
+
+          <!-- Botón de Conciliación Bancaria Masiva en 1 Toque -->
+          <button type="button" id="btnAppConciliarBanco" class="w-full bg-green-500 active:bg-green-400 text-black font-racing font-black uppercase italic text-xs py-2.5 rounded-xl flex items-center justify-center gap-2 shadow">
+            🏦 Conciliar Pagos Pendientes con el Banco (Auto)
+          </button>
+
+          <!-- Ajuste rápido de Tasa BCV desde el celular -->
+          <div class="flex items-center gap-2 bg-zinc-950 p-2.5 rounded-xl border border-zinc-800">
+            <span class="text-xs font-bold text-zinc-300">Tasa BCV Hoy:</span>
+            <input type="number" step="0.01" id="appAdminTasaInput" class="w-28 bg-black border border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs font-bold text-yellow-400">
+            <button type="button" id="btnAppSaveTasa" class="flex-1 bg-sky-400 text-black font-black uppercase text-xs py-1.5 rounded-lg">
+              Guardar Tasa
+            </button>
+          </div>
+        </div>
+
+        <!-- Lista Móvil de Inscripciones y Captures para Aprobar con 1 Dedo -->
+        <div class="space-y-2.5">
+          <h3 class="text-xs font-black uppercase text-zinc-400 px-1">PAGOS E INSCRIPCIONES RECIENTES</h3>
+          <div id="appAdminList" class="space-y-2.5"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ==================================================================== -->
+    <!-- BARRA DE NAVEGACIÓN INFERIOR NATIVA (BOTTOM TAB BAR DE 5 PESTAÑAS)   -->
+    <!-- ==================================================================== -->
+    <nav class="bg-black/95 backdrop-blur-md border-t-2 border-zinc-800 px-2 pt-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))] grid grid-cols-5 gap-1 shrink-0 z-40">
+      <button type="button" data-tab="screen-home" class="app-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-yellow-400 bg-zinc-900">
+        <span class="text-lg leading-none">🏠</span>
+        <span class="text-[10px] font-black uppercase mt-1">Inicio</span>
+      </button>
+      <button type="button" data-tab="screen-gate" class="app-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-zinc-400">
+        <span class="text-lg leading-none">🚦</span>
+        <span class="text-[10px] font-black uppercase mt-1">Partidor</span>
+      </button>
+      <button type="button" data-tab="screen-carnet" class="app-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-zinc-400">
+        <span class="text-lg leading-none">🪪</span>
+        <span class="text-[10px] font-black uppercase mt-1">Carnet/Mes</span>
+      </button>
+      <button type="button" data-tab="screen-copa" class="app-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-zinc-400">
+        <span class="text-lg leading-none">🏆</span>
+        <span class="text-[10px] font-black uppercase mt-1">Copa/Mangas</span>
+      </button>
+      <button type="button" data-tab="screen-admin" class="app-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-zinc-400">
+        <span class="text-lg leading-none">🔐</span>
+        <span class="text-[10px] font-black uppercase mt-1">Coach</span>
+      </button>
+    </nav>
+
+    <!-- MODAL DE VISOR DE CAPTURE DENTRO DE LA APP -->
+    <div id="appModalCapture" class="absolute inset-0 bg-black/95 z-50 hidden flex-col items-center justify-center p-4">
+      <div class="bg-zinc-900 border-2 border-sky-400 rounded-2xl p-4 w-full max-w-sm">
+        <div class="flex justify-between items-center mb-3">
+          <h4 id="appCapTitle" class="font-racing font-black uppercase italic text-white text-base">Comprobante</h4>
+          <button type="button" id="btnCloseAppCap" class="text-xs font-black uppercase bg-zinc-800 px-3 py-1 rounded">✕ Cerrar</button>
+        </div>
+        <img id="appCapImg" src="" alt="Comprobante" class="w-full max-h-80 object-contain bg-black rounded-xl mb-3">
+        <button type="button" id="btnApproveAppCap" class="w-full bg-green-500 text-black font-racing font-black uppercase italic py-3 rounded-xl">
+          ✓ Aprobar Pago y Solvencia
+        </button>
+      </div>
+    </div>
+
+    <!-- TOAST DE NOTIFICACIÓN NATIVA -->
+    <div id="appToast" class="pointer-events-none absolute top-16 left-4 right-4 z-50 hidden bg-green-400 text-black font-black text-xs uppercase px-4 py-3 rounded-xl shadow-2xl text-center"></div>
+  </div>
+
+  <script type="module">
+    import {
+      getConfig,
+      saveConfig,
+      fetchTasaBcv,
+      formatBs,
+      calcularCategoriaBmx,
+      calcularTallaBicicletaBmx,
+      buscarAtletaRegular,
+      registrarPagoMensualidad,
+      guardarInscripcionValida,
+      getInscripcionesValida,
+      getInscripcionesEscuela,
+      actualizarEstadoInscripcion,
+      generarMangasBmx,
+      procesarYSubirCapture,
+      verificarPagoEnBanco,
+      conciliarPendientesConBanco
+    } from './js/store.js?v=8';
+
+    // Asegurar cierre de Splash Screen inmediatamente al cargar módulo
+    const splashEl = document.getElementById('appSplash');
+    if (splashEl) {
+      splashEl.style.opacity = '0';
+      splashEl.style.pointerEvents = 'none';
+      setTimeout(() => { splashEl.style.display = 'none'; }, 250);
+    }
+
+    // Registrar Service Worker actualizado
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js?v=8').then(reg => reg.update()).catch(() => {});
+    }
+
+    // Botón alternar Simulador vs Pantalla Completa en Escritorio
+    const btnToggleFrame = document.getElementById('btnToggleFrame');
+    const desktopHelper = document.getElementById('desktopHelper');
+    btnToggleFrame?.addEventListener('click', () => {
+      const isFramed = document.body.classList.toggle('phone-frame-mode');
+      desktopHelper.classList.toggle('lg:flex', isFramed);
+    });
+
+    function showToast(msg) {
+      const t = document.getElementById('appToast');
+      t.textContent = msg;
+      t.classList.remove('hidden');
+      setTimeout(() => t.classList.add('hidden'), 3500);
+    }
+
+    // Navegación Inferior entre las 5 Pantallas de la App
+    const screens = document.querySelectorAll('.app-screen');
+    const navBtns = document.querySelectorAll('.app-nav-btn');
+
+    function goToScreen(screenId) {
+      screens.forEach(s => s.classList.toggle('hidden', s.id !== screenId));
+      navBtns.forEach(b => {
+        const active = b.getAttribute('data-tab') === screenId;
+        b.className = active
+          ? 'app-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-yellow-400 bg-zinc-900 border border-yellow-400/40'
+          : 'app-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-zinc-400';
+      });
+      document.getElementById('appViewport').scrollTo({ top: 0, behavior: 'smooth' });
+      if (screenId === 'screen-copa') renderAppMangas();
+      if (screenId === 'screen-admin') {
+        if (!isAdminLoggedIn()) {
+          const pass = prompt('🔐 Ingrese Clave de Acceso de Entrenador / Director:');
+          if (pass && (pass === '1234' || pass === 'admin' || pass === 'morocoima2024')) {
+            sessionStorage.setItem('boyaca_bmx_admin_session_v1', 'ACTIVA');
+            renderAppAdmin();
+          } else {
+            alert('Acceso denegado. Se requiere clave de entrenador.');
+            goToScreen('screen-home');
+            return;
+          }
+        } else {
+          renderAppAdmin();
+        }
+      }
+    }
+
+    navBtns.forEach(btn => {
+      btn.addEventListener('click', () => goToScreen(btn.getAttribute('data-tab')));
+    });
+    document.querySelectorAll('[data-goto]').forEach(btn => {
+      btn.addEventListener('click', () => goToScreen(btn.getAttribute('data-goto')));
+    });
+    document.getElementById('btnOpenNuevoIngresoModal')?.addEventListener('click', () => {
+      window.location.href = 'registro.html';
+    });
+
+    // Cargar Tasa BCV y precios
+    let tasaActual = getConfig().tasaBcv;
+    const cfg = getConfig();
+    document.getElementById('appAdminTasaInput').value = tasaActual;
+    document.getElementById('appHomeWaLink').href = `https://wa.me/${cfg.whatsapp}?text=${encodeURIComponent('Hola, te escribo desde la App Móvil de la Escuela Los Boyacá 🚲')}`;
+
+    // Actualizar URL y QR dinámico según host / túnel actual
+    try {
+      const currentUrl = window.location.href;
+      const qrEl = document.getElementById('qrPhoneUrl');
+      const txtEl = document.getElementById('txtWifiUrl');
+      if (qrEl) qrEl.src = `https://api.qrserver.com/v1/create-qr-code/?size=190x190&data=${encodeURIComponent(currentUrl)}`;
+      if (txtEl) txtEl.textContent = currentUrl;
+    } catch (_) {}
+
+    function actualizarMontosApp(tasa) {
+      tasaActual = tasa;
+      const c = getConfig();
+      const pMes = c.precioMensualidad || 40;
+      document.getElementById('appHeaderTasa').textContent = `${tasa.toLocaleString('es-VE')} Bs`;
+      document.getElementById('appMesMontoBs').textContent = `${formatBs(pMes, tasa)} Bs ($${pMes})`;
+      document.getElementById('appCopaMontoBs').textContent = `${formatBs(c.precioValida, tasa)} Bs ($${c.precioValida})`;
+    }
+    actualizarMontosApp(tasaActual);
+    fetchTasaBcv().then(t => actualizarMontosApp(t));
+
+    // Calculadora de Talla BMX en Inicio
+    const appInputEstatura = document.getElementById('appInputEstatura');
+    appInputEstatura.addEventListener('input', () => {
+      const res = calcularTallaBicicletaBmx(appInputEstatura.value);
+      if (res) {
+        document.getElementById('appTallaResultado').textContent = res.talla;
+        document.getElementById('appTallaDetalle').textContent = `Top Tube: ${res.topTube} • ${res.rin}`;
+      }
+    });
+
+    // ========================================================================
+    // PANTALLA 2: ENTRENADOR DE PARTIDOR PRO-GATE CON RÉCORD PERSONAL
+    // ========================================================================
+    const btnAppGateStart = document.getElementById('btnAppGateStart');
+    const btnAppGateSnap = document.getElementById('btnAppGateSnap');
+    const appGateStatus = document.getElementById('appGateStatus');
+    const bestReactionDisplay = document.getElementById('bestReactionDisplay');
+    const appLights = [
+      document.getElementById('appLight1'),
+      document.getElementById('appLight2'),
+      document.getElementById('appLight3'),
+      document.getElementById('appLight4')
+    ];
+
+    let bestMs = localStorage.getItem('boyaca_best_gate_ms');
+    if (bestMs) bestReactionDisplay.textContent = `${bestMs} ms`;
+
+    let audioCtx = null;
+    let greenTimestamp = 0;
+    let gateActive = false;
+    let gateTimers = [];
+
+    function beep(freq, ms, type = 'sawtooth') {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(type === 'square' ? 0.30 : 0.20, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + ms / 1000);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + ms / 1000);
+      } catch (_) {}
+    }
+
+    function speakAppGate(text) {
+      try {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(text);
+          u.lang = 'en-US';
+          u.rate = 1.05;
+          u.pitch = 0.90;
+          window.speechSynthesis.speak(u);
+        }
+      } catch (_) {}
+    }
+
+    function resetAppLights() {
+      appLights.forEach(l => {
+        l.className = 'w-14 h-14 rounded-full bg-zinc-900 border-2 border-zinc-700 transition-all duration-75';
+      });
+    }
+
+    btnAppGateStart.addEventListener('click', () => {
+      gateTimers.forEach(t => clearTimeout(t));
+      gateTimers = [];
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      resetAppLights();
+      greenTimestamp = 0;
+      gateActive = true;
+
+      btnAppGateSnap.disabled = false;
+      btnAppGateSnap.className = 'w-full h-28 bg-yellow-400 active:bg-green-400 text-black font-racing font-black uppercase italic text-2xl rounded-2xl border-2 border-white transition flex flex-col items-center justify-center shadow-[0_0_25px_rgba(250,204,21,0.5)] cursor-pointer';
+      appGateStatus.textContent = '🔊 "OK RIDERS, RANDOM START..."';
+      speakAppGate("OK riders, random start");
+
+      gateTimers.push(setTimeout(() => {
+        appGateStatus.textContent = '⚠️ "RIDERS READY... WATCH THE GATE!"';
+        speakAppGate("Riders ready, watch the gate");
+      }, 1800));
+
+      const delay = 3400 + Math.floor(Math.random() * 1200);
+      gateTimers.push(setTimeout(() => {
+        appLights[0].className = 'w-14 h-14 rounded-full bg-red-500 border-2 border-white shadow-[0_0_25px_#ef4444]';
+        beep(640, 75, 'sawtooth');
+      }, delay));
+      gateTimers.push(setTimeout(() => {
+        appLights[1].className = 'w-14 h-14 rounded-full bg-yellow-400 border-2 border-white shadow-[0_0_25px_#facc15]';
+        beep(640, 75, 'sawtooth');
+      }, delay + 120));
+      gateTimers.push(setTimeout(() => {
+        appLights[2].className = 'w-14 h-14 rounded-full bg-yellow-400 border-2 border-white shadow-[0_0_25px_#facc15]';
+        beep(640, 75, 'sawtooth');
+      }, delay + 240));
+      gateTimers.push(setTimeout(() => {
+        appLights[3].className = 'w-14 h-14 rounded-full bg-green-400 border-2 border-white shadow-[0_0_30px_#22c55e]';
+        greenTimestamp = performance.now();
+        appGateStatus.textContent = '🟢 ¡GO! ¡GO! ¡PEDALEA!';
+        beep(2250, 360, 'square');
+      }, delay + 360));
+    });
+
+    btnAppGateSnap.addEventListener('click', () => {
+      if (!gateActive) return;
+      gateTimers.forEach(t => clearTimeout(t));
+      gateActive = false;
+      btnAppGateSnap.disabled = true;
+      btnAppGateSnap.className = 'w-full h-28 bg-zinc-800 text-zinc-500 font-racing font-black uppercase italic text-2xl rounded-2xl border-2 border-zinc-700 transition flex flex-col items-center justify-center';
+
+      if (greenTimestamp === 0) {
+        appGateStatus.textContent = '❌ ¡SALIDA EN FALSO! ANTES DEL VERDE';
+        beep(220, 400);
+      } else {
+        const diff = Math.round(performance.now() - greenTimestamp);
+        appGateStatus.textContent = `⚡ ¡REACCIÓN: ${diff} MS!`;
+        if (!bestMs || diff < parseInt(bestMs, 10)) {
+          bestMs = diff;
+          localStorage.setItem('boyaca_best_gate_ms', String(diff));
+          bestReactionDisplay.textContent = `${diff} ms`;
+          showToast(`🏆 ¡Nuevo Récord Personal de Partidor: ${diff} ms!`);
+        }
+      }
+    });
+
+    // ========================================================================
+    // PANTALLA 3: CARNET DIGITAL QR + DESCARGA DE PLACA BMX VIRTUAL
+    // ========================================================================
+    let currentCarnetAthlete = buscarAtletaRegular('#12')[0] || buscarAtletaRegular('#07')[0];
+
+    function descargarPlacaVirtualBmx(atleta) {
+      if (!atleta) {
+        showToast('Busque un atleta para descargar su placa');
+        return;
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = 900;
+      canvas.height = 700;
+      const ctx = canvas.getContext('2d');
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const cat = (atleta.categoria || '').toUpperCase();
+      let bgColor = '#facc15'; // Amarillo para Semillitas / Novatos
+      let textColor = '#09090b';
+      let tagColor = '#0ea5e9';
+
+      if (cat.includes('EXPERTOS') || cat.includes('ÉLITE')) {
+        bgColor = '#1d4ed8'; // Azul
+        textColor = '#ffffff';
+        tagColor = '#facc15';
+      } else if (cat.includes('FEMENINO') || cat.includes('DAMAS')) {
+        bgColor = '#0284c7'; // Celeste
+        textColor = '#ffffff';
+        tagColor = '#fb7185';
+      } else if (cat.includes('CRUISER') || cat.includes('OPEN') || cat.includes('MASTER')) {
+        bgColor = '#dc2626'; // Rojo
+        textColor = '#ffffff';
+        tagColor = '#ffffff';
+      }
+
+      // Dibujar forma de la placa aerodinámica BMX
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(80, 70);
+      ctx.lineTo(820, 70);
+      ctx.lineTo(760, 630);
+      ctx.lineTo(140, 630);
+      ctx.closePath();
+
+      ctx.shadowColor = 'rgba(0,0,0,0.45)';
+      ctx.shadowBlur = 25;
+      ctx.shadowOffsetY = 12;
+      ctx.fillStyle = bgColor;
+      ctx.fill();
+      ctx.restore();
+
+      ctx.lineWidth = 14;
+      ctx.strokeStyle = '#0f172a';
+      ctx.stroke();
+
+      ctx.save();
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(95, 85);
+      ctx.lineTo(805, 85);
+      ctx.lineTo(748, 615);
+      ctx.lineTo(152, 615);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.restore();
+
+      // Barra superior
+      ctx.fillStyle = '#09090b';
+      ctx.beginPath();
+      ctx.moveTo(110, 95);
+      ctx.lineTo(790, 95);
+      ctx.lineTo(775, 175);
+      ctx.lineTo(125, 175);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = '#facc15';
+      ctx.font = 'italic 900 32px "Chakra Petch", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('ESCUELA DE BICICROSS LOS BOYACÁ', 450, 148);
+
+      // NÚMERO DE PLACA GIGANTE
+      const placaText = atleta.numero_placa || '#00';
+      ctx.save();
+      ctx.fillStyle = textColor;
+      ctx.font = 'italic 900 190px "Chakra Petch", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.shadowColor = 'rgba(0,0,0,0.3)';
+      ctx.shadowBlur = 15;
+      ctx.shadowOffsetY = 8;
+      ctx.fillText(placaText, 450, 395);
+      ctx.restore();
+
+      // Barra inferior con Nombre del Atleta y Categoría
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.moveTo(165, 480);
+      ctx.lineTo(735, 480);
+      ctx.lineTo(715, 595);
+      ctx.lineTo(185, 595);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'italic 900 30px "Chakra Petch", sans-serif';
+      ctx.textAlign = 'center';
+      const nombreCompleto = `${atleta.nombre_atleta || atleta.nombre || 'PILOTO'} ${atleta.apellido_atleta || atleta.apellido || ''}`.toUpperCase();
+      ctx.fillText(nombreCompleto, 450, 528);
+
+      ctx.fillStyle = tagColor;
+      ctx.font = 'bold 20px "Inter", sans-serif';
+      ctx.fillText((atleta.categoria || 'BMX RACING').toUpperCase(), 450, 568);
+
+      ctx.fillStyle = '#22c55e';
+      ctx.font = 'bold 15px "Inter", sans-serif';
+      ctx.fillText('★ PLACA OFICIAL VERIFICADA 2026 • BARCELONA ★', 450, 624);
+
+      const link = document.createElement('a');
+      link.download = `Placa-BMX-${(atleta.numero_placa || 'Boyaca').replace('#','')}-${(atleta.nombre_atleta || 'Piloto')}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      showToast('📥 ¡Placa BMX descargada exitosamente en PNG!');
+    }
+
+    document.getElementById('btnDescargarPlacaPng')?.addEventListener('click', () => {
+      descargarPlacaVirtualBmx(currentCarnetAthlete);
+    });
+
+    function renderCarnet(atleta) {
+      if (!atleta) return;
+      currentCarnetAthlete = atleta;
+      document.getElementById('carnetPlacaBadge').textContent = atleta.numero_placa || '#S/N';
+      document.getElementById('carnetNombre').textContent = `${atleta.nombre_atleta} ${atleta.apellido_atleta}`;
+      document.getElementById('carnetCategoria').textContent = `${atleta.nivel} • ${atleta.categoria}`;
+      document.getElementById('carnetRep').textContent = `${atleta.nombre_rep} (${atleta.cedula_rep})`;
+      document.getElementById('carnetSalud').textContent = atleta.condicion_medica || 'O+ / NINGUNA';
+      document.getElementById('carnetMes').textContent = atleta.mes_pagado || 'OCTUBRE 2026';
+      document.getElementById('carnetIdCode').textContent = atleta.id;
+
+      const solvBadge = document.getElementById('carnetSolvencia');
+      const solv = (atleta.solvencia || 'SOLVENTE').toUpperCase();
+      if (solv.includes('PENDIENTE')) {
+        solvBadge.textContent = `🔴 ${solv}`;
+        solvBadge.className = 'inline-block px-3 py-1 rounded font-racing font-black uppercase text-xs bg-red-600 text-white';
+      } else if (solv.includes('VERIFICAC')) {
+        solvBadge.textContent = `🟡 ${solv}`;
+        solvBadge.className = 'inline-block px-3 py-1 rounded font-racing font-black uppercase text-xs bg-yellow-400 text-black';
+      } else {
+        solvBadge.textContent = '🟢 SOLVENTE EN PISTA (CONCILIADO)';
+        solvBadge.className = 'inline-block px-3 py-1 rounded font-racing font-black uppercase text-xs bg-green-500 text-black';
+      }
+
+      const qrData = encodeURIComponent(`BOYACA-BMX|${atleta.id}|${atleta.numero_placa}|${atleta.nombre_atleta}_${atleta.apellido_atleta}|${solv}`);
+      document.getElementById('carnetQrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${qrData}`;
+    }
+
+    renderCarnet(currentCarnetAthlete);
+
+    document.getElementById('btnAppSearch').addEventListener('click', () => {
+      const q = document.getElementById('appSearchInput').value;
+      const res = buscarAtletaRegular(q);
+      if (res.length > 0) {
+        renderCarnet(res[0]);
+        showToast(`✓ Carnet de ${res[0].nombre_atleta} cargado`);
+      } else {
+        showToast('⚠️ No se encontró ningún piloto con ese dato');
+      }
+    });
+
+    document.querySelectorAll('.app-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const code = chip.getAttribute('data-chip');
+        document.getElementById('appSearchInput').value = code;
+        const res = buscarAtletaRegular(code);
+        if (res[0]) renderCarnet(res[0]);
+      });
+    });
+
+    document.querySelectorAll('.app-copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = btn.getAttribute('data-copy');
+        navigator.clipboard.writeText(val);
+        const toast = document.getElementById('appCopyToast');
+        toast.textContent = `✓ Copiado al portapapeles: ${val}`;
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.add('hidden'), 2500);
+      });
+    });
+
+    document.getElementById('appFileMes').addEventListener('change', e => {
+      const f = e.target.files[0];
+      if (f) document.getElementById('appFileLabelMes').textContent = `✓ ${f.name}`;
+    });
+
+    document.getElementById('appFormMensualidad').addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!currentCarnetAthlete) return;
+      const btnSubmit = document.getElementById('btnSubmitMes');
+      const bankBox = document.getElementById('appMesBankBox');
+      const bankBadge = document.getElementById('appMesBankBadge');
+      const bankText = document.getElementById('appMesBankText');
+
+      const mes = document.getElementById('appMesSelect').value;
+      const bancoOrigen = document.getElementById('appBancoMes').value;
+      const telOrigen = document.getElementById('appTelMes').value.trim();
+      const ref = document.getElementById('appRefMes').value.trim().toUpperCase();
+
+      btnSubmit.disabled = true;
+      bankBox.classList.remove('hidden');
+      bankBadge.textContent = 'CONECTANDO...';
+      bankBadge.className = 'text-[10px] font-black uppercase px-2 py-0.5 rounded bg-yellow-400 text-black';
+
+      const verif = await verificarPagoEnBanco({
+        referencia: ref,
+        bancoOrigen,
+        telefonoOrigen: telOrigen,
+        montoUsd: getConfig().precioMensualidad || 40,
+        concepto: `MENSUALIDAD ${mes} (${currentCarnetAthlete.numero_placa})`,
+        onStep: stepMsg => {
+          bankText.textContent = stepMsg;
+        }
+      });
+
+      btnSubmit.disabled = false;
+
+      if (!verif.ok) {
+        bankBadge.textContent = `RECHAZADO (${verif.codigo})`;
+        bankBadge.className = 'text-[10px] font-black uppercase px-2 py-0.5 rounded bg-red-600 text-white';
+        bankText.textContent = verif.mensaje;
+        showToast('❌ El banco rechazó la referencia');
+        return;
+      }
+
+      bankBadge.textContent = '✓ APROBADO EN BANCO (00)';
+      bankBadge.className = 'text-[10px] font-black uppercase px-2 py-0.5 rounded bg-green-500 text-black';
+      bankText.textContent = verif.mensaje;
+
+      const file = document.getElementById('appFileMes').files[0];
+      const imgUrl = file ? await procesarYSubirCapture(file, 'app-mes') : verif.voucherSvg;
+
+      await registrarPagoMensualidad({
+        atleta_id: currentCarnetAthlete.id,
+        nombre_atleta: `${currentCarnetAthlete.nombre_atleta} ${currentCarnetAthlete.apellido_atleta}`,
+        numero_placa: currentCarnetAthlete.numero_placa,
+        cedula_rep: currentCarnetAthlete.cedula_rep,
+        mes_pagado: mes,
+        metodo_pago: `Pago Móvil (${bancoOrigen})`,
+        referencia: verif.referencia,
+        codigo_conciliacion: verif.codigoAprobacion,
+        fecha_pago: new Date().toISOString().split('T')[0],
+        comprobante_img: imgUrl,
+        estado_verificacion: 'VERIFICADO'
+      });
+
+      const actualizado = buscarAtletaRegular(currentCarnetAthlete.numero_placa)[0];
+      renderCarnet(actualizado);
+      document.getElementById('appRefMes').value = '';
+      showToast(`🏦 ¡Pago verificado en el banco! ${currentCarnetAthlete.nombre_atleta} ahora está SOLVENTE`);
+    });
+
+    // ========================================================================
+    // PANTALLA 4: COPA BMX Y MANGAS EN VIVO CON VALIDACIÓN BANCARIA
+    // ========================================================================
+    const subTabMangasBtn = document.getElementById('subTabMangasBtn');
+    const subTabInscribirCopaBtn = document.getElementById('subTabInscribirCopaBtn');
+    const subViewMangas = document.getElementById('subViewMangas');
+    const subViewInscribirCopa = document.getElementById('subViewInscribirCopa');
+
+    subTabMangasBtn.addEventListener('click', () => {
+      subViewMangas.classList.remove('hidden');
+      subViewInscribirCopa.classList.add('hidden');
+      subTabMangasBtn.className = 'flex-1 py-2 rounded-lg font-racing font-black uppercase italic text-xs bg-yellow-400 text-black';
+      subTabInscribirCopaBtn.className = 'flex-1 py-2 rounded-lg font-racing font-black uppercase italic text-xs text-zinc-300';
+      renderAppMangas();
+    });
+
+    subTabInscribirCopaBtn.addEventListener('click', () => {
+      subViewInscribirCopa.classList.remove('hidden');
+      subViewMangas.classList.add('hidden');
+      subTabInscribirCopaBtn.className = 'flex-1 py-2 rounded-lg font-racing font-black uppercase italic text-xs bg-green-400 text-black';
+      subTabMangasBtn.className = 'flex-1 py-2 rounded-lg font-racing font-black uppercase italic text-xs text-zinc-300';
+    });
+
+    function renderAppMangas() {
+      const grupos = generarMangasBmx(false);
+      const container = document.getElementById('appMangasContainer');
+      container.innerHTML = grupos.map((g, idx) => `
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-3.5">
+          <div class="flex justify-between items-center border-b border-zinc-800 pb-2 mb-2.5">
+            <div>
+              <span class="text-[9px] font-black uppercase text-sky-400 block">PARTIDOR 8 CARRILES • SERIE #${idx + 1}</span>
+              <h3 class="font-racing font-black uppercase italic text-sm text-yellow-400">${g.titulo}</h3>
+            </div>
+            <span class="text-[10px] font-black bg-zinc-950 border border-zinc-700 px-2 py-0.5 rounded">${g.corredores.length} Pilotos</span>
+          </div>
+          <div class="space-y-1.5 text-xs">
+            ${g.corredores.map(c => `
+              <div class="flex items-center justify-between bg-zinc-950 px-3 py-2 rounded-xl border border-zinc-800/80">
+                <div>
+                  <span class="font-racing font-black text-yellow-400 mr-1.5">${c.piloto.numero_placa}</span>
+                  <span class="font-bold text-white">${c.piloto.nombre} ${c.piloto.apellido}</span>
+                  ${c.piloto.estado_verificacion === 'VERIFICADO' ? '<span class="ml-1 text-[9px] bg-green-500/20 text-green-400 px-1.5 py-0.5 rounded font-black">✓ BANCO</span>' : ''}
+                </div>
+                <div class="flex gap-1.5 text-[11px] font-racing font-black">
+                  <span class="bg-sky-500/20 border border-sky-400 text-sky-300 px-2 py-0.5 rounded">M1: C${c.manga1}</span>
+                  <span class="bg-yellow-400/20 border border-yellow-400 text-yellow-300 px-2 py-0.5 rounded">M2: C${c.manga2}</span>
+                  <span class="bg-green-500/20 border border-green-400 text-green-300 px-2 py-0.5 rounded">M3: C${c.manga3}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    const copaFechaNac = document.getElementById('copaFechaNac');
+    const copaGenero = document.getElementById('copaGenero');
+    const copaCatPreview = document.getElementById('copaCatPreview');
+    function updateCopaCat() {
+      const cat = calcularCategoriaBmx(copaFechaNac.value, copaGenero.value);
+      copaCatPreview.textContent = cat || 'Seleccione fecha de nacimiento';
+    }
+    copaFechaNac.addEventListener('change', updateCopaCat);
+    copaGenero.addEventListener('change', updateCopaCat);
+
+    const copaMetodo = document.getElementById('copaMetodo');
+    const copaRef = document.getElementById('copaRef');
+    const copaBancoOrigen = document.getElementById('copaBancoOrigen');
+    copaMetodo.addEventListener('change', () => {
+      const esEfectivo = copaMetodo.value === 'Efectivo Pista';
+      copaRef.required = !esEfectivo;
+      copaRef.disabled = esEfectivo;
+      copaBancoOrigen.disabled = esEfectivo;
+      if (esEfectivo) copaRef.value = 'PAGO EN PISTA';
+      else if (copaRef.value === 'PAGO EN PISTA') copaRef.value = '';
+    });
+
+    subViewInscribirCopa.addEventListener('submit', async e => {
+      e.preventDefault();
+      const rawPlaca = document.getElementById('copaPlaca').value.trim().toUpperCase();
+      const placa = rawPlaca.startsWith('#') ? rawPlaca : `#${rawPlaca}`;
+      const cat = calcularCategoriaBmx(copaFechaNac.value, copaGenero.value) || 'Open';
+      const metodo = copaMetodo.value;
+      const bancoOrigen = copaBancoOrigen.value;
+      const tel = document.getElementById('copaTel').value.trim();
+      const refInput = copaRef.value.trim().toUpperCase();
+
+      const bankBox = document.getElementById('appCopaBankBox');
+      const bankBadge = document.getElementById('appCopaBankBadge');
+      const bankText = document.getElementById('appCopaBankText');
+      const btnSubmit = document.getElementById('btnSubmitCopaApp');
+
+      let estadoVerif = 'PENDIENTE';
+      let voucherImg = '';
+      let codigoConcil = '';
+
+      if (metodo === 'Pago Movil') {
+        btnSubmit.disabled = true;
+        bankBox.classList.remove('hidden');
+        bankBadge.textContent = 'CONSULTANDO BANCO...';
+        bankBadge.className = 'text-[10px] font-black uppercase px-2 py-0.5 rounded bg-yellow-400 text-black';
+
+        const verif = await verificarPagoEnBanco({
+          referencia: refInput,
+          bancoOrigen,
+          telefonoOrigen: tel,
+          montoUsd: getConfig().precioValida,
+          concepto: `COPA LOS BOYACÁ BMX (${placa})`,
+          onStep: msg => {
+            bankText.textContent = msg;
+          }
+        });
+
+        btnSubmit.disabled = false;
+        if (!verif.ok) {
+          bankBadge.textContent = `RECHAZADO (${verif.codigo})`;
+          bankBadge.className = 'text-[10px] font-black uppercase px-2 py-0.5 rounded bg-red-600 text-white';
+          bankText.textContent = verif.mensaje;
+          showToast('❌ El banco rechazó el número de referencia');
+          return;
+        }
+
+        bankBadge.textContent = '✓ CONCILIADO (00)';
+        bankBadge.className = 'text-[10px] font-black uppercase px-2 py-0.5 rounded bg-green-500 text-black';
+        bankText.textContent = verif.mensaje;
+        estadoVerif = 'VERIFICADO';
+        voucherImg = verif.voucherSvg;
+        codigoConcil = verif.codigoAprobacion;
+      }
+
+      await guardarInscripcionValida({
+        nombre: document.getElementById('copaNombre').value.trim().toUpperCase(),
+        apellido: document.getElementById('copaApellido').value.trim().toUpperCase(),
+        numero_placa: placa,
+        cedula: document.getElementById('copaCedula').value.trim().toUpperCase(),
+        fecha_nacimiento: copaFechaNac.value,
+        genero: copaGenero.value,
+        modalidad: 'Rin 20',
+        categoria: cat,
+        club: document.getElementById('copaClub').value.trim().toUpperCase(),
+        telefono: tel,
+        estado: 'ANZOÁTEGUI',
+        ciudad: 'BARCELONA',
+        metodo_pago: metodo === 'Pago Movil' ? `Pago Móvil (${bancoOrigen})` : metodo,
+        referencia: refInput || 'PAGO EN PISTA',
+        codigo_conciliacion: codigoConcil,
+        fecha_pago: new Date().toISOString().split('T')[0],
+        comprobante_img: voucherImg,
+        estado_verificacion: estadoVerif
+      });
+
+      setTimeout(() => {
+        subViewInscribirCopa.reset();
+        bankBox.classList.add('hidden');
+        showToast(`🏦 ¡Pago validado en banco! Piloto ${placa} inscrito y sorteado en las mangas`);
+        subTabMangasBtn.click();
+      }, 900);
+    });
+
+    // ========================================================================
+    // PANTALLA 5: PANEL MÓVIL DE ENTRENADOR / ADMIN
+    // ========================================================================
+    let modalItemTarget = null;
+    function renderAppAdmin() {
+      const validas = getInscripcionesValida();
+      const escuelas = getInscripcionesEscuela();
+      const container = document.getElementById('appAdminList');
+
+      const combinados = [
+        ...validas.map(v => ({ ...v, _tipo: 'valida', _titulo: `${v.nombre} ${v.apellido}`, _sub: `Copa BMX • ${v.categoria}` })),
+        ...escuelas.map(e => ({ ...e, _tipo: 'escuela', _titulo: `${e.nombre_atleta} ${e.apellido_atleta}`, _sub: `Escuela • ${e.mes_pagado || 'OCTUBRE'}` }))
+      ];
+
+      container.innerHTML = combinados.map(item => `
+        <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-3 flex items-center justify-between gap-2">
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="font-racing font-black text-yellow-400 text-xs">${item.numero_placa || '#S/N'}</span>
+              <span class="font-bold text-white text-xs">${item._titulo}</span>
+            </div>
+            <p class="text-[10px] text-zinc-400">${item._sub} • Ref: #${item.referencia}</p>
+            <div class="flex items-center gap-1.5 mt-1">
+              <span class="inline-block px-2 py-0.5 rounded text-[9px] font-black uppercase ${item.estado_verificacion === 'VERIFICADO' ? 'bg-green-500 text-black' : 'bg-yellow-400/20 text-yellow-300'}">
+                ${item.estado_verificacion === 'VERIFICADO' ? '✓ CONCILIADO BANCO' : 'PENDIENTE'}
+              </span>
+              ${item.codigo_conciliacion ? `<span class="text-[9px] font-mono text-sky-400">${item.codigo_conciliacion}</span>` : ''}
+            </div>
+          </div>
+          <div class="flex flex-col gap-1.5 shrink-0">
+            ${item.comprobante_img ? `<button type="button" data-cap-tipo="${item._tipo}" data-cap-id="${item.id}" class="bg-sky-500/20 border border-sky-400 text-sky-300 text-[10px] font-black uppercase px-2.5 py-1 rounded-lg">🔍 Voucher</button>` : ''}
+            <button type="button" data-approve-tipo="${item._tipo}" data-approve-id="${item.id}" data-approve-state="${item.estado_verificacion}" class="bg-green-500 text-black text-[10px] font-black uppercase px-2.5 py-1 rounded-lg">
+              ${item.estado_verificacion === 'VERIFICADO' ? 'Pendiente' : '✓ Aprobar'}
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('btnAppConciliarBanco')?.addEventListener('click', async () => {
+      const res = await conciliarPendientesConBanco();
+      renderAppAdmin();
+      showToast(`🏦 Conciliación bancaria lista: ${res.aprobadosCount} pago(s) aprobados automáticamente`);
+    });
+
+    document.addEventListener('click', async e => {
+      const capBtn = e.target.closest('[data-cap-id]');
+      if (capBtn) {
+        const tipo = capBtn.getAttribute('data-cap-tipo');
+        const id = capBtn.getAttribute('data-cap-id');
+        const lista = tipo === 'valida' ? getInscripcionesValida() : getInscripcionesEscuela();
+        const item = lista.find(x => x.id === id);
+        if (item && item.comprobante_img) {
+          modalItemTarget = { tipo, id };
+          document.getElementById('appCapTitle').textContent = `Ref: #${item.referencia}`;
+          document.getElementById('appCapImg').src = item.comprobante_img;
+          const m = document.getElementById('appModalCapture');
+          m.classList.remove('hidden');
+          m.classList.add('flex');
+        }
+      }
+
+      const appBtn = e.target.closest('[data-approve-id]');
+      if (appBtn) {
+        const tipo = appBtn.getAttribute('data-approve-tipo');
+        const id = appBtn.getAttribute('data-approve-id');
+        const st = appBtn.getAttribute('data-approve-state');
+        await actualizarEstadoInscripcion(tipo, id, st === 'VERIFICADO' ? 'PENDIENTE' : 'VERIFICADO');
+        renderAppAdmin();
+        showToast('✓ Estado de pago actualizado');
+      }
+    });
+
+    document.getElementById('btnCloseAppCap').addEventListener('click', () => {
+      const m = document.getElementById('appModalCapture');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    });
+
+    document.getElementById('btnApproveAppCap').addEventListener('click', async () => {
+      if (!modalItemTarget) return;
+      await actualizarEstadoInscripcion(modalItemTarget.tipo, modalItemTarget.id, 'VERIFICADO');
+      const m = document.getElementById('appModalCapture');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+      renderAppAdmin();
+      showToast('✓ Pago aprobado y atleta solvente');
+    });
+
+    document.getElementById('btnAppSaveTasa').addEventListener('click', () => {
+      const nueva = parseFloat(document.getElementById('appAdminTasaInput').value) || 881.06;
+      saveConfig({ tasaBcv: nueva, usarTasaAutomatica: false });
+      actualizarMontosApp(nueva);
+      showToast(`✓ Tasa BCV actualizada a ${nueva} Bs.`);
+    });
+
+    document.getElementById('btnAppResortear').addEventListener('click', () => {
+      goToScreen('screen-copa');
+      showToast('🎲 ¡Mangas y carriles re-sorteados!');
+    });
+
+    // Botón Instalar App Superior
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferredPrompt = e;
+    });
+    document.getElementById('btnAppInstallTop').addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+      } else {
+        showToast('📲 En iPhone: Compartir → Agregar a Inicio. En Android: Menú ⋮ → Instalar App.');
+      }
+    });
+  </script>
+</body>
+</html>

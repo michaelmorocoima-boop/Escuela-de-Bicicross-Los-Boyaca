@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Administrativo BMX | Escuela de Bicicross Los Boyacá</title>
+  <meta name="theme-color" content="#facc15">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/svg+xml" href="./assets/icon.svg">
+  <link rel="apple-touch-icon" href="./assets/icon-192.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,700;1,700&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100vw;
+    }
+    img, picture, svg, video {
+      max-width: 100%;
+      height: auto;
+    }
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, .font-racing { font-family: 'Chakra Petch', sans-serif; }
+    @media print {
+      body { background: #fff !important; color: #000 !important; }
+      .no-print { display: none !important; }
+      #seccionMangas { border: 2px solid #000 !important; box-shadow: none !important; background: #fff !important; color: #000 !important; }
+    }
+  </style>
+</head>
+<body class="bg-zinc-950 text-white min-h-screen">
+
+  <!-- ====================================================================== -->
+  <!-- 1. PANTALLA DE LOGIN CON ACCESO GENERAL PARA DIRECTOR Y ADMINISTRADOR  -->
+  <!-- ====================================================================== -->
+  <div id="loginOverlay" class="fixed inset-0 bg-zinc-950 z-[200] flex items-center justify-center p-4">
+    <div class="bg-zinc-900 border-2 border-sky-400 p-8 max-w-md w-full transform -skew-x-2 shadow-[10px_10px_0px_#facc15]">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-11 h-11 bg-yellow-400 flex items-center justify-center transform -skew-x-12">
+          <span class="font-racing font-black text-black text-lg">BMX</span>
+        </div>
+        <div>
+          <span class="text-xs font-black uppercase text-sky-400 tracking-widest block">ACCESO GENERAL DE CONFIGURACIÓN</span>
+          <h1 class="text-2xl font-black uppercase italic text-white">DIRECTIVA Y ADMINISTRADOR</h1>
+        </div>
+      </div>
+
+      <div class="mb-5 space-y-2">
+        <span class="block text-[11px] font-black uppercase text-zinc-400">⚡ Selecciona tu Rol de Acceso Rápido:</span>
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" id="btnQuickDirector" class="p-2.5 bg-black border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black font-black uppercase text-xs transition">
+            👑 Director Escuela<br><span class="text-[10px] font-normal lowercase">(director)</span>
+          </button>
+          <button type="button" id="btnQuickAdmin" class="p-2.5 bg-black border border-sky-400 text-sky-400 hover:bg-sky-400 hover:text-black font-black uppercase text-xs transition">
+            💻 Admin Página<br><span class="text-[10px] font-normal lowercase">(admin)</span>
+          </button>
+        </div>
+      </div>
+
+      <form id="formLogin" class="space-y-4">
+        <div>
+          <label class="block text-xs font-black uppercase text-zinc-300 mb-1">Usuario</label>
+          <input type="text" id="loginUser" value="director" required class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-yellow-400 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-black uppercase text-zinc-300 mb-1">Clave de Seguridad</label>
+          <input type="password" id="loginPass" value="director2026" required class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-yellow-400 focus:outline-none">
+        </div>
+        <div id="loginError" class="hidden bg-red-600 text-white text-xs font-black uppercase p-2.5 text-center">
+          Usuario o clave incorrectos. Usa director/director2026 o admin/boyaca2026.
+        </div>
+        <button type="submit" class="w-full bg-yellow-400 hover:bg-green-400 text-black font-black uppercase italic py-3.5 transform -skew-x-6 shadow-[4px_4px_0px_#0ea5e9] transition cursor-pointer">
+          🔓 Iniciar Sesión con Acceso General →
+        </button>
+        <a href="index.html" class="block text-center text-xs text-zinc-400 hover:text-white pt-2">← Volver a la página principal</a>
+      </form>
+    </div>
+  </div>
+
+  <!-- NAVBAR ADMIN -->
+  <nav class="bg-black border-b-4 border-yellow-400 p-4 no-print">
+    <div class="container mx-auto px-4 max-w-7xl flex flex-wrap justify-between items-center gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 bg-yellow-400 flex items-center justify-center transform -skew-x-12">
+          <span class="font-racing font-black text-black text-sm">BMX</span>
+        </div>
+        <span class="font-racing text-xl md:text-2xl font-black italic uppercase">
+          ADMIN • LOS <span class="text-sky-400">BOYACÁ</span>
+        </span>
+        <span id="roleBadgeSession" class="text-[11px] font-black uppercase px-2.5 py-1 bg-yellow-400 text-black transform -skew-x-6">
+          👑 Director de la Escuela
+        </span>
+        <span id="cloudStatusBadge" class="text-[11px] font-black uppercase px-2.5 py-1 bg-zinc-900 border border-zinc-700 text-zinc-300">
+          💾 Modo Híbrido Activo
+        </span>
+      </div>
+      <div class="flex flex-wrap items-center gap-2.5">
+        <a href="#seccionUsuariosAlumnos" class="text-xs font-black uppercase bg-sky-500 text-black px-3.5 py-2 transform -skew-x-6">
+          👤 Usuarios y Pagos
+        </a>
+        <a href="#seccionCompetenciasEscuela" class="text-xs font-black uppercase bg-yellow-400 text-black px-3.5 py-2 transform -skew-x-6">
+          🏆 Competencias Escuela
+        </a>
+        <a href="#seccionMangas" class="text-xs font-black uppercase border border-zinc-700 hover:border-yellow-400 text-zinc-200 px-3 py-2 transform -skew-x-6">
+          ⚡ Mangas (8 Carriles)
+        </a>
+        <a href="registro.html?tab=usuario" target="_blank" class="text-xs font-black uppercase border border-sky-400 text-sky-400 hover:bg-sky-400 hover:text-black px-3 py-2 transform -skew-x-6">
+          🌐 Portal Alumnos
+        </a>
+        <button id="btnLogout" class="text-xs font-black uppercase border border-red-500 text-red-400 hover:bg-red-500 hover:text-white px-3 py-2">
+          🔒 Salir
+        </button>
+        <a href="index.html" class="text-xs font-black uppercase border border-zinc-700 px-3 py-2 hover:border-yellow-400">← Web</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container mx-auto px-4 py-10 max-w-7xl space-y-12">
+
+    <!-- ==================================================================== -->
+    <!-- NUEVA SECCIÓN A: GENERADOR DE USUARIOS POR ALUMNO Y REGISTRO DE PAGOS -->
+    <!-- ==================================================================== -->
+    <section id="seccionUsuariosAlumnos" class="bg-zinc-900 border-2 border-sky-400 p-6 md:p-8 shadow-[8px_8px_0px_#0ea5e9] no-print">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-zinc-800">
+        <div>
+          <span class="bg-sky-400 text-black font-black text-xs uppercase px-3 py-0.5 inline-block transform -skew-x-6 mb-1">
+            CONTROL GENERAL DE USUARIOS Y PAGOS DE ALUMNOS
+          </span>
+          <h2 class="text-2xl md:text-3xl font-black uppercase italic text-white">
+            👤 Generador de <span class="text-sky-400">Usuarios por Alumno</span> y Registro Individual de Pagos
+          </h2>
+          <p class="text-xs md:text-sm text-zinc-300 mt-1">
+            Asigna o edita el <strong>Nombre de Usuario</strong> y la <strong>Contraseña</strong> de cada piloto para su acceso al portal, y consulta en vivo todo su historial de pagos ($10 inscripción, $40 mensualidades y $8 competencias).
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Formulario para asignar/cambiar usuario -->
+        <div class="lg:col-span-5 bg-zinc-950 border border-zinc-800 p-5 space-y-4">
+          <h3 class="text-sm font-black uppercase text-yellow-400">⚙️ Asignar / Actualizar Credenciales del Alumno</h3>
+          <form id="formAdminGenerarUsuario" class="space-y-3">
+            <div>
+              <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Seleccionar Alumno</label>
+              <select id="adminSelectAtleta" class="w-full px-3 py-2.5 bg-zinc-900 border border-zinc-700 text-white font-bold text-xs"></select>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Usuario</label>
+                <input type="text" id="adminInputUsuario" required placeholder="santiago07" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-yellow-400 font-bold text-xs lowercase">
+              </div>
+              <div>
+                <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Contraseña</label>
+                <input type="text" id="adminInputClave" required placeholder="1234" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white font-bold text-xs">
+              </div>
+            </div>
+            <p id="adminMsgUsuario" class="hidden text-xs font-black uppercase text-green-400 bg-green-950/70 border border-green-500 p-2 text-center"></p>
+            <button type="submit" class="w-full bg-sky-400 hover:bg-yellow-400 text-black font-black uppercase italic text-xs py-3 transform -skew-x-6 transition cursor-pointer">
+              ✓ Guardar Usuario y Clave del Alumno
+            </button>
+          </form>
+        </div>
+
+        <!-- Vista del Expediente de Pagos del Alumno Seleccionado -->
+        <div class="lg:col-span-7 bg-zinc-950 border border-zinc-800 p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+            <div>
+              <span class="text-[10px] font-black uppercase text-zinc-400">EXPEDIENTE DEL ALUMNO</span>
+              <h4 id="adminExpNombre" class="text-lg font-racing font-black uppercase italic text-white">SANTIAGO GÓMEZ (#07)</h4>
+              <p id="adminExpInfo" class="text-xs text-sky-400 font-bold">Semillitas • Usuario: @santiago07 • Clave: 1234</p>
+            </div>
+            <div class="text-right">
+              <span id="adminExpSolvencia" class="px-3 py-1 font-racing font-black italic text-xs bg-green-500 text-black uppercase">SOLVENTE</span>
+              <span id="adminExpTotal" class="block font-racing font-black text-green-400 text-sm mt-1">$58.00 USD</span>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto max-h-64">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-black text-zinc-400 uppercase font-black border-b border-zinc-800">
+                  <th class="p-2">Código</th>
+                  <th class="p-2">Tipo</th>
+                  <th class="p-2">Concepto</th>
+                  <th class="p-2">Monto</th>
+                  <th class="p-2">Método / Ref</th>
+                  <th class="p-2">Estado</th>
+                </tr>
+              </thead>
+              <tbody id="adminTablaPagosAlumno" class="divide-y divide-zinc-900"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================================== -->
+    <!-- NUEVA SECCIÓN B: GESTIÓN DE COMPETENCIAS DE LA ESCUELA Y RESULTADOS  -->
+    <!-- ==================================================================== -->
+    <section id="seccionCompetenciasEscuela" class="bg-zinc-900 border-2 border-yellow-400 p-6 md:p-8 shadow-[8px_8px_0px_#facc15] no-print">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-zinc-800">
+        <div>
+          <span class="bg-yellow-400 text-black font-black text-xs uppercase px-3 py-0.5 inline-block transform -skew-x-6 mb-1">
+            CALENDARIO DEPORTIVO Y RESULTADOS OFICIALES
+          </span>
+          <h2 class="text-2xl md:text-3xl font-black uppercase italic text-white">
+            🏆 Gestión de <span class="text-yellow-400">Competencias de la Escuela</span> y Resultados por Alumno
+          </h2>
+          <p class="text-xs md:text-sm text-zinc-300 mt-1">
+            Crea válidas y eventos de la escuela, y carga los resultados oficiales (posiciones, puntos de ranking, tiempos de partidor y carriles) para que los alumnos los vean en su acceso personal.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+        <!-- Formulario Crear Competencia -->
+        <div class="lg:col-span-5 bg-zinc-950 border border-zinc-800 p-5 space-y-3">
+          <h3 class="text-sm font-black uppercase text-sky-400">+ Crear Nueva Competencia de la Escuela</h3>
+          <form id="formCrearCompetencia" class="space-y-3">
+            <div>
+              <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Nombre del Evento *</label>
+              <input type="text" id="compNombre" required placeholder="Ej. II Válida Interna Los Boyacá 2026" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white font-bold text-xs uppercase">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Fecha *</label>
+                <input type="date" id="compFecha" required class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white font-bold text-xs">
+              </div>
+              <div>
+                <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Costo Inscripción ($ USD)</label>
+                <input type="number" step="0.5" id="compCosto" value="8" required class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-green-400 font-bold text-xs">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Pista / Lugar *</label>
+              <input type="text" id="compLugar" value="Pista de Bicicross Los Boyacá, Barcelona" required class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white font-bold text-xs">
+            </div>
+            <div>
+              <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Estado de la Competencia</label>
+              <select id="compEstado" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white font-bold text-xs">
+                <option value="ABIERTA">ABIERTA (Inscripciones Activas)</option>
+                <option value="EN CURSO">EN CURSO (En Pista Hoy)</option>
+                <option value="FINALIZADA">FINALIZADA (Resultados Publicados)</option>
+              </select>
+            </div>
+            <button type="submit" class="w-full bg-yellow-400 hover:bg-green-400 text-black font-black uppercase italic text-xs py-3 transform -skew-x-6 transition cursor-pointer">
+              ✓ Registrar Competencia en la Escuela
+            </button>
+          </form>
+        </div>
+
+        <!-- Formulario Cargar Resultado por Alumno -->
+        <div class="lg:col-span-7 bg-zinc-950 border border-zinc-800 p-5 space-y-3">
+          <h3 class="text-sm font-black uppercase text-green-400">🏅 Cargar / Actualizar Resultado Oficial por Alumno</h3>
+          <form id="formCargarResultado" class="space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Competencia *</label>
+                <select id="resSelectComp" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white font-bold text-xs"></select>
+              </div>
+              <div>
+                <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Alumno / Piloto *</label>
+                <select id="resSelectAtleta" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white font-bold text-xs"></select>
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+              <div>
+                <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Posición / Podio *</label>
+                <input type="text" id="resPosicion" required placeholder="Ej. 1º Oro o Finalista" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white font-bold text-xs">
+              </div>
+              <div>
+                <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Puntos Ganados *</label>
+                <input type="number" id="resPuntos" value="25" required class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-yellow-400 font-bold text-xs">
+              </div>
+              <div>
+                <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Tiempo Partidor</label>
+                <input type="text" id="resTiempo" placeholder="Ej. 3.42s" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-sky-400 font-bold text-xs">
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+              <div>
+                <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Carril Manga 1</label>
+                <input type="number" min="1" max="8" id="resCarril1" placeholder="Ej. 3" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white font-bold text-xs">
+              </div>
+              <div>
+                <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Carril Manga 2</label>
+                <input type="number" min="1" max="8" id="resCarril2" placeholder="Ej. 7" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white font-bold text-xs">
+              </div>
+              <div>
+                <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Carril Manga 3</label>
+                <input type="number" min="1" max="8" id="resCarril3" placeholder="Ej. 1" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white font-bold text-xs">
+              </div>
+            </div>
+            <p id="adminMsgResultado" class="hidden text-xs font-black uppercase text-green-400 bg-green-950/70 border border-green-500 p-2 text-center"></p>
+            <button type="submit" class="w-full bg-green-500 hover:bg-yellow-400 text-black font-black uppercase italic text-xs py-3 transform -skew-x-6 transition cursor-pointer">
+              ✓ Publicar Resultado Oficial para el Alumno
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tarjetas de Competencias Activas -->
+      <div>
+        <h3 class="text-sm font-black uppercase text-zinc-300 mb-3">📋 Competencias Registradas en la Escuela</h3>
+        <div id="adminListaCompetencias" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+      </div>
+    </section>
+
+    <!-- ==================================================================== -->
+    <!-- 2. GENERADOR AUTOMÁTICO DE MANGAS BMX (PARTIDOR DE 8 CARRILES)       -->
+    <!-- ==================================================================== -->
+    <section id="seccionMangas" class="bg-zinc-900 border-2 border-yellow-400 p-6 md:p-8 shadow-[8px_8px_0px_#facc15]">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 pb-4 border-b border-zinc-800">
+        <div>
+          <span class="bg-yellow-400 text-black font-black text-xs uppercase px-3 py-0.5 inline-block transform -skew-x-6 mb-1">
+            MESA TÉCNICA OFICIAL DE BICICROSS
+          </span>
+          <h2 class="text-2xl md:text-4xl font-black uppercase italic text-white">
+            ⚡ Generador de <span class="text-yellow-400">Mangas y Carriles (Partidor 1 al 8)</span>
+          </h2>
+          <p class="text-xs md:text-sm text-zinc-300 mt-1">
+            Agrupa automáticamente a los pilotos por categoría, divide en series de máximo 8 corredores y sortea al azar sus carriles del <strong>Carril 1 al 8</strong> sin repetir carril en las 3 Mangas Clasificatorias.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 no-print">
+          <label class="flex items-center gap-2 text-xs font-bold text-zinc-300 bg-zinc-950 border border-zinc-800 px-3 py-2.5 cursor-pointer">
+            <input type="checkbox" id="chkSoloVerificados" class="accent-green-400">
+            Solo pagos verificados
+          </label>
+          <button type="button" id="btnSortearMangas" class="bg-yellow-400 hover:bg-green-400 text-black font-black uppercase italic text-sm px-5 py-3 transform -skew-x-6 shadow-[4px_4px_0px_#0ea5e9] transition cursor-pointer">
+            🎲 Sortear Mangas y Carriles
+          </button>
+          <button type="button" id="btnImprimirMangas" class="bg-sky-400 hover:bg-sky-300 text-black font-black uppercase italic text-sm px-5 py-3 transform -skew-x-6 shadow-[4px_4px_0px_#fff] transition cursor-pointer">
+            🖨️ Imprimir Hojas de Carrera
+          </button>
+        </div>
+      </div>
+
+      <div id="contenedorMangas" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+    </section>
+
+    <!-- ==================================================================== -->
+    <!-- 3. LISTADO DE INSCRITOS EN LA COPA / VÁLIDA BMX + VISOR DE CAPTURES  -->
+    <!-- ==================================================================== -->
+    <section class="bg-zinc-900 border-2 border-green-500 p-6 md:p-8 shadow-[6px_6px_0px_#22c55e] no-print">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 class="text-2xl font-black uppercase italic text-green-400">
+            🏆 Inscritos en Copa Los Boyacá BMX Race (<span id="countValida">0</span>)
+          </h2>
+          <p class="text-xs text-zinc-400">Haz clic en <strong>"🔍 Ver Capture"</strong> para revisar la imagen del comprobante de Pago Móvil en grande antes de aprobar.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="btnLimpiarValidas" class="bg-red-950/80 border border-red-500 text-red-300 hover:bg-red-500 hover:text-black font-black text-xs uppercase px-4 py-2.5 transition cursor-pointer">
+            🗑️ Dejar Válidas y Mangas en Blanco
+          </button>
+          <button id="btnExportValida" class="bg-zinc-950 border border-green-400 text-green-400 hover:bg-green-400 hover:text-black font-black text-xs uppercase px-4 py-2.5 transition cursor-pointer">
+            📥 Exportar Planilla CSV / Excel
+          </button>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-sm">
+          <thead>
+            <tr class="bg-black text-zinc-400 font-black uppercase text-xs border-b border-zinc-800">
+              <th class="p-3">Placa</th>
+              <th class="p-3">Piloto</th>
+              <th class="p-3">Categoría (2026)</th>
+              <th class="p-3">Club / Ciudad</th>
+              <th class="p-3">Pago / Capture</th>
+              <th class="p-3">Estado</th>
+              <th class="p-3">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tablaValidaBody" class="divide-y divide-zinc-800"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ==================================================================== -->
+    <!-- 4. LISTADO DE INSCRITOS EN LA ESCUELA + CONTROL DE SOLVENCIA         -->
+    <!-- ==================================================================== -->
+    <section class="bg-zinc-900 border-2 border-sky-400 p-6 md:p-8 shadow-[6px_6px_0px_#0ea5e9] no-print">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 class="text-2xl font-black uppercase italic text-sky-400">
+            🚲 Atletas de la Escuela y Estado de Solvencia (<span id="countEscuela">0</span>)
+          </h2>
+          <p class="text-xs text-zinc-400">Control de ingresos mensuales, solvencia, representantes y comprobantes.</p>
+        </div>
+        <button id="btnExportEscuela" class="bg-zinc-950 border border-sky-400 text-sky-400 hover:bg-sky-400 hover:text-black font-black text-xs uppercase px-4 py-2.5 transition">
+          📥 Exportar Atletas CSV / Excel
+        </button>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-sm">
+          <thead>
+            <tr class="bg-black text-zinc-400 font-black uppercase text-xs border-b border-zinc-800">
+              <th class="p-3">Placa / Ficha</th>
+              <th class="p-3">Atleta</th>
+              <th class="p-3">Nivel / Categoría</th>
+              <th class="p-3">Representante / WA</th>
+              <th class="p-3">Mes / Capture</th>
+              <th class="p-3">Solvencia</th>
+              <th class="p-3">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tablaEscuelaBody" class="divide-y divide-zinc-800"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ==================================================================== -->
+    <!-- 4.5 CONCILIACIÓN BANCARIA AUTOMÁTICA (API P2C / CORTE BANCARIO)      -->
+    <!-- ==================================================================== -->
+    <section class="bg-zinc-900 border-2 border-green-400 p-6 md:p-8 shadow-[6px_6px_0px_#22c55e] no-print">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-zinc-800">
+        <div>
+          <span class="bg-green-500 text-black text-xs font-black uppercase px-2.5 py-1 inline-block mb-2">CONEXIÓN BANCARIA P2C • SUICHE 7B / CONEXUS</span>
+          <h2 class="text-2xl md:text-3xl font-black uppercase italic text-white">
+            🏦 Conciliación Automática con <span class="text-green-400">Banco de Venezuela (0102)</span>
+          </h2>
+          <p class="text-zinc-400 text-sm">
+            Cruza automáticamente los números de referencia de las inscripciones y mensualidades con los pagos recibidos en el banco.
+          </p>
+        </div>
+        <button type="button" id="btnAdminConciliarTodo" class="bg-green-500 hover:bg-yellow-400 text-black font-black uppercase italic text-sm px-6 py-4 transform -skew-x-6 shadow-[4px_4px_0px_#fff] transition cursor-pointer shrink-0">
+          ⚡ Conciliar y Aprobar Pagos Pendientes con el Banco
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="lg:col-span-7 bg-zinc-950 border border-zinc-800 p-5 space-y-3">
+          <h3 class="text-sm font-black uppercase text-yellow-400">📥 Cargar / Pegar Referencias del Estado de Cuenta del Banco</h3>
+          <p class="text-xs text-zinc-400">
+            Si recibes pagos en una cuenta personal, pega aquí las referencias del corte del día de Banco de Venezuela / Banesco (separadas por coma o salto de línea) para que el sistema las valide automáticamente:
+          </p>
+          <textarea id="txtLoteReferencias" rows="3" placeholder="Ejemplo: 854321, 778234, 991204, 554312..." class="w-full bg-black border border-zinc-700 p-3 text-xs font-mono text-green-400 focus:border-green-400 focus:outline-none"></textarea>
+          <div class="flex items-center justify-between gap-3">
+            <span id="msgConciliacionAdmin" class="text-xs font-black text-green-400 uppercase"></span>
+            <button type="button" id="btnCargarLoteBanco" class="bg-sky-400 hover:bg-yellow-400 text-black font-black uppercase italic text-xs px-5 py-2.5 transform -skew-x-6 transition cursor-pointer">
+              + Cargar Referencias y Conciliar
+            </button>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 bg-zinc-950 border border-zinc-800 p-5 space-y-3 text-xs text-zinc-300">
+          <h3 class="text-sm font-black uppercase text-sky-400">🛡️ Reglas Activas del Validador Bancario</h3>
+          <p>• <strong class="text-white">Bloqueo Anti-Fraude:</strong> Impide que dos representantes usen el mismo número de referencia (ej. prueba poner <code class="text-yellow-400">948271</code> y verás cómo lo bloquea).</p>
+          <p>• <strong class="text-white">Validación en Vivo:</strong> Cualquier referencia nueva válida de 6 dígitos (ej. <code class="text-green-400">854321</code>) se aprueba en vivo y genera el Voucher P2C oficial.</p>
+          <p>• <strong class="text-white">Simulación de Rechazo:</strong> Si una referencia termina en <code class="text-red-400">0000</code> (ej. <code class="text-red-400">450000</code>), el banco devuelve <code class="text-red-400">Código 51: Pago no encontrado</code>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================================== -->
+    <!-- 5. CONFIGURACIÓN GENERAL, CLAVE ADMIN Y CONEXIÓN CLOUD SUPABASE       -->
+    <!-- ==================================================================== -->
+    <section class="bg-zinc-900 border-2 border-zinc-700 p-6 md:p-8 no-print">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-zinc-800">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-black uppercase italic text-white">
+            ⚙️ Configuración de <span class="text-yellow-400">Tasa BCV, Pago Móvil, Seguridad y Nube (Supabase)</span>
+          </h2>
+          <p class="text-zinc-400 text-sm">Administra precios, datos bancarios, contraseña del panel y credenciales de base de datos en la nube.</p>
+        </div>
+        <span id="msgGuardado" class="hidden bg-green-500 text-black font-black text-xs uppercase px-4 py-2 transform -skew-x-6">
+          ✓ Configuración Guardada
+        </span>
+      </div>
+
+      <form id="formConfig" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div>
+          <label class="block text-xs font-black uppercase text-sky-400 mb-1">Tasa BCV (Bs. por $1)</label>
+          <input type="number" step="0.01" id="cfgTasa" class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold">
+        </div>
+        <div>
+          <label class="block text-xs font-black uppercase text-sky-300 mb-1">Inscripción Escuela ($ USD)</label>
+          <input type="number" step="0.5" id="cfgPrecioEscuela" class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold">
+        </div>
+        <div>
+          <label class="block text-xs font-black uppercase text-yellow-400 mb-1">Mensualidad Escuela ($ USD)</label>
+          <input type="number" step="0.5" id="cfgPrecioMensualidad" class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold">
+        </div>
+        <div>
+          <label class="block text-xs font-black uppercase text-green-400 mb-1">Inscripción Válida BMX ($ USD)</label>
+          <input type="number" step="0.5" id="cfgPrecioValida" class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold">
+        </div>
+        <div>
+          <label class="block text-xs font-black uppercase text-zinc-300 mb-1">WhatsApp Oficial (con 58)</label>
+          <input type="text" id="cfgWhatsapp" class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold">
+        </div>
+
+        <div>
+          <label class="block text-xs font-black uppercase text-zinc-300 mb-1">Banco Pago Móvil</label>
+          <input type="text" id="cfgBanco" class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold">
+        </div>
+        <div>
+          <label class="block text-xs font-black uppercase text-zinc-300 mb-1">Código Banco (4 dígitos)</label>
+          <input type="text" id="cfgCodBanco" class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold">
+        </div>
+        <div>
+          <label class="block text-xs font-black uppercase text-zinc-300 mb-1">Teléfono Pago Móvil</label>
+          <input type="text" id="cfgTelPm" class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold">
+        </div>
+        <div>
+          <label class="block text-xs font-black uppercase text-zinc-300 mb-1">Cédula / RIF Pago Móvil</label>
+          <input type="text" id="cfgCedPm" class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold">
+        </div>
+
+        <!-- Credenciales de Acceso General: Admin y Director -->
+        <div>
+          <label class="block text-xs font-black uppercase text-yellow-400 mb-1">👑 Usuario Director Escuela</label>
+          <input type="text" id="cfgDirectorUser" class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold">
+        </div>
+        <div>
+          <label class="block text-xs font-black uppercase text-yellow-400 mb-1">👑 Contraseña Director Escuela</label>
+          <input type="text" id="cfgDirectorPass" class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold">
+        </div>
+        <div>
+          <label class="block text-xs font-black uppercase text-sky-400 mb-1">💻 Usuario Admin Página</label>
+          <input type="text" id="cfgAdminUser" class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold">
+        </div>
+        <div>
+          <label class="block text-xs font-black uppercase text-sky-400 mb-1">💻 Contraseña Admin Página</label>
+          <input type="text" id="cfgAdminPass" class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-700 text-white font-bold">
+        </div>
+
+        <!-- Conexión Cloud Supabase -->
+        <div>
+          <label class="block text-xs font-black uppercase text-green-400 mb-1">☁️ Supabase Project URL</label>
+          <input type="text" id="cfgSbUrl" placeholder="https://xxxx.supabase.co" class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-700 text-white text-xs font-mono">
+        </div>
+        <div>
+          <label class="block text-xs font-black uppercase text-green-400 mb-1">☁️ Supabase Publishable / Anon Key</label>
+          <input type="text" id="cfgSbKey" placeholder="eyJhbGciOi... o sb_publishable_..." class="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-700 text-white text-xs font-mono">
+        </div>
+
+        <div class="sm:col-span-2 lg:col-span-4 flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-zinc-800">
+          <div class="flex flex-wrap items-center gap-4">
+            <label class="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer">
+              <input type="checkbox" id="cfgAutoTasa" class="w-4 h-4 accent-sky-400">
+              Sincronizar Tasa BCV automáticamente
+            </label>
+            <a href="supabase_schema.sql" target="_blank" class="text-xs font-black uppercase text-sky-400 underline">
+              📄 Ver Script SQL para Supabase
+            </a>
+          </div>
+          <button type="submit" class="bg-yellow-400 hover:bg-green-400 text-black font-black uppercase italic px-8 py-3 transform -skew-x-6 shadow-[4px_4px_0px_#fff] transition cursor-pointer">
+            Guardar Toda la Configuración
+          </button>
+        </div>
+      </form>
+    </section>
+
+  </main>
+
+  <!-- ====================================================================== -->
+  <!-- MODAL VISOR DE CAPTURES DE PAGO MÓVIL EN GRANDE                        -->
+  <!-- ====================================================================== -->
+  <div id="modalCapture" class="fixed inset-0 bg-black/95 z-[300] hidden items-center justify-center p-4 no-print">
+    <div class="bg-zinc-900 border-2 border-green-400 max-w-lg w-full p-6 transform -skew-x-1 shadow-[10px_10px_0px_#0ea5e9]">
+      <div class="flex justify-between items-center border-b border-zinc-800 pb-3 mb-4">
+        <div>
+          <span class="text-xs font-black uppercase text-green-400 block">VERIFICACIÓN DE PAGO</span>
+          <h3 id="capModalPiloto" class="text-xl font-black uppercase italic text-white">PILOTO</h3>
+        </div>
+        <button type="button" id="btnCerrarCapture" class="bg-zinc-950 border border-zinc-700 hover:border-yellow-400 text-white font-black text-xs uppercase px-3 py-1.5">
+          ✕ Cerrar
+        </button>
+      </div>
+
+      <div class="text-xs text-zinc-300 grid grid-cols-2 gap-2 bg-zinc-950 p-3 border border-zinc-800 mb-4">
+        <div><strong>Método:</strong> <span id="capModalMetodo" class="text-white"></span></div>
+        <div><strong>Referencia:</strong> <span id="capModalRef" class="text-yellow-400 font-black"></span></div>
+        <div><strong>Fecha:</strong> <span id="capModalFecha"></span></div>
+        <div><strong>Estado:</strong> <span id="capModalEstado" class="font-black"></span></div>
+      </div>
+
+      <div class="bg-black border border-zinc-800 p-2 flex items-center justify-center max-h-[55vh] overflow-auto mb-5">
+        <img id="capModalImg" src="" alt="Capture de Pago" class="max-h-[50vh] w-auto object-contain">
+      </div>
+
+      <div class="flex gap-3">
+        <button type="button" id="btnAprobarDesdeModal" class="flex-1 bg-green-500 hover:bg-green-400 text-black font-black uppercase italic py-3 transform -skew-x-6 cursor-pointer">
+          ✓ Aprobar y Marcar Solvente
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import {
+      getConfig,
+      saveConfig,
+      isCloudConnected,
+      syncFromCloud,
+      getInscripcionesValida,
+      getInscripcionesEscuela,
+      limpiarDatosValidaYMangas,
+      actualizarEstadoInscripcion,
+      eliminarInscripcion,
+      isAdminLoggedIn,
+      loginAdmin,
+      logoutAdmin,
+      getAdminSessionRole,
+      generarMangasBmx,
+      conciliarPendientesConBanco,
+      agregarMovimientosBancoLote,
+      generarUsuarioAlumno,
+      obtenerExpedienteAlumno,
+      getCompetenciasEscuela,
+      crearCompetenciaEscuela,
+      registrarResultadoCompetencia,
+      eliminarCompetenciaEscuela
+    } from './js/store.js?v=9';
+
+    // Control de Login de Seguridad y Roles (Director vs Admin)
+    const loginOverlay = document.getElementById('loginOverlay');
+    const formLogin = document.getElementById('formLogin');
+    const loginError = document.getElementById('loginError');
+    const roleBadge = document.getElementById('roleBadgeSession');
+
+    function checkSession() {
+      if (isAdminLoggedIn()) {
+        loginOverlay.classList.add('hidden');
+        const rol = getAdminSessionRole();
+        if (roleBadge) {
+          const isDirector = typeof rol === 'string'
+            ? rol.toUpperCase().includes('DIRECTOR')
+            : (rol?.role === 'director' || String(rol?.role).includes('director'));
+          if (isDirector) {
+            roleBadge.textContent = '👑 Director: Michael Morocoima';
+            roleBadge.className = 'text-[11px] font-black uppercase px-2.5 py-1 bg-yellow-400 text-black transform -skew-x-6';
+          } else {
+            roleBadge.textContent = '💻 Administrador de la Página';
+            roleBadge.className = 'text-[11px] font-black uppercase px-2.5 py-1 bg-sky-400 text-black transform -skew-x-6';
+          }
+        }
+        cargarExpedienteAdmin();
+        poblarCompetenciasAdmin();
+      } else {
+        loginOverlay.classList.remove('hidden');
+      }
+    }
+    checkSession();
+
+    // Botones de acceso rápido 1-clic
+    document.getElementById('btnQuickDirector')?.addEventListener('click', () => {
+      document.getElementById('loginUser').value = 'director';
+      document.getElementById('loginPass').value = 'director2026';
+      if (loginAdmin('director', 'director2026')) {
+        loginError.classList.add('hidden');
+        checkSession();
+      }
+    });
+    document.getElementById('btnQuickAdmin')?.addEventListener('click', () => {
+      document.getElementById('loginUser').value = 'admin';
+      document.getElementById('loginPass').value = 'boyaca2026';
+      if (loginAdmin('admin', 'boyaca2026')) {
+        loginError.classList.add('hidden');
+        checkSession();
+      }
+    });
+
+    formLogin.addEventListener('submit', e => {
+      e.preventDefault();
+      const u = document.getElementById('loginUser').value;
+      const p = document.getElementById('loginPass').value;
+      if (loginAdmin(u, p)) {
+        loginError.classList.add('hidden');
+        checkSession();
+      } else {
+        loginError.classList.remove('hidden');
+      }
+    });
+
+    document.getElementById('btnLogout').addEventListener('click', () => {
+      logoutAdmin();
+      checkSession();
+    });
+
+    // =========================================================================
+    // SECCIÓN A: GENERACIÓN DE USUARIOS POR ALUMNO Y REGISTRO DE PAGOS
+    // =========================================================================
+    const adminSelectAtleta = document.getElementById('adminSelectAtleta');
+    const adminInputUsuario = document.getElementById('adminInputUsuario');
+    const adminInputClave = document.getElementById('adminInputClave');
+    const adminMsgUsuario = document.getElementById('adminMsgUsuario');
+
+    function poblarSelectAtletasAdmin() {
+      const lista = getInscripcionesEscuela();
+      adminSelectAtleta.innerHTML = lista.map(a =>
+        `<option value="${a.id}">${a.numero_placa || '#S/N'} - ${a.nombre_atleta} ${a.apellido_atleta}</option>`
+      ).join('');
+
+      const resSelect = document.getElementById('resSelectAtleta');
+      if (resSelect) {
+        resSelect.innerHTML = lista.map(a =>
+          `<option value="${a.id}">${a.numero_placa || '#S/N'} - ${a.nombre_atleta} ${a.apellido_atleta}</option>`
+        ).join('');
+      }
+
+      if (lista.length > 0) {
+        sincronizarCamposUsuarioAdmin(lista[0].id);
+        cargarExpedienteAdmin(lista[0].id);
+      }
+    }
+
+    function sincronizarCamposUsuarioAdmin(atletaId) {
+      const lista = getInscripcionesEscuela();
+      const a = lista.find(item => item.id === atletaId);
+      if (!a) return;
+      adminInputUsuario.value = a.usuario || `${a.nombre_atleta.split(' ')[0].toLowerCase()}${String(a.numero_placa || '').replace(/[^0-9]/g, '') || 'bmx'}`;
+      adminInputClave.value = a.clave_acceso || '1234';
+    }
+
+    adminSelectAtleta?.addEventListener('change', e => {
+      sincronizarCamposUsuarioAdmin(e.target.value);
+      cargarExpedienteAdmin(e.target.value);
+    });
+
+    document.getElementById('formAdminGenerarUsuario')?.addEventListener('submit', e => {
+      e.preventDefault();
+      adminMsgUsuario.classList.add('hidden');
+      const res = generarUsuarioAlumno({
+        atletaId: adminSelectAtleta.value,
+        usuario: adminInputUsuario.value,
+        clave: adminInputClave.value
+      });
+      if (!res.ok) {
+        adminMsgUsuario.textContent = `⚠️ ${res.error}`;
+        adminMsgUsuario.className = 'text-xs font-black uppercase text-red-400 bg-red-950/70 border border-red-500 p-2 text-center';
+        adminMsgUsuario.classList.remove('hidden');
+        return;
+      }
+      adminMsgUsuario.textContent = `✓ Credenciales guardadas: @${res.atleta.usuario} (Clave: ${res.atleta.clave_acceso}) para ${res.atleta.nombre_atleta}.`;
+      adminMsgUsuario.className = 'text-xs font-black uppercase text-green-400 bg-green-950/70 border border-green-500 p-2 text-center';
+      adminMsgUsuario.classList.remove('hidden');
+      cargarExpedienteAdmin(res.atleta.id);
+      renderTablas();
+    });
+
+    function cargarExpedienteAdmin(atletaId = null) {
+      const selId = atletaId || adminSelectAtleta?.value;
+      if (!selId) return;
+      const exp = obtenerExpedienteAlumno(selId);
+      if (!exp) return;
+      const a = exp.atleta;
+
+      document.getElementById('adminExpNombre').textContent = `${a.nombre_atleta} ${a.apellido_atleta} (${a.numero_placa || '#S/N'})`;
+      document.getElementById('adminExpInfo').textContent = `${a.nivel} • ${a.categoria} • Usuario: @${a.usuario || 'sin asignar'} • Clave: ${a.clave_acceso || '1234'}`;
+      document.getElementById('adminExpTotal').textContent = `$${exp.totalPagadoUsd.toFixed(2)} USD`;
+
+      const badgeSolv = document.getElementById('adminExpSolvencia');
+      const s = (a.solvencia || 'SOLVENTE').toUpperCase();
+      badgeSolv.textContent = s;
+      badgeSolv.className = s.includes('PENDIENTE')
+        ? 'px-3 py-1 font-racing font-black italic text-xs bg-red-600 text-white uppercase'
+        : 'px-3 py-1 font-racing font-black italic text-xs bg-green-500 text-black uppercase';
+
+      const tbody = document.getElementById('adminTablaPagosAlumno');
+      if (exp.historialPagos.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-3 text-center text-zinc-500 italic">Sin pagos registrados.</td></tr>`;
+      } else {
+        tbody.innerHTML = exp.historialPagos.map(p => `
+          <tr class="hover:bg-zinc-900/60">
+            <td class="p-2 font-mono text-sky-400">${p.id}</td>
+            <td class="p-2 font-black text-white uppercase">${p.tipo}</td>
+            <td class="p-2 text-zinc-300 font-bold">${p.concepto}</td>
+            <td class="p-2 font-racing font-black text-green-400">$${Number(p.monto_usd || 0).toFixed(2)}</td>
+            <td class="p-2 text-zinc-300">${p.metodo_pago} <span class="text-yellow-400 font-bold">(Ref: ${p.referencia})</span></td>
+            <td class="p-2"><span class="px-2 py-0.5 text-[10px] font-black uppercase ${p.estado === 'SOLVENTE' || p.estado === 'VERIFICADO' ? 'bg-green-500/20 text-green-400 border border-green-500' : 'bg-yellow-400/20 text-yellow-300 border border-yellow-400'}">${p.estado}</span></td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    // =========================================================================
+    // SECCIÓN B: COMPETENCIAS DE LA ESCUELA Y RESULTADOS POR ALUMNO
+    // =========================================================================
+    function poblarCompetenciasAdmin() {
+      const competencias = getCompetenciasEscuela();
+      const resSelect = document.getElementById('resSelectComp');
+      if (resSelect) {
+        resSelect.innerHTML = competencias.map(c =>
+          `<option value="${c.id}">${c.nombre} (${c.fecha}) - ${c.estado}</option>`
+        ).join('');
+      }
+
+      const grid = document.getElementById('adminListaCompetencias');
+      if (grid) {
+        grid.innerHTML = competencias.map(c => `
+          <div class="bg-zinc-950 border border-zinc-800 p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs mb-1">
+                <span class="px-2 py-0.5 font-black uppercase text-[10px] ${c.estado === 'FINALIZADA' ? 'bg-zinc-800 text-zinc-300' : 'bg-green-500/20 text-green-400 border border-green-400'}">${c.estado}</span>
+                <span class="text-zinc-400">${c.fecha}</span>
+              </div>
+              <h4 class="font-racing font-black uppercase text-base text-yellow-400 mb-1">${c.nombre}</h4>
+              <p class="text-xs text-zinc-300 mb-2">📍 ${c.lugar} • Costo: $${Number(c.costo_usd || 8).toFixed(2)} USD</p>
+              <div class="text-[11px] text-sky-400 font-bold">
+                ${(c.resultados || []).length} resultados cargados
+              </div>
+            </div>
+            <div class="mt-3 pt-2 border-t border-zinc-900 flex justify-end">
+              <button type="button" data-action="del-comp-escuela" data-id="${c.id}" class="text-xs font-black uppercase text-red-400 hover:underline">
+                Eliminar Evento
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    // Crear Competencia
+    document.getElementById('formCrearCompetencia')?.addEventListener('submit', e => {
+      e.preventDefault();
+      const datos = {
+        nombre: document.getElementById('compNombre').value.trim().toUpperCase(),
+        fecha: document.getElementById('compFecha').value,
+        costo_usd: parseFloat(document.getElementById('compCosto').value) || 8,
+        lugar: document.getElementById('compLugar').value.trim(),
+        estado: document.getElementById('compEstado').value
+      };
+      crearCompetenciaEscuela(datos);
+      document.getElementById('compNombre').value = '';
+      poblarCompetenciasAdmin();
+    });
+
+    // Cargar Resultado
+    const adminMsgResultado = document.getElementById('adminMsgResultado');
+    document.getElementById('formCargarResultado')?.addEventListener('submit', e => {
+      e.preventDefault();
+      adminMsgResultado.classList.add('hidden');
+      const compId = document.getElementById('resSelectComp').value;
+      const atId = document.getElementById('resSelectAtleta').value;
+      const pos = document.getElementById('resPosicion').value.trim();
+      const pts = parseInt(document.getElementById('resPuntos').value) || 0;
+      const tiempo = document.getElementById('resTiempo').value.trim();
+      const c1 = parseInt(document.getElementById('resCarril1').value) || null;
+      const c2 = parseInt(document.getElementById('resCarril2').value) || null;
+      const c3 = parseInt(document.getElementById('resCarril3').value) || null;
+
+      const ok = registrarResultadoCompetencia({
+        competenciaId: compId,
+        atletaId: atId,
+        posicion: pos,
+        puntos: pts,
+        tiempo_partidor: tiempo,
+        carrilM1: c1,
+        carrilM2: c2,
+        carrilM3: c3
+      });
+
+      if (ok) {
+        adminMsgResultado.textContent = `✓ ¡Resultado guardado con éxito! Se refleja en tiempo real en el portal del alumno.`;
+        adminMsgResultado.classList.remove('hidden');
+        poblarCompetenciasAdmin();
+        cargarExpedienteAdmin(atId);
+      }
+    });
+
+    // Cargar Configuración General
+    function cargarFormularioConfig() {
+      const c = getConfig();
+      document.getElementById('cfgTasa').value = c.tasaBcv;
+      document.getElementById('cfgPrecioEscuela').value = c.precioInscripcionEscuela ?? 10;
+      document.getElementById('cfgPrecioMensualidad').value = c.precioMensualidad ?? 40;
+      document.getElementById('cfgPrecioValida').value = c.precioValida ?? 8;
+      document.getElementById('cfgWhatsapp').value = c.whatsapp;
+      document.getElementById('cfgBanco').value = c.pagoMovil.banco;
+      document.getElementById('cfgCodBanco').value = c.pagoMovil.codigoBanco;
+      document.getElementById('cfgTelPm').value = c.pagoMovil.telefono;
+      document.getElementById('cfgCedPm').value = c.pagoMovil.cedula;
+      document.getElementById('cfgDirectorUser').value = c.directorUser || 'director';
+      document.getElementById('cfgDirectorPass').value = c.directorPass || 'director2026';
+      document.getElementById('cfgAdminUser').value = c.adminUser || 'admin';
+      document.getElementById('cfgAdminPass').value = c.adminPass || 'boyaca2026';
+      document.getElementById('cfgSbUrl').value = c.supabaseUrl || '';
+      document.getElementById('cfgSbKey').value = c.supabaseAnonKey || '';
+      document.getElementById('cfgAutoTasa').checked = !!c.usarTasaAutomatica;
+
+      const badge = document.getElementById('cloudStatusBadge');
+      if (isCloudConnected()) {
+        badge.textContent = '☁️ Supabase Cloud Conectado';
+        badge.className = 'text-[11px] font-black uppercase px-2.5 py-1 bg-green-500/20 border border-green-400 text-green-300';
+      } else {
+        badge.textContent = '💾 Modo Local + Demo Activo';
+        badge.className = 'text-[11px] font-black uppercase px-2.5 py-1 bg-sky-500/20 border border-sky-400 text-sky-300';
+      }
+    }
+
+    document.getElementById('formConfig').addEventListener('submit', async e => {
+      e.preventDefault();
+      const telPm = document.getElementById('cfgTelPm').value.trim();
+      const cedPm = document.getElementById('cfgCedPm').value.trim();
+      saveConfig({
+        tasaBcv: parseFloat(document.getElementById('cfgTasa').value) || 881.06,
+        precioInscripcionEscuela: parseFloat(document.getElementById('cfgPrecioEscuela').value) || 10,
+        precioMensualidad: parseFloat(document.getElementById('cfgPrecioMensualidad').value) || 40,
+        precioValida: parseFloat(document.getElementById('cfgPrecioValida').value) || 8,
+        whatsapp: document.getElementById('cfgWhatsapp').value.trim(),
+        directorUser: document.getElementById('cfgDirectorUser').value.trim() || 'director',
+        directorPass: document.getElementById('cfgDirectorPass').value.trim() || 'director2026',
+        adminUser: document.getElementById('cfgAdminUser').value.trim() || 'admin',
+        adminPass: document.getElementById('cfgAdminPass').value.trim() || 'boyaca2026',
+        supabaseUrl: document.getElementById('cfgSbUrl').value.trim(),
+        supabaseAnonKey: document.getElementById('cfgSbKey').value.trim(),
+        usarTasaAutomatica: document.getElementById('cfgAutoTasa').checked,
+        pagoMovil: {
+          banco: document.getElementById('cfgBanco').value.trim(),
+          codigoBanco: document.getElementById('cfgCodBanco').value.trim(),
+          telefono: telPm.replace(/[^0-9]/g, ''),
+          telefonoDisplay: telPm,
+          cedula: cedPm.replace(/[^0-9]/g, ''),
+          cedulaDisplay: cedPm
+        }
+      });
+      cargarFormularioConfig();
+      if (isCloudConnected()) {
+        await syncFromCloud();
+        renderTablas();
+        renderMangas();
+      }
+      const msg = document.getElementById('msgGuardado');
+      msg.classList.remove('hidden');
+      setTimeout(() => msg.classList.add('hidden'), 3000);
+    });
+
+    // Generador de Mangas BMX de 8 Carriles
+    const contenedorMangas = document.getElementById('contenedorMangas');
+    const chkSoloVerificados = document.getElementById('chkSoloVerificados');
+
+    function renderMangas() {
+      const grupos = generarMangasBmx(chkSoloVerificados.checked);
+      if (grupos.length === 0) {
+        contenedorMangas.innerHTML = `<div class="col-span-2 p-6 text-center text-zinc-400 italic bg-zinc-950 border border-zinc-800">No hay corredores para armar mangas con el filtro seleccionado.</div>`;
+        return;
+      }
+
+      contenedorMangas.innerHTML = grupos.map((g, idx) => `
+        <div class="bg-zinc-950 border-2 border-zinc-800 p-5">
+          <div class="flex items-center justify-between border-b border-zinc-800 pb-3 mb-3">
+            <div>
+              <span class="text-[10px] font-black uppercase text-sky-400 tracking-wider block">PARTIDOR 8 CARRILES • GRUPO #${idx + 1}</span>
+              <h3 class="text-lg font-racing font-black uppercase italic text-yellow-400">${g.titulo}</h3>
+            </div>
+            <span class="bg-zinc-900 border border-green-400/50 text-green-400 font-black text-xs px-2.5 py-1">
+              ${g.corredores.length} Pilotos
+            </span>
+          </div>
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="text-zinc-400 border-b border-zinc-800 uppercase font-black">
+                <th class="py-2">Placa</th>
+                <th class="py-2">Piloto / Club</th>
+                <th class="py-2 text-center text-sky-400">Manga 1</th>
+                <th class="py-2 text-center text-yellow-400">Manga 2</th>
+                <th class="py-2 text-center text-green-400">Manga 3</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-900">
+              ${g.corredores.map(c => `
+                <tr>
+                  <td class="py-2 font-racing font-black text-yellow-400 text-sm">${c.piloto.numero_placa || '#S/N'}</td>
+                  <td class="py-2 font-bold text-white">${c.piloto.nombre} ${c.piloto.apellido} <span class="text-[10px] text-zinc-400 block">${c.piloto.club || ''}</span></td>
+                  <td class="py-2 text-center"><span class="inline-block w-6 h-6 leading-6 bg-sky-500/20 border border-sky-400 text-sky-300 font-racing font-black">${c.manga1}</span></td>
+                  <td class="py-2 text-center"><span class="inline-block w-6 h-6 leading-6 bg-yellow-400/20 border border-yellow-400 text-yellow-300 font-racing font-black">${c.manga2}</span></td>
+                  <td class="py-2 text-center"><span class="inline-block w-6 h-6 leading-6 bg-green-500/20 border border-green-400 text-green-300 font-racing font-black">${c.manga3}</span></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('btnSortearMangas').addEventListener('click', renderMangas);
+    chkSoloVerificados.addEventListener('change', renderMangas);
+    document.getElementById('btnImprimirMangas').addEventListener('click', () => window.print());
+
+    document.getElementById('btnLimpiarValidas')?.addEventListener('click', () => {
+      const confirmacion = confirm("⚠️ ¿Confirmas que deseas VACIAR Y DEJAR EN LIMPIO todos los inscritos en la Válida y las Mangas de carrera?");
+      if (!confirmacion) return;
+      limpiarDatosValidaYMangas();
+      renderTablas();
+      renderMangas();
+      alert("✓ ¡Inscripciones de la Válida y Mangas dejadas en limpio con éxito!");
+    });
+
+    // Tablas y Visor de Captures
+    let itemActualModal = null;
+
+    function renderTablas() {
+      const validas = getInscripcionesValida();
+      const escuelas = getInscripcionesEscuela();
+
+      document.getElementById('countValida').textContent = validas.length;
+      document.getElementById('countEscuela').textContent = escuelas.length;
+
+      const tbodyValida = document.getElementById('tablaValidaBody');
+      if (validas.length === 0) {
+        tbodyValida.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-zinc-500 italic">Aún no hay corredores inscritos en la válida.</td></tr>`;
+      } else {
+        tbodyValida.innerHTML = validas.map(item => `
+          <tr class="hover:bg-zinc-950/60">
+            <td class="p-3 font-racing font-black text-yellow-400 text-base">${item.numero_placa || 'S/N'}</td>
+            <td class="p-3 font-bold text-white">${item.nombre} ${item.apellido}<br><span class="text-xs text-zinc-400">CI: ${item.cedula}</span></td>
+            <td class="p-3 font-bold text-green-400">${item.categoria}</td>
+            <td class="p-3 text-zinc-300 text-xs">${item.club}<br>${item.ciudad} (${item.telefono})</td>
+            <td class="p-3 text-xs space-y-1">
+              <div><span class="font-bold text-white">${item.metodo_pago}</span> • <span class="text-sky-400">Ref: ${item.referencia}</span></div>
+              ${item.comprobante_img
+                ? `<button data-action="ver-capture" data-tipo="valida" data-id="${item.id}" class="bg-sky-500/20 border border-sky-400 text-sky-300 hover:bg-sky-400 hover:text-black font-black text-[11px] uppercase px-2.5 py-1 transition">🔍 Ver Capture</button>`
+                : `<span class="text-[11px] text-zinc-500 italic">Sin imagen (Efectivo)</span>`
+              }
+            </td>
+            <td class="p-3">
+              <span class="px-2.5 py-1 text-xs font-black uppercase ${item.estado_verificacion === 'VERIFICADO' ? 'bg-green-500 text-black' : 'bg-yellow-400/20 text-yellow-300 border border-yellow-400/40'}">
+                ${item.estado_verificacion}
+              </span>
+            </td>
+            <td class="p-3 space-x-2 whitespace-nowrap">
+              <button data-action="toggle-valida" data-id="${item.id}" data-state="${item.estado_verificacion}" class="text-xs font-black uppercase text-green-400 hover:underline">
+                ${item.estado_verificacion === 'VERIFICADO' ? 'Pendiente' : '✓ Aprobar'}
+              </button>
+              <button data-action="del-valida" data-id="${item.id}" class="text-xs font-black uppercase text-red-400 hover:underline">
+                Borrar
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      const tbodyEscuela = document.getElementById('tablaEscuelaBody');
+      if (escuelas.length === 0) {
+        tbodyEscuela.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-zinc-500 italic">Aún no hay atletas registrados en la escuela.</td></tr>`;
+      } else {
+        tbodyEscuela.innerHTML = escuelas.map(item => `
+          <tr class="hover:bg-zinc-950/60">
+            <td class="p-3">
+              <span class="font-racing font-black text-yellow-400 text-base block">${item.numero_placa || '#S/N'}</span>
+              <span class="text-[11px] text-zinc-500">${item.id}</span>
+              <span class="text-[10px] text-sky-400 block font-bold">@${item.usuario || 'sin-usuario'}</span>
+            </td>
+            <td class="p-3 font-bold text-white">${item.nombre_atleta} ${item.apellido_atleta}<br><span class="text-xs text-zinc-400">Nac: ${item.fecha_nacimiento}</span></td>
+            <td class="p-3"><span class="font-black text-sky-400">${item.nivel}</span><br><span class="text-xs text-zinc-300">${item.categoria}</span></td>
+            <td class="p-3 text-xs text-zinc-300">${item.nombre_rep} (CI: ${item.cedula_rep})<br>📞 ${item.telefono_rep}</td>
+            <td class="p-3 text-xs space-y-1">
+              <div class="font-black text-yellow-400">${item.mes_pagado || 'OCTUBRE 2026'}</div>
+              <div>${item.metodo_pago} • Ref: ${item.referencia}</div>
+              ${item.comprobante_img
+                ? `<button data-action="ver-capture" data-tipo="escuela" data-id="${item.id}" class="bg-sky-500/20 border border-sky-400 text-sky-300 hover:bg-sky-400 hover:text-black font-black text-[11px] uppercase px-2.5 py-1 transition">🔍 Ver Capture</button>`
+                : `<span class="text-[11px] text-zinc-500 italic">Pago en Pista</span>`
+              }
+            </td>
+            <td class="p-3">
+              <span class="px-2.5 py-1 text-xs font-black uppercase ${item.estado_verificacion === 'VERIFICADO' ? 'bg-green-500 text-black' : 'bg-red-500/20 text-red-300 border border-red-500/40'}">
+                ${item.solvencia || item.estado_verificacion}
+              </span>
+            </td>
+            <td class="p-3 space-x-2 whitespace-nowrap">
+              <button data-action="toggle-escuela" data-id="${item.id}" data-state="${item.estado_verificacion}" class="text-xs font-black uppercase text-green-400 hover:underline">
+                ${item.estado_verificacion === 'VERIFICADO' ? 'Marcar Pendiente' : '✓ Aprobar Mes'}
+              </button>
+              <button data-action="del-escuela" data-id="${item.id}" class="text-xs font-black uppercase text-red-400 hover:underline">
+                Borrar
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    // Modal Visor de Capture
+    const modalCapture = document.getElementById('modalCapture');
+    function abrirVisorCapture(tipo, id) {
+      const lista = tipo === 'valida' ? getInscripcionesValida() : getInscripcionesEscuela();
+      const item = lista.find(x => x.id === id);
+      if (!item || !item.comprobante_img) return;
+      itemActualModal = { tipo, id };
+
+      document.getElementById('capModalPiloto').textContent =
+        tipo === 'valida'
+          ? `${item.nombre} ${item.apellido} (${item.numero_placa || ''})`
+          : `${item.nombre_atleta} ${item.apellido_atleta} (${item.numero_placa || ''})`;
+      document.getElementById('capModalMetodo').textContent = item.metodo_pago;
+      document.getElementById('capModalRef').textContent = item.referencia;
+      document.getElementById('capModalFecha').textContent = item.fecha_pago || 'Hoy';
+      document.getElementById('capModalEstado').textContent = item.estado_verificacion;
+      document.getElementById('capModalImg').src = item.comprobante_img;
+
+      modalCapture.classList.remove('hidden');
+      modalCapture.classList.add('flex');
+    }
+
+    document.getElementById('btnCerrarCapture').addEventListener('click', () => {
+      modalCapture.classList.add('hidden');
+      modalCapture.classList.remove('flex');
+    });
+
+    document.getElementById('btnAprobarDesdeModal').addEventListener('click', async () => {
+      if (!itemActualModal) return;
+      await actualizarEstadoInscripcion(itemActualModal.tipo, itemActualModal.id, 'VERIFICADO');
+      modalCapture.classList.add('hidden');
+      modalCapture.classList.remove('flex');
+      renderTablas();
+      renderMangas();
+      cargarExpedienteAdmin();
+    });
+
+    document.addEventListener('click', async e => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const action = btn.getAttribute('data-action');
+      const id = btn.getAttribute('data-id');
+      const state = btn.getAttribute('data-state');
+
+      if (action === 'ver-capture') {
+        abrirVisorCapture(btn.getAttribute('data-tipo'), id);
+      } else if (action === 'toggle-valida') {
+        await actualizarEstadoInscripcion('valida', id, state === 'VERIFICADO' ? 'PENDIENTE' : 'VERIFICADO');
+        renderTablas();
+        renderMangas();
+      } else if (action === 'del-valida') {
+        await eliminarInscripcion('valida', id);
+        renderTablas();
+        renderMangas();
+      } else if (action === 'toggle-escuela') {
+        await actualizarEstadoInscripcion('escuela', id, state === 'VERIFICADO' ? 'PENDIENTE' : 'VERIFICADO');
+        renderTablas();
+        cargarExpedienteAdmin();
+      } else if (action === 'del-escuela') {
+        await eliminarInscripcion('escuela', id);
+        renderTablas();
+        poblarSelectAtletasAdmin();
+      } else if (action === 'del-comp-escuela') {
+        eliminarCompetenciaEscuela(id);
+        poblarCompetenciasAdmin();
+      }
+    });
+
+    function downloadCsv(filename, rows) {
+      if (!rows.length) return alert('No hay registros para exportar.');
+      const headers = Object.keys(rows[0]).filter(k => k !== 'comprobante_img');
+      const csv = [
+        headers.join(','),
+        ...rows.map(r => headers.map(h => `"${String(r[h] ?? '').replace(/"/g, '""')}"`).join(','))
+      ].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+    }
+
+    document.getElementById('btnExportValida').addEventListener('click', () => {
+      downloadCsv('inscritos_copa_boyaca_bmx.csv', getInscripcionesValida());
+    });
+    document.getElementById('btnExportEscuela').addEventListener('click', () => {
+      downloadCsv('atletas_escuela_los_boyaca.csv', getInscripcionesEscuela());
+    });
+
+    const msgConcilAdmin = document.getElementById('msgConciliacionAdmin');
+    document.getElementById('btnAdminConciliarTodo')?.addEventListener('click', async () => {
+      const res = await conciliarPendientesConBanco();
+      renderTablas();
+      renderMangas();
+      cargarExpedienteAdmin();
+      msgConcilAdmin.textContent = `✓ Conciliación Bancaria exitosa: ${res.aprobadosCount} pago(s) verificados y aprobados.`;
+    });
+
+    document.getElementById('btnCargarLoteBanco')?.addEventListener('click', async () => {
+      const txt = document.getElementById('txtLoteReferencias').value;
+      const lote = agregarMovimientosBancoLote(txt);
+      const res = await conciliarPendientesConBanco();
+      document.getElementById('txtLoteReferencias').value = '';
+      renderTablas();
+      renderMangas();
+      cargarExpedienteAdmin();
+      msgConcilAdmin.textContent = `✓ ${lote.agregados} referencia(s) cargadas del banco • ${res.aprobadosCount} inscripción(es) aprobadas.`;
+    });
+
+    cargarFormularioConfig();
+    poblarSelectAtletasAdmin();
+    poblarCompetenciasAdmin();
+
+    if (isCloudConnected()) {
+      syncFromCloud().then(() => {
+        renderTablas();
+        renderMangas();
+      });
+    } else {
+      renderTablas();
+      renderMangas();
+    }
+  </script>
+</body>
+</html>

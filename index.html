@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escuela de Bicicross Los Boyacá | Formación y Competencia BMX</title>
+  <meta name="description" content="Escuela de Bicicross Los Boyacá en Barcelona, Anzoátegui. Formación deportiva en BMX Racing desde los 2 años: Balance, Semillitas, Novatos, Expertos y Open.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Escuela de Bicicross Los Boyacá | BMX Racing">
+  <meta property="og:description" content="Formando los campeones del Bicicross con disciplina, velocidad y adrenalina segura. ¡Inscríbete en la Escuela o en la Copa Los Boyacá!">
+  <meta property="og:image" content="./assets/hero-bmx.jpg">
+  <meta name="theme-color" content="#0ea5e9">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Boyacá BMX">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/svg+xml" href="./assets/icon.svg">
+  <link rel="apple-touch-icon" href="./assets/icon-192.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,700&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100vw;
+    }
+    img, picture, svg, video {
+      max-width: 100%;
+      height: auto;
+    }
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, .font-racing { font-family: 'Chakra Petch', sans-serif; }
+    .bmx-grid-bg {
+      background-image: radial-gradient(rgba(56, 189, 248, 0.14) 1px, transparent 1px),
+                        radial-gradient(rgba(250, 204, 21, 0.1) 1px, transparent 1px);
+      background-size: 32px 32px;
+      background-position: 0 0, 16px 16px;
+    }
+  </style>
+</head>
+<body class="bg-zinc-950 text-white antialiased selection:bg-yellow-400 selection:text-black overflow-x-hidden">
+
+  <!-- BARRA SUPERIOR DE ANUNCIO CON TASA BCV EN VIVO -->
+  <div class="bg-gradient-to-r from-sky-500 via-yellow-400 to-green-500 text-black py-1.5 px-4 text-center font-black text-xs md:text-sm uppercase tracking-wider flex items-center justify-center flex-wrap gap-2 shadow-sm">
+    <span>🏁 INSCRIPCIONES ABIERTAS 2026 • COPA LOS BOYACÁ BMX RACE — <a href="#valida-boyaca" class="underline hover:text-zinc-900 font-black">¡RESERVA TU CUPO AQUÍ! →</a></span>
+    <span class="inline-flex items-center gap-1.5 bg-black/90 text-yellow-300 px-2.5 py-0.5 rounded-full text-[11px] font-mono border border-yellow-400/50 shadow-inner">
+      <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+      <span id="topTasaBcvText">TASA BCV: Cargando...</span>
+    </span>
+  </div>
+
+  <!-- NAVBAR -->
+  <header class="sticky top-0 z-50 bg-zinc-950/95 backdrop-blur-md border-b-4 border-sky-500 shadow-[0_4px_30px_rgba(14,165,233,0.2)]">
+    <div class="container mx-auto px-4 max-w-7xl flex items-center justify-between h-20">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <div class="w-12 h-12 bg-yellow-400 border-2 border-white transform -skew-x-12 flex items-center justify-center shadow-[4px_4px_0px_#0ea5e9] group-hover:bg-green-400 transition-colors">
+          <span class="font-racing font-black italic text-black text-xl tracking-tighter">BMX</span>
+        </div>
+        <div>
+          <span class="block font-racing text-2xl md:text-3xl font-bold italic uppercase tracking-wider leading-none transform -skew-x-6">
+            LOS <span class="text-sky-400">BOYACÁ</span>
+          </span>
+          <span class="block text-[10px] md:text-xs font-black uppercase tracking-[0.25em] text-yellow-400">
+            ESCUELA DE BICICROSS
+          </span>
+        </div>
+      </a>
+
+      <!-- LINKS DESKTOP -->
+      <nav class="hidden xl:flex items-center gap-5 font-bold uppercase italic text-sm tracking-wider">
+        <a href="#niveles" class="text-zinc-200 hover:text-yellow-400 transition">Categorías</a>
+        <a href="#tallas-bmx" class="text-zinc-200 hover:text-green-400 transition">Tallas Bici</a>
+        <a href="#pista" class="text-zinc-200 hover:text-sky-400 transition">Pista y GPS</a>
+        <a href="#valida-boyaca" class="text-yellow-400 hover:text-yellow-300 transition">⚡ Copa Boyacá</a>
+        <a href="registro.html?tab=usuario" class="text-sky-400 hover:text-black hover:bg-sky-400 border border-sky-400/80 px-3 py-1.5 transform -skew-x-6 text-xs font-black transition">
+          👤 Portal Alumno
+        </a>
+        <a href="registro.html?tab=mensualidad" class="text-green-400 hover:text-green-300 border border-green-500/60 px-3 py-1.5 transform -skew-x-6 text-xs">
+          💳 Solvencia
+        </a>
+        <a href="app.html" class="bg-sky-400 text-black font-black px-3.5 py-1.5 transform -skew-x-6 text-xs shadow-[3px_3px_0px_#facc15] hover:bg-yellow-400 transition">
+          📱 App Móvil
+        </a>
+        <a href="admin.html" class="text-zinc-400 hover:text-white text-xs border border-zinc-700 px-3 py-1.5 transform -skew-x-6">🔐 Admin</a>
+        <a href="registro.html" class="bg-yellow-400 text-black font-black px-5 py-2.5 transform -skew-x-6 shadow-[4px_4px_0px_#0ea5e9] hover:bg-green-400 transition-all text-sm">
+          ¡Inscríbete! →
+        </a>
+      </nav>
+
+      <!-- BOTÓN MENÚ MÓVIL -->
+      <div class="flex items-center gap-2 xl:hidden">
+        <a href="registro.html?tab=usuario" class="bg-sky-400 text-black font-black text-xs uppercase px-2.5 py-2 transform -skew-x-6">
+          👤 Alumno
+        </a>
+        <a href="app.html" class="bg-yellow-400 text-black font-black text-xs uppercase px-2.5 py-2 transform -skew-x-6">
+          📱 App
+        </a>
+        <button id="btnMenuMobile" aria-expanded="false" class="bg-zinc-900 border-2 border-sky-400 text-yellow-400 px-3.5 py-2 font-black uppercase transform -skew-x-6">
+          ☰ Menú
+        </button>
+      </div>
+    </div>
+
+    <!-- MENÚ MÓVIL -->
+    <div id="menuMobile" class="hidden xl:hidden bg-zinc-900 border-b-4 border-yellow-400 px-6 py-6 space-y-3 font-bold uppercase italic">
+      <a href="#niveles" class="link-mobile block py-2 text-base border-b border-zinc-800 hover:text-yellow-400">Categorías y Niveles</a>
+      <a href="#tallas-bmx" class="link-mobile block py-2 text-base border-b border-zinc-800 hover:text-green-400">Guía de Tallas de Bicicletas BMX</a>
+      <a href="#pista" class="link-mobile block py-2 text-base border-b border-zinc-800 hover:text-sky-400">La Pista, Horarios y Mapa GPS</a>
+      <a href="#valida-boyaca" class="link-mobile block py-2 text-base border-b border-zinc-800 text-yellow-400">⚡ Copa Los Boyacá BMX</a>
+      <a href="registro.html?tab=usuario" class="link-mobile block py-2 text-base border-b border-zinc-800 text-sky-400">👤 Portal Alumno: Generar Usuario, Pagos y Competencias</a>
+      <a href="registro.html?tab=mensualidad" class="link-mobile block py-2 text-base border-b border-zinc-800 text-green-400">💳 Consultar Solvencia / Pagar Mes</a>
+      <a href="admin.html" class="link-mobile block py-2 text-sm text-zinc-400">🔐 Acceso Director & Admin</a>
+      <div class="pt-2 flex flex-col gap-3">
+        <a href="registro.html?tab=usuario" class="text-center bg-sky-400 text-black font-black py-3.5 transform -skew-x-6 shadow-[4px_4px_0px_#facc15]">
+          👤 Entrar a Mi Portal de Alumno
+        </a>
+        <a href="registro.html" class="text-center bg-yellow-400 text-black font-black py-3.5 transform -skew-x-6 shadow-[4px_4px_0px_#0ea5e9]">
+          ¡Inscríbete en la Escuela ($10)!
+        </a>
+        <a href="registro-valida.html" class="text-center bg-green-500 text-black font-black py-3.5 transform -skew-x-6 shadow-[4px_4px_0px_#fff]">
+          Inscribirse en la Válida BMX ($8)
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL SEMÁNTICO -->
+  <main id="contenidoPrincipal">
+
+  <!-- HERO PRINCIPAL CON SIMULADOR INTERACTIVO DE PARTIDOR BMX -->
+  <section class="relative min-h-[88vh] flex items-center py-16 overflow-hidden border-b-4 border-yellow-400">
+    <div class="absolute inset-0 bg-cover bg-center scale-105" style="background-image: url('./assets/hero-bmx.jpg');"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/85 to-zinc-950/55"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-zinc-950/60"></div>
+
+    <div class="absolute -top-20 -left-20 w-96 h-96 bg-sky-500 rounded-full mix-blend-screen filter blur-[130px] opacity-30 pointer-events-none"></div>
+    <div class="absolute bottom-0 right-10 w-96 h-96 bg-green-500 rounded-full mix-blend-screen filter blur-[140px] opacity-25 pointer-events-none"></div>
+
+    <div class="container mx-auto px-4 max-w-7xl relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <div class="lg:col-span-7 space-y-6">
+        <div class="inline-flex items-center gap-2 bg-zinc-900/90 border-2 border-sky-400 px-4 py-1.5 transform -skew-x-6 shadow-[4px_4px_0px_#facc15]">
+          <span class="w-2.5 h-2.5 rounded-full bg-green-400 animate-ping"></span>
+          <span class="text-xs md:text-sm font-black uppercase tracking-widest text-sky-300">
+            CUNA DE CAMPEONES • SECTOR LOS BOYACÁ, BARCELONA
+          </span>
+        </div>
+
+        <h1 class="text-5xl sm:text-6xl md:text-7xl font-black uppercase italic leading-[0.95] tracking-tight transform -skew-x-3">
+          DOMINA EL <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-yellow-300 to-green-400">PARTIDOR.</span><br>
+          VUELA EN LA <span class="text-yellow-400 drop-shadow-[0_4px_0px_#0ea5e9]">PISTA.</span>
+        </h1>
+
+        <p class="text-zinc-200 text-lg md:text-xl font-medium max-w-2xl leading-relaxed border-l-4 border-green-400 pl-4 bg-zinc-950/50 py-2">
+          Formamos pilotos de <strong class="text-yellow-400">Bicicross (BMX Racing)</strong> desde los 2 años hasta categoría Élite y Master. Técnica de salida en Pro-Gate, paso de morros, peraltes, disciplina y adrenalina en un ambiente 100% seguro y familiar.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-3 pt-2">
+          <a href="registro.html" class="bg-yellow-400 text-black font-black italic uppercase text-base md:text-lg px-6 py-3.5 transform -skew-x-6 shadow-[5px_5px_0px_#0ea5e9] hover:bg-green-400 hover:translate-y-1 transition-all">
+            Únete a la Escuela ($10) →
+          </a>
+          <a href="registro.html?tab=usuario" class="bg-sky-400 text-black font-black italic uppercase text-base md:text-lg px-6 py-3.5 transform -skew-x-6 shadow-[5px_5px_0px_#facc15] hover:bg-yellow-400 transition-all">
+            👤 Portal Alumno (Pagos y Competencias)
+          </a>
+          <a href="registro.html?tab=mensualidad" class="bg-zinc-900/95 text-zinc-200 border-2 border-zinc-700 font-black italic uppercase text-sm md:text-base px-5 py-3 transform -skew-x-6 hover:border-green-400 hover:text-green-400 transition-all">
+            💳 Solvencia ($40)
+          </a>
+          <a href="#valida-boyaca" class="bg-zinc-900/90 text-white border-2 border-green-400 font-black italic uppercase text-sm md:text-base px-5 py-3 transform -skew-x-6 hover:bg-green-500 hover:text-black transition-all">
+            🏆 Copa BMX ($8)
+          </a>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4 pt-6 max-w-xl">
+          <div class="bg-zinc-900/80 border-l-4 border-sky-400 p-3 transform -skew-x-3">
+            <span class="block text-2xl md:text-3xl font-racing font-black text-sky-400">+2 AÑOS</span>
+            <span class="text-xs font-bold uppercase text-zinc-300">Desde Balance / Strider</span>
+          </div>
+          <div class="bg-zinc-900/80 border-l-4 border-yellow-400 p-3 transform -skew-x-3">
+            <span class="block text-2xl md:text-3xl font-racing font-black text-yellow-400">8 CARRILES</span>
+            <span class="text-xs font-bold uppercase text-zinc-300">Partidor y 4 Rectas</span>
+          </div>
+          <div class="bg-zinc-900/80 border-l-4 border-green-400 p-3 transform -skew-x-3">
+            <span class="block text-2xl md:text-3xl font-racing font-black text-green-400">100% BMX</span>
+            <span class="text-xs font-bold uppercase text-zinc-300">Técnica y Valores</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Simulador Interactivo de Partidor BMX -->
+      <div class="lg:col-span-5">
+        <div class="bg-zinc-900/95 border-2 border-sky-400 p-6 md:p-8 transform -skew-x-2 shadow-[10px_10px_0px_#facc15] relative">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-zinc-800">
+            <div>
+              <span class="text-xs font-black uppercase tracking-widest text-sky-400 block">SIMULADOR INTERACTIVO</span>
+              <h2 class="text-2xl font-black uppercase italic text-white">PARTIDOR BMX <span class="text-yellow-400">PRO-GATE</span></h2>
+            </div>
+            <span class="bg-black border border-green-500 text-green-400 text-xs font-black px-3 py-1 uppercase">SONIDO UCI</span>
+          </div>
+
+          <p class="text-xs md:text-sm text-zinc-300 mb-5">
+            Practica tu salida en el partidor igual que en competencia. Presiona <strong>"Iniciar Partidor"</strong> y luego <strong>"¡PEDALEA!"</strong> apenas se encienda la luz verde:
+          </p>
+
+          <div class="bg-black border-2 border-zinc-800 p-5 mb-5 flex items-center justify-around rounded-sm shadow-inner">
+            <div id="gateLight1" class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-zinc-900 border-2 border-zinc-700 transition-all duration-75"></div>
+            <div id="gateLight2" class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-zinc-900 border-2 border-zinc-700 transition-all duration-75"></div>
+            <div id="gateLight3" class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-zinc-900 border-2 border-zinc-700 transition-all duration-75"></div>
+            <div id="gateLight4" class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-zinc-900 border-2 border-zinc-700 transition-all duration-75"></div>
+          </div>
+
+          <div id="gateStatus" class="bg-zinc-950 border border-zinc-800 py-3 px-4 text-center font-racing font-bold italic uppercase text-lg text-yellow-400 mb-5">
+            "RIDERS READY... WATCH THE GATE"
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <button id="btnStartGate" type="button" class="bg-sky-500 hover:bg-sky-400 text-black font-black uppercase italic py-3.5 px-4 transform -skew-x-6 shadow-[4px_4px_0px_#fff] transition">
+              🔊 Iniciar Partidor
+            </button>
+            <button id="btnSnapGate" type="button" disabled class="bg-zinc-800 text-zinc-500 font-black uppercase italic py-3.5 px-4 transform -skew-x-6 transition cursor-not-allowed">
+              ⚡ ¡PEDALEA! (SNAP)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 1: NIVELES Y CATEGORÍAS DE BICICROSS -->
+  <section id="niveles" class="py-24 bg-zinc-950 bmx-grid-bg relative scroll-mt-20">
+    <div class="container mx-auto px-4 max-w-7xl">
+      <div class="text-center mb-16">
+        <div class="bg-black inline-block px-8 py-3 transform -skew-x-6 shadow-[6px_6px_0px_#0ea5e9] border-2 border-yellow-400 mb-4">
+          <h2 class="text-4xl md:text-5xl font-black uppercase italic text-white tracking-wider">
+            Niveles y <span class="text-yellow-400">Categorías BMX</span>
+          </h2>
+        </div>
+        <p class="text-zinc-300 max-w-2xl mx-auto text-lg font-medium italic">
+          El programa progresivo ideal para cada piloto: desde sus primeros pasos sin pedales hasta vuelos y competencia oficial en Rin 20" y Cruiser 24".
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Nivel 1 -->
+        <div class="bg-zinc-900 border-2 border-sky-400 p-7 transform -skew-x-2 shadow-[8px_8px_0px_#0ea5e9] hover:-translate-y-1.5 transition-all flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="bg-sky-400 text-black font-racing font-black italic text-xl px-3 py-1 transform -skew-x-6">PLACA #01</span>
+              <span class="text-xs font-black uppercase tracking-wider bg-zinc-950 border border-sky-400/50 text-sky-300 px-3 py-1">2 a 4 Años</span>
+            </div>
+            <h3 class="text-3xl font-black uppercase italic text-white mb-2">Balance / <span class="text-sky-400">Strider</span></h3>
+            <p class="text-zinc-400 text-sm mb-5 font-medium">Iniciación temprana en bicicletas de impulso (sin pedales) dentro del circuito de morros bajos.</p>
+            <ul class="space-y-2.5 text-sm font-semibold text-zinc-200 mb-8">
+              <li class="flex items-center gap-2"><span class="text-sky-400 font-black">✓</span> Equilibrio dinámico y coordinación motriz.</li>
+              <li class="flex items-center gap-2"><span class="text-sky-400 font-black">✓</span> Paso seguro por morros y peraltes pequeños.</li>
+              <li class="flex items-center gap-2"><span class="text-sky-400 font-black">✓</span> Adaptación divertida a la rampa de salida.</li>
+            </ul>
+          </div>
+          <a href="registro.html?nivel=BALANCE" class="block text-center bg-sky-400 hover:bg-sky-300 text-black font-black italic uppercase py-3.5 transform -skew-x-6 shadow-[4px_4px_0px_#fff] transition">
+            Inscribirse en Balance →
+          </a>
+        </div>
+
+        <!-- Nivel 2 -->
+        <div class="bg-zinc-900 border-2 border-yellow-400 p-7 transform -skew-x-2 shadow-[8px_8px_0px_#facc15] hover:-translate-y-1.5 transition-all flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="bg-yellow-400 text-black font-racing font-black italic text-xl px-3 py-1 transform -skew-x-6">PLACA #02</span>
+              <span class="text-xs font-black uppercase tracking-wider bg-zinc-950 border border-yellow-400/50 text-yellow-300 px-3 py-1">5 a 7 Años</span>
+            </div>
+            <h3 class="text-3xl font-black uppercase italic text-white mb-2">Semillitas <span class="text-yellow-400">Iniciación</span></h3>
+            <p class="text-zinc-400 text-sm mb-5 font-medium">Transición al pedal de pie y fundamentos técnicos del Bicicross en pista oficial.</p>
+            <ul class="space-y-2.5 text-sm font-semibold text-zinc-200 mb-8">
+              <li class="flex items-center gap-2"><span class="text-yellow-400 font-black">✓</span> Posición de ataque (pedales nivelados de pie).</li>
+              <li class="flex items-center gap-2"><span class="text-yellow-400 font-black">✓</span> Técnica de bombeo (Pumping) en rectas.</li>
+              <li class="flex items-center gap-2"><span class="text-yellow-400 font-black">✓</span> Equilibrio y salida básica desde el Partidor.</li>
+            </ul>
+          </div>
+          <a href="registro.html?nivel=SEMILLITAS" class="block text-center bg-yellow-400 hover:bg-yellow-300 text-black font-black italic uppercase py-3.5 transform -skew-x-6 shadow-[4px_4px_0px_#fff] transition">
+            Inscribirse en Semillitas →
+          </a>
+        </div>
+
+        <!-- Nivel 3 -->
+        <div class="bg-zinc-900 border-2 border-green-400 p-7 transform -skew-x-2 shadow-[8px_8px_0px_#22c55e] hover:-translate-y-1.5 transition-all flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="bg-green-400 text-black font-racing font-black italic text-xl px-3 py-1 transform -skew-x-6">PLACA #03</span>
+              <span class="text-xs font-black uppercase tracking-wider bg-zinc-950 border border-green-400/50 text-green-300 px-3 py-1">8 a 12 Años</span>
+            </div>
+            <h3 class="text-3xl font-black uppercase italic text-white mb-2">Novatos <span class="text-green-400">Desarrollo</span></h3>
+            <p class="text-zinc-400 text-sm mb-5 font-medium">Dominio completo del circuito, velocidad en curvas y preparación para válidas estadales.</p>
+            <ul class="space-y-2.5 text-sm font-semibold text-zinc-200 mb-8">
+              <li class="flex items-center gap-2"><span class="text-green-400 font-black">✓</span> Absorción de mesetas, dobles y rítmicos.</li>
+              <li class="flex items-center gap-2"><span class="text-green-400 font-black">✓</span> Trazada de alta velocidad en peraltes (Berms).</li>
+              <li class="flex items-center gap-2"><span class="text-green-400 font-black">✓</span> Salidas explosivas al sonido del Pro-Gate.</li>
+            </ul>
+          </div>
+          <a href="registro.html?nivel=NOVATOS" class="block text-center bg-green-400 hover:bg-green-300 text-black font-black italic uppercase py-3.5 transform -skew-x-6 shadow-[4px_4px_0px_#fff] transition">
+            Inscribirse en Novatos →
+          </a>
+        </div>
+
+        <!-- Nivel 4 -->
+        <div class="bg-zinc-900 border-2 border-sky-400 p-7 transform -skew-x-2 shadow-[8px_8px_0px_#facc15] hover:-translate-y-1.5 transition-all flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="bg-sky-400 text-black font-racing font-black italic text-xl px-3 py-1 transform -skew-x-6">PLACA #04</span>
+              <span class="text-xs font-black uppercase tracking-wider bg-zinc-950 border border-sky-400/50 text-sky-300 px-3 py-1">Competencia</span>
+            </div>
+            <h3 class="text-3xl font-black uppercase italic text-white mb-2">Expertos <span class="text-sky-400">Selección</span></h3>
+            <p class="text-zinc-400 text-sm mb-5 font-medium">Alto rendimiento para corredores que representan a Los Boyacá en válidas estadales y nacionales.</p>
+            <ul class="space-y-2.5 text-sm font-semibold text-zinc-200 mb-8">
+              <li class="flex items-center gap-2"><span class="text-sky-400 font-black">✓</span> Manuales profundos, vuelos y despejes al límite.</li>
+              <li class="flex items-center gap-2"><span class="text-sky-400 font-black">✓</span> Estrategia de carrera en mangas de 8 pilotos.</li>
+              <li class="flex items-center gap-2"><span class="text-sky-400 font-black">✓</span> Preparación física de potencia y sprints.</li>
+            </ul>
+          </div>
+          <a href="registro.html?nivel=EXPERTOS" class="block text-center bg-sky-400 hover:bg-sky-300 text-black font-black italic uppercase py-3.5 transform -skew-x-6 shadow-[4px_4px_0px_#fff] transition">
+            Inscribirse en Expertos →
+          </a>
+        </div>
+
+        <!-- Nivel 5 -->
+        <div class="bg-zinc-900 border-2 border-yellow-400 p-7 transform -skew-x-2 shadow-[8px_8px_0px_#22c55e] hover:-translate-y-1.5 transition-all flex flex-col justify-between md:col-span-2 lg:col-span-2">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="bg-yellow-400 text-black font-racing font-black italic text-xl px-3 py-1 transform -skew-x-6">PLACA #05 • ÉLITE & MASTER</span>
+              <span class="text-xs font-black uppercase tracking-wider bg-zinc-950 border border-green-400/50 text-green-300 px-3 py-1">Rin 20" y Cruiser 24" (+17 Años)</span>
+            </div>
+            <h3 class="text-3xl font-black uppercase italic text-white mb-2">Open, Élite y <span class="text-green-400">Master Adultos</span></h3>
+            <p class="text-zinc-300 text-sm md:text-base mb-5 font-medium">
+              Entrenamiento especializado para jóvenes mayores de 17 años, categoría Championship y adultos Master que buscan perfeccionar su técnica en pista, mejorar tiempos por vuelta y competir al máximo nivel.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm font-semibold text-zinc-200 mb-8">
+              <div class="flex items-center gap-2"><span class="text-green-400 font-black">✓</span> Piques cronometrados desde el partidor.</div>
+              <div class="flex items-center gap-2"><span class="text-green-400 font-black">✓</span> Clínica de curvas, rebases y salto de pro-section.</div>
+              <div class="flex items-center gap-2"><span class="text-green-400 font-black">✓</span> Acondicionamiento cardiovascular y explosividad.</div>
+              <div class="flex items-center gap-2"><span class="text-green-400 font-black">✓</span> Modalidad Rin 20" Estándar y Cruiser Rin 24".</div>
+            </div>
+          </div>
+          <a href="registro.html?nivel=MASTER_OPEN" class="block text-center bg-gradient-to-r from-yellow-400 via-green-400 to-sky-400 hover:opacity-95 text-black font-black italic uppercase py-4 transform -skew-x-6 shadow-[4px_4px_0px_#fff] transition text-lg">
+            Inscribirse en Plan Open / Master →
+          </a>
+        </div>
+      </div>
+
+      <!-- TABLA Y CALCULADORA INTERACTIVA DE TALLAS DE BICICLETAS BMX -->
+      <div id="tallas-bmx" class="mt-20 bg-zinc-900 border-2 border-green-400 p-7 md:p-10 transform -skew-x-1 shadow-[8px_8px_0px_#0ea5e9] scroll-mt-24">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div class="lg:col-span-5 space-y-4">
+            <span class="bg-green-400 text-black font-black text-xs uppercase px-3 py-1 inline-block transform -skew-x-6">
+              GUÍA TÉCNICA PARA PADRES Y PILOTOS
+            </span>
+            <h3 class="text-3xl md:text-4xl font-black uppercase italic text-white leading-none">
+              ¿Qué Talla de Bici BMX <span class="text-yellow-400">Necesita tu Hijo?</span>
+            </h3>
+            <p class="text-zinc-300 text-sm leading-relaxed">
+              En el Bicicross las bicicletas Rin 20" vienen en distintas medidas de cuadro (<em>Top Tube</em>) y ancho de caucho según la <strong>estatura del piloto</strong>. Ingresa su estatura en centímetros para calcular su talla exacta:
+            </p>
+
+            <!-- Calculadora en vivo -->
+            <div class="bg-zinc-950 border border-zinc-800 p-5 space-y-4">
+              <label for="inputEstatura" class="block text-xs font-black uppercase text-sky-400">
+                📏 Ingresa la estatura del piloto (en cm):
+              </label>
+              <div class="flex gap-3">
+                <input type="number" id="inputEstatura" min="80" max="210" value="122" placeholder="Ej. 122" class="w-32 px-4 py-3 bg-black border-2 border-sky-400 text-yellow-400 font-racing font-black text-2xl text-center focus:outline-none">
+                <button type="button" id="btnCalcularTalla" class="flex-1 bg-yellow-400 hover:bg-green-400 text-black font-black uppercase italic px-5 py-3 transform -skew-x-6 transition">
+                  Calcular Talla BMX →
+                </button>
+              </div>
+              <div id="resultadoTalla" class="bg-zinc-900 border-l-4 border-green-400 p-4 text-sm">
+                <p class="text-xs font-black uppercase text-zinc-400">TALLA RECOMENDADA:</p>
+                <p id="resTallaNombre" class="text-xl font-racing font-black text-green-400 uppercase">Junior BMX Race</p>
+                <p id="resTallaDetalle" class="text-xs text-zinc-200 mt-1">Tubo Superior (Top Tube): <strong>18.25" – 19.0"</strong> • Rueda: <strong>Rin 20" x 1-1/8"</strong></p>
+                <p id="resTallaNota" class="text-xs text-zinc-400 mt-1 italic">Para pilotos de 7 a 9 años. Bielas de 150mm a 155mm.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabla Oficial de Tallas -->
+          <div class="lg:col-span-7 overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs md:text-sm bg-zinc-950 border border-zinc-800">
+              <thead>
+                <tr class="bg-black text-yellow-400 font-racing font-black uppercase border-b border-zinc-800">
+                  <th class="p-3">Talla Cuadro</th>
+                  <th class="p-3">Estatura Piloto</th>
+                  <th class="p-3">Edad Aprox.</th>
+                  <th class="p-3">Tubo Superior</th>
+                  <th class="p-3">Medida de Caucho</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-zinc-800 font-medium text-zinc-200">
+                <tr class="hover:bg-zinc-900/70">
+                  <td class="p-3 font-black text-sky-400">Balance / Micro Mini</td>
+                  <td class="p-3">85 cm – 102 cm</td>
+                  <td class="p-3">2 a 4 años</td>
+                  <td class="p-3">16.5" – 17.5"</td>
+                  <td class="p-3">Rin 12" / 18" / 20x1-1/8"</td>
+                </tr>
+                <tr class="hover:bg-zinc-900/70">
+                  <td class="p-3 font-black text-yellow-400">Mini</td>
+                  <td class="p-3">102 cm – 118 cm</td>
+                  <td class="p-3">5 a 7 años</td>
+                  <td class="p-3">17.5" – 18.0"</td>
+                  <td class="p-3">Rin 20" x 1-1/8" (Fino)</td>
+                </tr>
+                <tr class="hover:bg-zinc-900/70">
+                  <td class="p-3 font-black text-green-400">Junior</td>
+                  <td class="p-3">118 cm – 135 cm</td>
+                  <td class="p-3">7 a 9 años</td>
+                  <td class="p-3">18.25" – 19.0"</td>
+                  <td class="p-3">Rin 20" x 1-1/8" o 1-3/8"</td>
+                </tr>
+                <tr class="hover:bg-zinc-900/70">
+                  <td class="p-3 font-black text-sky-400">Expert</td>
+                  <td class="p-3">135 cm – 150 cm</td>
+                  <td class="p-3">9 a 12 años</td>
+                  <td class="p-3">19.25" – 20.0"</td>
+                  <td class="p-3">Rin 20" x 1-3/8"</td>
+                </tr>
+                <tr class="hover:bg-zinc-900/70">
+                  <td class="p-3 font-black text-yellow-400">Expert XL / Pro</td>
+                  <td class="p-3">150 cm – 164 cm</td>
+                  <td class="p-3">12 a 15 años</td>
+                  <td class="p-3">20.25" – 20.5"</td>
+                  <td class="p-3">Rin 20" x 1.75" (Ancho)</td>
+                </tr>
+                <tr class="hover:bg-zinc-900/70">
+                  <td class="p-3 font-black text-green-400">Pro XL / Pro XXL</td>
+                  <td class="p-3">164 cm – 185+ cm</td>
+                  <td class="p-3">+15 años y Adultos</td>
+                  <td class="p-3">21.0" – 21.75"</td>
+                  <td class="p-3">Rin 20" x 1.75" / Cruiser 24"</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2: LA PISTA, EQUIPAMIENTO OBLIGATORIO Y MAPA GPS INTERACTIVO -->
+  <section id="pista" class="py-24 bg-zinc-900 border-t-4 border-sky-400 relative scroll-mt-20">
+    <div class="container mx-auto px-4 max-w-7xl space-y-14">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <div class="lg:col-span-6 space-y-6">
+          <div class="bg-black inline-block px-6 py-2 transform -skew-x-6 border-l-4 border-yellow-400">
+            <span class="text-yellow-400 font-black uppercase tracking-widest text-sm">INFRAESTRUCTURA Y SEGURIDAD</span>
+          </div>
+          <h2 class="text-4xl md:text-5xl font-black uppercase italic leading-none">
+            PISTA DE BICICROSS <span class="text-sky-400">LOS BOYACÁ</span>
+          </h2>
+          <p class="text-zinc-300 text-base md:text-lg leading-relaxed">
+            Nuestro circuito cuenta con partidor oficial de 8 carriles, rectas rítmicas de morros, mesetas de seguridad para aprendizaje progresivo y peraltes compactados para entrenar trazadas reales de competencia.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <div class="bg-zinc-950 p-5 border-l-4 border-sky-400 border-y border-r border-zinc-800">
+              <span class="text-xs font-black uppercase text-sky-400 block mb-1">📍 UBICACIÓN DE LA PISTA</span>
+              <p class="font-bold text-white text-base">Pista de Bicicross Los Boyacá</p>
+              <p class="text-zinc-400 text-xs mt-1">Sector Los Boyacá, Barcelona - Edo. Anzoátegui.</p>
+            </div>
+            <div class="bg-zinc-950 p-5 border-l-4 border-green-400 border-y border-r border-zinc-800">
+              <span class="text-xs font-black uppercase text-green-400 block mb-1">⏰ HORARIOS DE PRÁCTICA</span>
+              <p class="font-bold text-white text-base">Lunes a Viernes</p>
+              <p class="text-zinc-400 text-xs mt-1">Tarde: 4:00 PM a 7:00 PM (Por niveles)</p>
+            </div>
+          </div>
+
+          <div class="bg-zinc-950 border border-zinc-800 p-5 space-y-3">
+            <h3 class="font-black uppercase italic text-yellow-400 text-lg">Distribución de Turnos en Pista:</h3>
+            <div class="flex justify-between text-sm border-b border-zinc-800 pb-2">
+              <span class="font-bold text-zinc-300">Balance y Semillitas (2 a 7 años):</span>
+              <span class="font-black text-sky-400">4:00 PM – 5:00 PM</span>
+            </div>
+            <div class="flex justify-between text-sm border-b border-zinc-800 pb-2">
+              <span class="font-bold text-zinc-300">Novatos y Desarrollo (8 a 12 años):</span>
+              <span class="font-black text-yellow-400">5:00 PM – 6:00 PM</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="font-bold text-zinc-300">Expertos, Selección y Open:</span>
+              <span class="font-black text-green-400">5:30 PM – 7:00 PM</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Equipamiento Obligatorio -->
+        <div class="lg:col-span-6 bg-zinc-950 border-2 border-yellow-400 p-7 md:p-9 transform -skew-x-1 shadow-[8px_8px_0px_#22c55e]">
+          <div class="flex items-center justify-between mb-6 pb-4 border-b border-zinc-800">
+            <div>
+              <span class="text-xs font-black uppercase text-green-400 tracking-wider">REGLAMENTO DE PISTA</span>
+              <h3 class="text-2xl md:text-3xl font-black uppercase italic text-white">INDUMENTARIA <span class="text-yellow-400">OBLIGATORIA</span></h3>
+            </div>
+            <span class="text-4xl">🪖</span>
+          </div>
+          <p class="text-zinc-300 text-sm mb-6">
+            En la <strong>Escuela de Bicicross Los Boyacá</strong> la seguridad es prioridad. Para ingresar a rodar en la pista todo atleta debe portar:
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-zinc-900 p-4 border-l-4 border-sky-400">
+              <h4 class="font-black uppercase text-sky-400 text-sm mb-1">1. Casco Integral (Full Face)</h4>
+              <p class="text-xs text-zinc-300">Con protector de mentón abrochado en todo momento (en Balance se permite casco infantil certificado).</p>
+            </div>
+            <div class="bg-zinc-900 p-4 border-l-4 border-yellow-400">
+              <h4 class="font-black uppercase text-yellow-400 text-sm mb-1">2. Guantes Completos</h4>
+              <p class="text-xs text-zinc-300">Guantes de ciclismo/BMX de dedos completos para un agarre firme de los puños.</p>
+            </div>
+            <div class="bg-zinc-900 p-4 border-l-4 border-green-400">
+              <h4 class="font-black uppercase text-green-400 text-sm mb-1">3. Jersey Manga Larga</h4>
+              <p class="text-xs text-zinc-300">Suéter deportivo manga larga y coderas para proteger los brazos ante cualquier roce.</p>
+            </div>
+            <div class="bg-zinc-900 p-4 border-l-4 border-sky-400">
+              <h4 class="font-black uppercase text-sky-400 text-sm mb-1">4. Pantalón Largo + Rodilleras</h4>
+              <p class="text-xs text-zinc-300">Pantalón de BMX o mono resistente con rodilleras y zapatos deportivos cerrados.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAPA GPS INTERACTIVO EMBEBIDO + BOTÓN CÓMO LLEGAR -->
+      <div class="bg-zinc-950 border-2 border-sky-400 p-6 md:p-8 shadow-[8px_8px_0px_#0ea5e9]">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <span class="text-xs font-black uppercase text-sky-400 tracking-widest">UBICACIÓN SATELITAL GPS</span>
+            <h3 class="text-2xl md:text-3xl font-black uppercase italic text-white">
+              ¿Cómo llegar a la <span class="text-yellow-400">Pista Los Boyacá?</span>
+            </h3>
+            <p class="text-zinc-400 text-sm">Sector Boyacá, Barcelona, Estado Anzoátegui. Estacionamiento y tribuna familiar frente al circuito.</p>
+          </div>
+          <a href="https://www.google.com/maps/search/?api=1&query=Pista+de+Bicicross+Boyaca+Barcelona+Anzoategui" target="_blank" rel="noopener" class="bg-yellow-400 hover:bg-green-400 text-black font-black italic uppercase px-6 py-3.5 transform -skew-x-6 shadow-[4px_4px_0px_#fff] transition text-center whitespace-nowrap">
+            📍 Abrir Ruta GPS en Google Maps →
+          </a>
+        </div>
+        <div class="w-full h-72 md:h-80 border-2 border-zinc-800 overflow-hidden">
+          <iframe
+            title="Mapa Pista de Bicicross Los Boyacá Barcelona Anzoátegui"
+            src="https://maps.google.com/maps?q=Boyaca%20Barcelona%20Anzoategui%20Venezuela&t=k&z=15&ie=UTF8&iwloc=&output=embed"
+            class="w-full h-full border-0"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 3: GALERÍA DE FOTOS Y ACCIÓN EN PISTA -->
+  <section id="galeria" class="py-24 bg-zinc-950 border-t-4 border-yellow-400 scroll-mt-20">
+    <div class="container mx-auto px-4 max-w-7xl">
+      <div class="text-center mb-14">
+        <div class="bg-black inline-block px-8 py-3 transform -skew-x-6 shadow-[6px_6px_0px_#facc15] border-2 border-sky-400 mb-4">
+          <h2 class="text-4xl md:text-5xl font-black uppercase italic text-white tracking-wider">
+            Galería y <span class="text-sky-400">Acción en Pista</span>
+          </h2>
+        </div>
+        <p class="text-zinc-300 max-w-2xl mx-auto text-lg font-medium italic">
+          Así se viven los entrenamientos, salidas de partidor y válidas en la Escuela de Bicicross Los Boyacá. Toca cualquier imagen para ampliarla.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Foto 1 -->
+        <div class="gallery-item group relative overflow-hidden border-2 border-sky-400 bg-zinc-900 cursor-pointer shadow-[6px_6px_0px_#0ea5e9]" data-img="./assets/hero-bmx.webp" data-title="Entrenamiento Nocturno bajo Reflectores — Salto de Primera Recta">
+          <picture>
+            <source srcset="./assets/hero-bmx.webp" type="image/webp">
+            <img src="./assets/hero-bmx.jpg" alt="Salto en Primera Recta BMX" loading="lazy" decoding="async" class="w-full h-72 object-cover group-hover:scale-105 transition duration-500">
+          </picture>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-5">
+            <span class="bg-sky-400 text-black text-[10px] font-black uppercase px-2.5 py-0.5 w-fit mb-1 transform -skew-x-6">VUELOS Y TÉCNICA</span>
+            <h3 class="text-xl font-black uppercase italic text-white">Vuelos en Primera Recta</h3>
+            <p class="text-xs text-zinc-300">Práctica de absorción y salto bajo luces del circuito.</p>
+          </div>
+        </div>
+
+        <!-- Foto 2 -->
+        <div class="gallery-item group relative overflow-hidden border-2 border-yellow-400 bg-zinc-900 cursor-pointer shadow-[6px_6px_0px_#facc15]" data-img="./assets/flyer-valida.webp" data-title="Explosividad en el Partidor Pro-Gate — Selección Los Boyacá">
+          <picture>
+            <source srcset="./assets/flyer-valida.webp" type="image/webp">
+            <img src="./assets/flyer-valida.jpg" alt="Salida explosiva del Partidor BMX" loading="lazy" decoding="async" class="w-full h-72 object-cover object-top group-hover:scale-105 transition duration-500">
+          </picture>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-5">
+            <span class="bg-yellow-400 text-black text-[10px] font-black uppercase px-2.5 py-0.5 w-fit mb-1 transform -skew-x-6">PARTIDOR PRO-GATE</span>
+            <h3 class="text-xl font-black uppercase italic text-white">Potencia desde el Partidor</h3>
+            <p class="text-xs text-zinc-300">Técnica de Snap y reacción al semáforo oficial.</p>
+          </div>
+        </div>
+
+        <!-- Foto 3 (Recorte de Peraltes y Semillitas) -->
+        <div class="gallery-item group relative overflow-hidden border-2 border-green-400 bg-zinc-900 cursor-pointer shadow-[6px_6px_0px_#22c55e]" data-img="./assets/hero-bmx.webp" data-title="Semillitas y Desarrollo — Trazada en Peraltes y Rítmicos">
+          <picture>
+            <source srcset="./assets/hero-bmx.webp" type="image/webp">
+            <img src="./assets/hero-bmx.jpg" alt="Categorías Semillitas y Novatos BMX" loading="lazy" decoding="async" class="w-full h-72 object-cover object-right group-hover:scale-105 transition duration-500">
+          </picture>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-5">
+            <span class="bg-green-400 text-black text-[10px] font-black uppercase px-2.5 py-0.5 w-fit mb-1 transform -skew-x-6">SEMILLERO BMX</span>
+            <h3 class="text-xl font-black uppercase italic text-white">Semillero y Familia BMX</h3>
+            <p class="text-xs text-zinc-300">Formando desde los 2 años con disciplina y compañerismo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 4: ENTRENADORES Y DIRECTIVA -->
+  <section id="equipo" class="py-24 bg-zinc-900 border-t-4 border-green-500 scroll-mt-20">
+    <div class="container mx-auto px-4 max-w-7xl">
+      <div class="text-center mb-16">
+        <div class="bg-black inline-block px-8 py-3 transform -skew-x-6 shadow-[6px_6px_0px_#22c55e] border-2 border-sky-400 mb-4">
+          <h2 class="text-4xl md:text-5xl font-black uppercase italic text-white tracking-wider">
+            Staff Técnico y <span class="text-green-400">Directiva</span>
+          </h2>
+        </div>
+        <p class="text-zinc-300 max-w-2xl mx-auto text-lg font-medium italic">
+          Guías apasionados por el Bicicross dedicados a formar atletas íntegros, veloces y disciplinados.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="bg-zinc-950 border-2 border-sky-400 p-6 transform -skew-x-2 shadow-[6px_6px_0px_#0ea5e9] flex flex-col justify-between">
+          <div>
+            <div class="w-16 h-16 bg-sky-500/20 border-2 border-sky-400 flex items-center justify-center text-3xl mb-4 transform -skew-x-6">🏁</div>
+            <span class="text-xs font-black uppercase text-sky-400 tracking-widest block">DIRECTOR & HEAD COACH</span>
+            <h3 class="text-2xl font-black uppercase italic text-white mt-1 mb-3">Entrenador Principal</h3>
+            <p class="text-zinc-300 text-sm leading-relaxed mb-4">
+              Especialista en técnica avanzada de BMX Racing, táctica de partidor, saltos pro y preparación de la selección de competencia.
+            </p>
+          </div>
+          <div class="bg-black px-3 py-2 border border-zinc-800 text-center">
+            <span class="text-yellow-400 font-black text-xs">@bicicrosslosboyaca</span>
+          </div>
+        </div>
+
+        <div class="bg-zinc-950 border-2 border-yellow-400 p-6 transform -skew-x-2 shadow-[6px_6px_0px_#facc15] flex flex-col justify-between">
+          <div>
+            <div class="w-16 h-16 bg-yellow-400/20 border-2 border-yellow-400 flex items-center justify-center text-3xl mb-4 transform -skew-x-6">⚡</div>
+            <span class="text-xs font-black uppercase text-yellow-400 tracking-widest block">COACH SEMILLITAS & BALANCE</span>
+            <h3 class="text-2xl font-black uppercase italic text-white mt-1 mb-3">Iniciación Infantil</h3>
+            <p class="text-zinc-300 text-sm leading-relaxed mb-4">
+              Encargado de la adaptación motriz, pérdida del miedo a los morros, equilibrio sin rueditas y primeros piques en la pista.
+            </p>
+          </div>
+          <div class="bg-black px-3 py-2 border border-zinc-800 text-center">
+            <span class="text-sky-400 font-black text-xs">Formación Base BMX</span>
+          </div>
+        </div>
+
+        <div class="bg-zinc-950 border-2 border-green-400 p-6 transform -skew-x-2 shadow-[6px_6px_0px_#22c55e] flex flex-col justify-between">
+          <div>
+            <div class="w-16 h-16 bg-green-400/20 border-2 border-green-400 flex items-center justify-center text-3xl mb-4 transform -skew-x-6">🔥</div>
+            <span class="text-xs font-black uppercase text-green-400 tracking-widest block">PREPARADOR FÍSICO</span>
+            <h3 class="text-2xl font-black uppercase italic text-white mt-1 mb-3">Desarrollo & Potencia</h3>
+            <p class="text-zinc-300 text-sm leading-relaxed mb-4">
+              Entrenamiento de cadencia, explosividad en los primeros 30 metros, coordinación y prevención de lesiones para jóvenes y adultos.
+            </p>
+          </div>
+          <div class="bg-black px-3 py-2 border border-zinc-800 text-center">
+            <span class="text-green-400 font-black text-xs">Alto Rendimiento</span>
+          </div>
+        </div>
+
+        <div class="bg-zinc-950 border-2 border-sky-400 p-6 transform -skew-x-2 shadow-[6px_6px_0px_#facc15] flex flex-col justify-between">
+          <div>
+            <div class="w-16 h-16 bg-sky-400/20 border-2 border-sky-400 flex items-center justify-center text-3xl mb-4 transform -skew-x-6">🏆</div>
+            <span class="text-xs font-black uppercase text-sky-400 tracking-widest block">COORDINACIÓN GENERAL</span>
+            <h3 class="text-2xl font-black uppercase italic text-white mt-1 mb-3">Comité Los Boyacá</h3>
+            <p class="text-zinc-300 text-sm leading-relaxed mb-4">
+              Atención a representantes, control de inscripciones, logística de válidas, mesa técnica y mantenimiento de la pista.
+            </p>
+          </div>
+          <div class="bg-black px-3 py-2 border border-zinc-800 text-center">
+            <span class="text-yellow-400 font-black text-xs">Comunidad & Eventos</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 5: EVENTO ESPECIAL (COPA LOS BOYACÁ BMX RACE) -->
+  <section id="valida-boyaca" class="bg-zinc-950 py-20 relative overflow-hidden border-t-4 border-yellow-400 scroll-mt-20">
+    <div class="absolute top-0 right-0 w-96 h-96 bg-sky-500 rounded-full mix-blend-screen filter blur-[130px] opacity-20 pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 w-96 h-96 bg-green-500 rounded-full mix-blend-screen filter blur-[130px] opacity-20 pointer-events-none"></div>
+
+    <div class="container mx-auto px-4 max-w-7xl relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
+      <div class="w-full lg:w-[55%] flex justify-center">
+        <div id="btnAbrirModal" class="relative group inline-block cursor-pointer max-w-md w-full">
+          <div class="absolute -inset-2 bg-gradient-to-r from-sky-500 via-yellow-400 to-green-500 rounded-lg blur-md opacity-50 group-hover:opacity-90 transition duration-300"></div>
+          <div class="relative bg-zinc-950 border-2 border-yellow-400 p-2 transform -skew-x-1 shadow-[8px_8px_0px_#0ea5e9] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">
+            <div class="relative overflow-hidden">
+              <picture>
+                <source srcset="./assets/flyer-valida.webp" type="image/webp">
+                <img src="./assets/flyer-valida.jpg" alt="Copa Los Boyacá BMX Race - Afiche Oficial" loading="lazy" decoding="async" class="w-full h-auto object-cover">
+              </picture>
+              <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent flex flex-col justify-between p-6">
+                <div class="flex justify-between items-start">
+                  <span class="bg-yellow-400 text-black font-black text-xs uppercase px-3 py-1 transform -skew-x-6">VÁLIDA OFICIAL BMX</span>
+                  <span class="bg-black/80 border border-sky-400 text-sky-400 font-black text-xs uppercase px-3 py-1">🔍 CLIC PARA AMPLIAR</span>
+                </div>
+                <div>
+                  <span class="text-green-400 font-black uppercase tracking-widest text-xs block">PISTA DE BICICROSS LOS BOYACÁ</span>
+                  <h3 class="text-4xl font-black uppercase italic text-white leading-none tracking-tight">
+                    COPA <span class="text-yellow-400">LOS BOYACÁ</span>
+                  </h3>
+                  <p class="text-sky-400 font-black uppercase italic text-lg mb-3">CAMPEONATO DE BICICROSS & BALANCE</p>
+                  <div class="grid grid-cols-2 gap-2 text-[11px] font-bold text-zinc-200 bg-black/85 p-3 border-l-4 border-green-400">
+                    <div>📅 SÁBADO 8:00 AM</div>
+                    <div>📍 SECTOR BOYACÁ</div>
+                    <div>🚲 BALANCE A OPEN</div>
+                    <div>🏆 MANGAS DE 8 CARRILES</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-full lg:w-[45%] flex flex-col items-center lg:items-start text-center lg:text-left gap-6">
+        <div>
+          <span class="inline-block bg-sky-500/20 border border-sky-400 text-sky-300 font-black tracking-widest uppercase text-xs px-3 py-1 mb-3">
+            EVENTO ESPECIAL • PARTIDOR DE 8 CARRILES
+          </span>
+          <h2 class="text-4xl md:text-6xl font-black text-white uppercase italic transform -skew-x-6 tracking-tight leading-none mb-3">
+            COPA LOS BOYACÁ <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-green-400 to-sky-400">BMX RACE</span>
+          </h2>
+          <p class="text-yellow-400 text-xl md:text-2xl font-bold italic uppercase">
+            Válida Invitacional de Bicicross y Bike Balance
+          </p>
+          <p class="text-zinc-300 text-base mt-4 leading-relaxed">
+            Haz clic en el afiche para ampliarlo. Asignación automática de categoría por <strong>Año Calendario (2026)</strong>, registro de número de placa, sorteo automático de mangas de 8 carriles y reporte de Pago Móvil en línea.
+          </p>
+          <div class="mt-5 grid grid-cols-2 gap-3 text-left text-xs font-bold text-zinc-200">
+            <div class="bg-zinc-900 p-3 border-l-2 border-sky-400">✓ Balance (2 a 4 años)</div>
+            <div class="bg-zinc-900 p-3 border-l-2 border-yellow-400">✓ 5-6 / 7-8 / 9-10 años</div>
+            <div class="bg-zinc-900 p-3 border-l-2 border-green-400">✓ 11-12 / 13-14 / 15-16 años</div>
+            <div class="bg-zinc-900 p-3 border-l-2 border-sky-400">✓ Open Rin 20" y Cruiser 24"</div>
+          </div>
+        </div>
+
+        <a href="registro-valida.html" class="w-full sm:w-auto text-center bg-green-500 text-black font-black italic uppercase text-2xl px-8 py-5 hover:bg-yellow-400 transition-all transform -skew-x-6 shadow-[6px_6px_0px_#fff]">
+          Inscríbete en la Copa Aquí →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODAL DEL AFICHE / GALERÍA AMPLIADA -->
+  <div id="modalAfiche" class="fixed inset-0 bg-black/95 z-[999] hidden items-center justify-center p-4">
+    <div class="relative max-w-2xl w-full flex flex-col items-center">
+      <button id="btnCerrarModal" class="mb-3 self-end text-white hover:text-yellow-400 font-black text-base uppercase border-2 border-yellow-400 bg-zinc-900 px-4 py-1.5 shadow-[3px_3px_0px_#0ea5e9]">
+        ✕ Cerrar Vista
+      </button>
+      <img id="modalImagenSrc" src="./assets/flyer-valida.jpg" alt="Vista Ampliada" class="max-h-[80vh] w-auto object-contain border-2 border-sky-400 shadow-[0_0_30px_rgba(14,165,233,0.4)]">
+      <p id="modalImagenTitulo" class="mt-3 text-sm font-black uppercase italic text-yellow-400"></p>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 6: CALENDARIO DE EVENTOS Y VÁLIDAS DEL MES -->
+  <section id="eventos" class="py-24 bg-zinc-900 border-t-4 border-sky-500 scroll-mt-20">
+    <div class="container mx-auto px-4 max-w-7xl">
+      <div class="text-center mb-16">
+        <div class="bg-black inline-block px-10 py-3 transform -skew-x-6 shadow-[6px_6px_0px_#facc15] border border-zinc-800">
+          <h2 class="text-4xl md:text-5xl font-black uppercase italic text-white tracking-wider">
+            Calendario <span class="text-sky-400">BMX del Mes</span>
+          </h2>
+        </div>
+        <p class="text-zinc-300 mt-5 font-bold italic text-lg">
+          Clínicas técnicas, fogueos con partidor y competencias oficiales en la pista Los Boyacá.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <div class="bg-zinc-950 p-7 border-l-4 border-yellow-400 border-y border-r border-zinc-800 shadow-[6px_6px_0px_rgba(0,0,0,0.6)] flex flex-col justify-between">
+          <div>
+            <div class="text-yellow-400 font-racing font-black text-2xl mb-2">SÁBADO • 8:00 AM</div>
+            <h3 class="text-2xl font-black text-white mb-3 uppercase italic">Copa Los Boyacá BMX</h3>
+            <p class="text-zinc-300 text-sm leading-relaxed mb-6">
+              Mangas clasificatorias y finales en todas las categorías de año calendario. Premiación para los podios y medallas de participación para Semillitas y Balance.
+            </p>
+          </div>
+          <a href="registro-valida.html" class="inline-block bg-zinc-900 border border-yellow-400 text-yellow-400 text-xs px-4 py-2 font-black uppercase tracking-wider hover:bg-yellow-400 hover:text-black transition text-center">
+            Inscribir Corredor →
+          </a>
+        </div>
+
+        <div class="bg-zinc-950 p-7 border-l-4 border-sky-400 border-y border-r border-zinc-800 shadow-[6px_6px_0px_rgba(0,0,0,0.6)] flex flex-col justify-between">
+          <div>
+            <div class="text-sky-400 font-racing font-black text-2xl mb-2">VIERNES • 4:30 PM</div>
+            <h3 class="text-2xl font-black text-white mb-3 uppercase italic">Clínica de Partidor & Snap</h3>
+            <p class="text-zinc-300 text-sm leading-relaxed mb-6">
+              Sesión intensiva enfocada en postura sobre el partidor, tiempo de reacción al semáforo y potencia en los primeros tres pedalazos hasta el primer salto.
+            </p>
+          </div>
+          <span class="inline-block bg-zinc-900 border border-sky-400/60 text-sky-400 text-xs px-3.5 py-2 font-black uppercase tracking-wider text-center">
+            Nivel: Semillitas a Expertos
+          </span>
+        </div>
+
+        <div class="bg-zinc-950 p-7 border-l-4 border-green-400 border-y border-r border-zinc-800 shadow-[6px_6px_0px_rgba(0,0,0,0.6)] flex flex-col justify-between">
+          <div>
+            <div class="text-green-400 font-racing font-black text-2xl mb-2">MIÉRCOLES • 5:00 PM</div>
+            <h3 class="text-2xl font-black text-white mb-3 uppercase italic">Clínica de Manuales y Peraltes</h3>
+            <p class="text-zinc-300 text-sm leading-relaxed mb-6">
+              Aprende a mantener la rueda delantera en el aire sobre los rítmicos (Manual) y a entrar cerrado y salir abierto a máxima velocidad en los peraltes.
+            </p>
+          </div>
+          <span class="inline-block bg-zinc-900 border border-green-400/60 text-green-400 text-xs px-3.5 py-2 font-black uppercase tracking-wider text-center">
+            Nivel: Novatos, Expertos y Open
+          </span>
+        </div>
+      </div>
+
+      <div class="bg-zinc-950 border-2 border-sky-400 p-8 md:p-10 transform -skew-x-2 shadow-[8px_8px_0px_#0ea5e9] max-w-3xl mx-auto text-center">
+        <h3 class="text-2xl md:text-3xl font-black uppercase italic text-white mb-2">
+          ¡Recibe las convocatorias de nuestras <span class="text-yellow-400">Válidas BMX!</span>
+        </h3>
+        <p class="text-zinc-300 text-sm md:text-base mb-6">
+          Déjanos tu correo o número de WhatsApp para avisarte de próximas válidas, clínicas y entrenamientos especiales.
+        </p>
+        <form id="leadForm" class="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
+          <input type="text" id="leadInput" required placeholder="Tu correo o WhatsApp (ej. 0424-1234567)" class="flex-1 px-5 py-3.5 bg-zinc-900 border border-zinc-700 text-white font-bold focus:border-yellow-400 focus:outline-none">
+          <button type="submit" class="bg-yellow-400 hover:bg-green-400 text-black font-black uppercase italic px-8 py-3.5 transform -skew-x-6 shadow-[4px_4px_0px_#fff] transition">
+            Avisarme
+          </button>
+        </form>
+        <div id="leadMensaje" class="hidden mt-4"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 7: PREGUNTAS FRECUENTES DESPLEGABLES (FAQ PARA PADRES NUEVOS) -->
+  <section id="faq" class="py-24 bg-zinc-950 border-t-4 border-green-400 scroll-mt-20">
+    <div class="container mx-auto px-4 max-w-5xl">
+      <div class="text-center mb-14">
+        <div class="bg-black inline-block px-8 py-3 transform -skew-x-6 shadow-[6px_6px_0px_#22c55e] border-2 border-yellow-400 mb-4">
+          <h2 class="text-3xl md:text-5xl font-black uppercase italic text-white tracking-wider">
+            Preguntas <span class="text-green-400">Frecuentes (FAQ)</span>
+          </h2>
+        </div>
+        <p class="text-zinc-300 max-w-2xl mx-auto text-base md:text-lg font-medium italic">
+          Resolvemos todas tus dudas antes de traer a tu hijo o hija a su primera práctica en la Pista Los Boyacá.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <!-- FAQ 1 -->
+        <details class="group bg-zinc-900 border-2 border-zinc-800 open:border-sky-400 transition-all transform -skew-x-1">
+          <summary class="flex items-center justify-between cursor-pointer p-5 md:p-6 font-racing font-black uppercase italic text-lg md:text-xl text-white select-none">
+            <span>1. ¿Qué pasa si mi hijo aún no sabe pedalear sin rueditas?</span>
+            <span class="text-sky-400 text-2xl group-open:rotate-45 transition-transform">+</span>
+          </summary>
+          <div class="px-6 pb-6 text-zinc-300 text-sm md:text-base leading-relaxed border-t border-zinc-800/80 pt-4">
+            ¡No hay ningún problema! Contamos con el nivel <strong>Balance / Strider (2 a 4 años)</strong> e <strong>Iniciación</strong>, donde nuestros instructores les enseñan primero a dominar el equilibrio dinámico impulsándose con los pies y pasando por los morros bajos. De esa forma aprenden a pedalear sin rueditas de forma natural, rápida y sin caídas bruscas.
+          </div>
+        </details>
+
+        <!-- FAQ 2 -->
+        <details class="group bg-zinc-900 border-2 border-zinc-800 open:border-yellow-400 transition-all transform -skew-x-1">
+          <summary class="flex items-center justify-between cursor-pointer p-5 md:p-6 font-racing font-black uppercase italic text-lg md:text-xl text-white select-none">
+            <span>2. ¿Prestan casco y bicicleta para la primera clase de prueba?</span>
+            <span class="text-yellow-400 text-2xl group-open:rotate-45 transition-transform">+</span>
+          </summary>
+          <div class="px-6 pb-6 text-zinc-300 text-sm md:text-base leading-relaxed border-t border-zinc-800/80 pt-4">
+            Sí, previa coordinación por nuestro <strong>WhatsApp</strong> podemos facilitarte orientación y préstamo inicial en la pista para que el niño viva su primera experiencia. Solo debe asistir con <strong>mono o pantalón largo, suéter manga larga, medias largas y zapatos deportivos cerrados</strong>.
+          </div>
+        </details>
+
+        <!-- FAQ 3 -->
+        <details class="group bg-zinc-900 border-2 border-zinc-800 open:border-green-400 transition-all transform -skew-x-1">
+          <summary class="flex items-center justify-between cursor-pointer p-5 md:p-6 font-racing font-black uppercase italic text-lg md:text-xl text-white select-none">
+            <span>3. ¿Qué días entrenan y cuánto dura cada sesión?</span>
+            <span class="text-green-400 text-2xl group-open:rotate-45 transition-transform">+</span>
+          </summary>
+          <div class="px-6 pb-6 text-zinc-300 text-sm md:text-base leading-relaxed border-t border-zinc-800/80 pt-4">
+            Entrenamos de <strong>Lunes a Viernes por las tardes (4:00 PM a 7:00 PM)</strong> divididos por turnos según la edad y nivel del piloto: <em>Balance y Semillitas</em> de 4:00 PM a 5:00 PM; <em>Novatos y Desarrollo</em> de 5:00 PM a 6:00 PM; y <em>Expertos / Selección / Open</em> de 5:30 PM a 7:00 PM.
+          </div>
+        </details>
+
+        <!-- FAQ 4 -->
+        <details class="group bg-zinc-900 border-2 border-zinc-800 open:border-sky-400 transition-all transform -skew-x-1">
+          <summary class="flex items-center justify-between cursor-pointer p-5 md:p-6 font-racing font-black uppercase italic text-lg md:text-xl text-white select-none">
+            <span>4. ¿Cómo se asigna la categoría en las Válidas de Bicicross?</span>
+            <span class="text-sky-400 text-2xl group-open:rotate-45 transition-transform">+</span>
+          </summary>
+          <div class="px-6 pb-6 text-zinc-300 text-sm md:text-base leading-relaxed border-t border-zinc-800/80 pt-4">
+            En el reglamento oficial de BMX se utiliza la <strong>Edad por Año Calendario</strong> (se resta el año actual menos el año de nacimiento del corredor, sin importar si ya cumplió años este mes o no). Nuestro formulario de inscripción calcula y asigna la categoría automáticamente al colocar la fecha de nacimiento.
+          </div>
+        </details>
+
+        <!-- FAQ 5 -->
+        <details class="group bg-zinc-900 border-2 border-zinc-800 open:border-yellow-400 transition-all transform -skew-x-1">
+          <summary class="flex items-center justify-between cursor-pointer p-5 md:p-6 font-racing font-black uppercase italic text-lg md:text-xl text-white select-none">
+            <span>5. ¿Cómo reporto el pago de la mensualidad todos los meses?</span>
+            <span class="text-yellow-400 text-2xl group-open:rotate-45 transition-transform">+</span>
+          </summary>
+          <div class="px-6 pb-6 text-zinc-300 text-sm md:text-base leading-relaxed border-t border-zinc-800/80 pt-4">
+            ¡Es súper rápido! Solo entras al botón <a href="registro.html?tab=mensualidad" class="text-green-400 font-bold underline">💳 Solvencia / Pagar Mes</a>, escribes la <strong>Cédula o el Número de Placa del niño</strong>, el sistema reconoce su ficha automáticamente y subes el capture del Pago Móvil en menos de 15 segundos.
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 8: CINTILLO DE PATROCINANTES OFICIALES Y ALIADOS COMERCIALES -->
+  <section id="patrocinantes" class="py-16 bg-zinc-900 border-t-4 border-sky-400 scroll-mt-20">
+    <div class="container mx-auto px-4 max-w-7xl">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-10">
+        <div>
+          <span class="text-xs font-black uppercase text-sky-400 tracking-widest block">ALIANZAS DEPORTIVAS • ANZOÁTEGUI</span>
+          <h2 class="text-3xl md:text-4xl font-black uppercase italic text-white">
+            Patrocinantes y <span class="text-yellow-400">Aliados Oficiales</span>
+          </h2>
+        </div>
+        <a id="btnSponsorWa" href="https://wa.me/584248000000?text=Hola%2C%20me%20interesa%20ser%20patrocinante%20oficial%20de%20la%20Escuela%20de%20Bicicross%20Los%20Boyac%C3%A1" target="_blank" rel="noopener" class="bg-zinc-950 border-2 border-yellow-400 hover:bg-yellow-400 hover:text-black text-yellow-400 font-black italic uppercase text-xs md:text-sm px-6 py-3 transform -skew-x-6 transition">
+          🤝 ¿Quieres anunciar tu marca en la Pista? Contáctanos →
+        </a>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div class="bg-zinc-950 border-2 border-zinc-800 hover:border-sky-400 p-5 text-center transform -skew-x-3 transition group">
+          <span class="text-2xl block mb-1">🔧</span>
+          <span class="font-racing font-black italic uppercase text-lg text-white group-hover:text-sky-400 block">PRO BIKE SHOP</span>
+          <span class="text-[10px] font-bold uppercase text-zinc-500">Repuestos & Mecánica BMX</span>
+        </div>
+        <div class="bg-zinc-950 border-2 border-zinc-800 hover:border-yellow-400 p-5 text-center transform -skew-x-3 transition group">
+          <span class="text-2xl block mb-1">⚡</span>
+          <span class="font-racing font-black italic uppercase text-lg text-white group-hover:text-yellow-400 block">HIDRATA SPORT</span>
+          <span class="text-[10px] font-bold uppercase text-zinc-500">Hidratación en Pista</span>
+        </div>
+        <div class="bg-zinc-950 border-2 border-zinc-800 hover:border-green-400 p-5 text-center transform -skew-x-3 transition group">
+          <span class="text-2xl block mb-1">🪖</span>
+          <span class="font-racing font-black italic uppercase text-lg text-white group-hover:text-green-400 block">RACING GEAR VE</span>
+          <span class="text-[10px] font-bold uppercase text-zinc-500">Cascos Full Face & Jerseys</span>
+        </div>
+        <div class="bg-zinc-950 border-2 border-zinc-800 hover:border-sky-400 p-5 text-center transform -skew-x-3 transition group">
+          <span class="text-2xl block mb-1">🏥</span>
+          <span class="font-racing font-black italic uppercase text-lg text-white group-hover:text-sky-400 block">SALUD ORIENTE</span>
+          <span class="text-[10px] font-bold uppercase text-zinc-500">Asistencia Médica Eventos</span>
+        </div>
+        <div class="bg-zinc-950 border-2 border-dashed border-zinc-700 hover:border-yellow-400 p-5 text-center transform -skew-x-3 transition col-span-2 sm:col-span-1 flex flex-col justify-center">
+          <span class="font-racing font-black italic uppercase text-base text-yellow-400 block">+ TU MARCA AQUÍ</span>
+          <span class="text-[10px] font-bold uppercase text-zinc-400">Vallas y Afiches Copa BMX</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-black border-t-4 border-yellow-400 pt-16 pb-10 text-zinc-400">
+    <div class="container mx-auto px-4 max-w-7xl grid grid-cols-1 md:grid-cols-3 gap-10 pb-12 border-b border-zinc-800">
+      <div>
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 bg-yellow-400 flex items-center justify-center transform -skew-x-12">
+            <span class="font-racing font-black text-black">BMX</span>
+          </div>
+          <span class="font-racing text-2xl font-bold italic text-white uppercase">LOS <span class="text-sky-400">BOYACÁ</span></span>
+        </div>
+        <p class="text-sm leading-relaxed text-zinc-300 mb-4">
+          Escuela de Bicicross Los Boyacá. Formando el futuro del BMX con técnica, valores, compañerismo y pasión por el ciclismo en cada manga.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a href="registro.html" class="bg-sky-500 text-black font-black text-xs uppercase px-4 py-2 transform -skew-x-6">Inscripción Escuela</a>
+          <a href="registro.html?tab=mensualidad" class="bg-yellow-400 text-black font-black text-xs uppercase px-4 py-2 transform -skew-x-6">Solvencia / Mes</a>
+          <a href="registro-valida.html" class="bg-green-500 text-black font-black text-xs uppercase px-4 py-2 transform -skew-x-6">Copa BMX</a>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="text-white font-black uppercase italic text-lg mb-4 text-sky-400">Información y Pista</h4>
+        <ul class="space-y-2.5 text-sm">
+          <li><strong class="text-white">Sede:</strong> Pista de Bicicross Los Boyacá, Sector Boyacá, Barcelona, Edo. Anzoátegui.</li>
+          <li><strong class="text-white">Horario:</strong> Lunes a Viernes de 4:00 PM a 7:00 PM</li>
+          <li><strong class="text-white">Instagram:</strong> <span class="text-yellow-400">@bicicrosslosboyaca</span></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-white font-black uppercase italic text-lg mb-4 text-green-400">App Móvil y Control</h4>
+        <ul class="space-y-2 text-sm mb-5">
+          <li>✓ Pago Móvil (Cálculo automático a Tasa BCV)</li>
+          <li>✓ App Instalable en Android y iPhone (PWA)</li>
+          <li>✓ Efectivo / Divisas directo en Pista</li>
+        </ul>
+        <div class="flex flex-wrap gap-3">
+          <button type="button" id="btnInstalarAppFooter" class="inline-block bg-sky-400 text-black font-black text-xs uppercase px-4 py-2.5 transform -skew-x-6 cursor-pointer">
+            📲 Instalar App en el Celular
+          </button>
+          <a href="admin.html" class="inline-block border border-zinc-700 text-zinc-300 hover:border-sky-400 hover:text-sky-400 font-black text-xs uppercase px-4 py-2.5 transition">
+            🔐 Panel Admin
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container mx-auto px-4 max-w-7xl pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-500 gap-4">
+      <p>© 2026 Escuela de Bicicross Los Boyacá. Todos los derechos reservados.</p>
+      <p class="text-zinc-400 font-semibold">Ride • Snap • Fly 🏁</p>
+    </div>
+  </footer>
+
+  <!-- MODAL PARA INSTALAR LA APP EN ANDROID / IPHONE (PWA) -->
+  <div id="modalInstalarApp" class="fixed inset-0 bg-black/95 z-[999] hidden items-center justify-center p-4">
+    <div class="bg-zinc-900 border-2 border-sky-400 max-w-md w-full p-6 md:p-8 transform -skew-x-2 shadow-[10px_10px_0px_#facc15]">
+      <div class="flex items-center justify-between border-b border-zinc-800 pb-4 mb-5">
+        <div class="flex items-center gap-3">
+          <img src="./assets/icon.svg" alt="Icono Boyacá BMX" class="w-12 h-12 rounded-lg border border-sky-400">
+          <div>
+            <span class="text-[10px] font-black uppercase text-green-400 block">APLICACIÓN OFICIAL PWA</span>
+            <h3 class="text-xl font-black uppercase italic text-white">APP LOS BOYACÁ BMX</h3>
+          </div>
+        </div>
+        <button type="button" id="btnCerrarModalApp" class="text-zinc-400 hover:text-white font-black text-lg">✕</button>
+      </div>
+
+      <div class="space-y-4 text-sm text-zinc-300 mb-6">
+        <p>Instala el acceso directo de la <strong>Escuela de Bicicross Los Boyacá</strong> en la pantalla de inicio de tu celular para inscribir, consultar solvencia y practicar en el partidor sin ocupar espacio:</p>
+
+        <div id="boxInstalarDirecto" class="hidden">
+          <button type="button" id="btnTriggerInstallPrompt" class="w-full bg-green-500 hover:bg-yellow-400 text-black font-black uppercase italic py-4 transform -skew-x-6 shadow-[4px_4px_0px_#fff] text-base cursor-pointer">
+            📲 Instalar Aplicación Ahora
+          </button>
+        </div>
+
+        <div class="bg-zinc-950 border-l-4 border-sky-400 p-4 space-y-2 text-xs">
+          <p class="font-black uppercase text-sky-400">🤖 En Android (Chrome):</p>
+          <p>Toca el menú de 3 puntos <strong>(⋮)</strong> arriba a la derecha y selecciona <strong>"Instalar aplicación"</strong> o <strong>"Agregar a la pantalla principal"</strong>.</p>
+        </div>
+
+        <div class="bg-zinc-950 border-l-4 border-yellow-400 p-4 space-y-2 text-xs">
+          <p class="font-black uppercase text-yellow-400">🍎 En iPhone / iPad (Safari):</p>
+          <p>Toca el botón <strong>Compartir (⬆️)</strong> en la barra inferior de Safari y elige <strong>"Agregar a Inicio"</strong>.</p>
+        </div>
+      </div>
+
+      <button type="button" id="btnEntendidoApp" class="w-full bg-yellow-400 text-black font-black uppercase italic py-3 transform -skew-x-6">
+        ¡Listo, Entendido!
+      </button>
+    </div>
+  </div>
+
+  <!-- BOTÓN FLOTANTE DE WHATSAPP -->
+  <a id="floatingWaBtn" href="https://wa.me/584129861147?text=Hola%2C%20quisiera%20informaci%C3%B3n%20sobre%20la%20Escuela%20de%20Bicicross%20Los%20Boyac%C3%A1" target="_blank" rel="noopener" class="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 bg-green-500 hover:bg-yellow-400 text-black font-black italic uppercase text-xs md:text-sm px-4 py-3.5 transform -skew-x-6 shadow-[5px_5px_0px_#000] border-2 border-white transition-all hover:scale-105">
+    <span class="text-xl">💬</span>
+    <span>WhatsApp Escuela</span>
+  </a>
+
+  <script type="module">
+    import { getConfig, guardarLead, calcularTallaBicicletaBmx, fetchTasaBcv } from './js/store.js?v=9';
+
+    const cfg = getConfig();
+    const waFloat = document.getElementById('floatingWaBtn');
+    const btnSponsorWa = document.getElementById('btnSponsorWa');
+    if (cfg.whatsapp) {
+      if (waFloat) waFloat.href = `https://wa.me/${cfg.whatsapp}?text=${encodeURIComponent('Hola, quisiera información sobre las inscripciones en la Escuela de Bicicross Los Boyacá 🚲🏁')}`;
+      if (btnSponsorWa) btnSponsorWa.href = `https://wa.me/${cfg.whatsapp}?text=${encodeURIComponent('Hola, me interesa información para patrocinar a la Escuela de Bicicross Los Boyacá 🤝🏁')}`;
+    }
+
+    // Actualizar Tasa Oficial BCV en tiempo real en la barra superior
+    fetchTasaBcv().then(tasa => {
+      const topBadge = document.getElementById('topTasaBcvText');
+      if (topBadge && tasa) {
+        topBadge.textContent = `TASA BCV: ${tasa.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} Bs.`;
+      }
+    }).catch(() => {});
+
+    // Registrar Service Worker para PWA instalable en el celular
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+
+    // Lógica de Instalación de App Móvil (PWA)
+    let deferredPrompt = null;
+    const modalInstalarApp = document.getElementById('modalInstalarApp');
+    const boxInstalarDirecto = document.getElementById('boxInstalarDirecto');
+    const btnTriggerInstallPrompt = document.getElementById('btnTriggerInstallPrompt');
+
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferredPrompt = e;
+      boxInstalarDirecto?.classList.remove('hidden');
+    });
+
+    async function abrirOInstalarApp() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        return;
+      }
+      modalInstalarApp.classList.remove('hidden');
+      modalInstalarApp.classList.add('flex');
+    }
+
+    ['btnInstalarAppNav', 'btnInstalarAppMobileTop', 'btnInstalarAppMenu', 'btnInstalarAppFooter'].forEach(id => {
+      document.getElementById(id)?.addEventListener('click', abrirOInstalarApp);
+    });
+    btnTriggerInstallPrompt?.addEventListener('click', abrirOInstalarApp);
+    ['btnCerrarModalApp', 'btnEntendidoApp'].forEach(id => {
+      document.getElementById(id)?.addEventListener('click', () => {
+        modalInstalarApp.classList.add('hidden');
+        modalInstalarApp.classList.remove('flex');
+      });
+    });
+
+    // Menú móvil
+    const btnMenu = document.getElementById('btnMenuMobile');
+    const menuMobile = document.getElementById('menuMobile');
+    if (btnMenu && menuMobile) {
+      btnMenu.addEventListener('click', () => {
+        const isHidden = menuMobile.classList.toggle('hidden');
+        btnMenu.setAttribute('aria-expanded', String(!isHidden));
+      });
+      document.querySelectorAll('.link-mobile').forEach(link => {
+        link.addEventListener('click', () => {
+          menuMobile.classList.add('hidden');
+          btnMenu.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
+
+    // Calculadora de Talla de Bicicleta BMX
+    const inputEstatura = document.getElementById('inputEstatura');
+    const btnCalcularTalla = document.getElementById('btnCalcularTalla');
+    function actualizarTallaUI() {
+      const info = calcularTallaBicicletaBmx(inputEstatura.value);
+      if (!info) return;
+      document.getElementById('resTallaNombre').textContent = info.talla;
+      document.getElementById('resTallaDetalle').innerHTML = `Tubo Superior: <strong>${info.topTube}</strong> • Rueda: <strong>${info.rin}</strong>`;
+      document.getElementById('resTallaNota').textContent = info.recomendacion;
+    }
+    btnCalcularTalla?.addEventListener('click', actualizarTallaUI);
+    inputEstatura?.addEventListener('input', actualizarTallaUI);
+
+    // Modal de Afiche y Galería Lightbox
+    const btnAbrirModal = document.getElementById('btnAbrirModal');
+    const btnCerrarModal = document.getElementById('btnCerrarModal');
+    const modalAfiche = document.getElementById('modalAfiche');
+    const modalImagenSrc = document.getElementById('modalImagenSrc');
+    const modalImagenTitulo = document.getElementById('modalImagenTitulo');
+
+    function abrirLightbox(src, titulo) {
+      modalImagenSrc.src = src;
+      modalImagenTitulo.textContent = titulo || '';
+      modalAfiche.classList.remove('hidden');
+      modalAfiche.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+    function cerrarLightbox() {
+      modalAfiche.classList.add('hidden');
+      modalAfiche.classList.remove('flex');
+      document.body.style.overflow = 'auto';
+    }
+
+    btnAbrirModal?.addEventListener('click', () => abrirLightbox('./assets/flyer-valida.jpg', 'Copa Los Boyacá BMX Race — Afiche Oficial'));
+    document.querySelectorAll('.gallery-item').forEach(item => {
+      item.addEventListener('click', () => {
+        abrirLightbox(item.getAttribute('data-img'), item.getAttribute('data-title'));
+      });
+    });
+    btnCerrarModal?.addEventListener('click', cerrarLightbox);
+    modalAfiche?.addEventListener('click', e => { if (e.target === modalAfiche) cerrarLightbox(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarLightbox(); });
+
+    // Simulador de Semáforo de Partidor BMX (Pro-Gate)
+    const btnStartGate = document.getElementById('btnStartGate');
+    const btnSnapGate = document.getElementById('btnSnapGate');
+    const gateStatus = document.getElementById('gateStatus');
+    const lights = [
+      document.getElementById('gateLight1'),
+      document.getElementById('gateLight2'),
+      document.getElementById('gateLight3'),
+      document.getElementById('gateLight4')
+    ];
+
+    let audioCtx = null;
+    let gateGreenTime = 0;
+    let gateRunning = false;
+    let gateTimers = [];
+
+    function playTone(freq, durationMs, type = 'sawtooth') {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(type === 'square' ? 0.28 : 0.20, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + durationMs / 1000);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + durationMs / 1000);
+      } catch (_) {}
+    }
+
+    function speakGateVoice(phrase) {
+      try {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(phrase);
+          u.lang = 'en-US';
+          u.rate = 1.05;
+          u.pitch = 0.90;
+          window.speechSynthesis.speak(u);
+        }
+      } catch (_) {}
+    }
+
+    function resetLights() {
+      lights.forEach(l => {
+        l.className = 'w-12 h-12 md:w-14 md:h-14 rounded-full bg-zinc-900 border-2 border-zinc-700 transition-all duration-75';
+      });
+    }
+
+    function clearGateTimers() {
+      gateTimers.forEach(t => clearTimeout(t));
+      gateTimers = [];
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    }
+
+    btnStartGate?.addEventListener('click', () => {
+      clearGateTimers();
+      resetLights();
+      gateGreenTime = 0;
+      gateRunning = true;
+
+      btnStartGate.disabled = true;
+      btnStartGate.classList.add('opacity-60');
+      btnSnapGate.disabled = false;
+      btnSnapGate.className = 'bg-yellow-400 hover:bg-green-400 text-black font-black uppercase italic py-3.5 px-4 transform -skew-x-6 shadow-[4px_4px_0px_#fff] transition cursor-pointer';
+
+      gateStatus.textContent = '🔊 "OK RIDERS, RANDOM START..."';
+      gateStatus.className = 'bg-zinc-950 border border-sky-500 py-3 px-4 text-center font-racing font-bold italic uppercase text-lg text-sky-400 mb-5';
+      speakGateVoice("OK riders, random start");
+
+      gateTimers.push(setTimeout(() => {
+        gateStatus.textContent = '⚠️ "RIDERS READY... WATCH THE GATE!"';
+        gateStatus.className = 'bg-zinc-950 border border-yellow-400 py-3 px-4 text-center font-racing font-bold italic uppercase text-lg text-yellow-400 mb-5';
+        speakGateVoice("Riders ready, watch the gate");
+      }, 1050));
+
+      const randomDelay = 2100 + Math.floor(Math.random() * 1100);
+
+      gateTimers.push(setTimeout(() => {
+        lights[0].className = 'w-12 h-12 md:w-14 md:h-14 rounded-full bg-red-500 border-2 border-white shadow-[0_0_25px_#ef4444]';
+        playTone(640, 75, 'sawtooth');
+      }, randomDelay));
+
+      gateTimers.push(setTimeout(() => {
+        lights[1].className = 'w-12 h-12 md:w-14 md:h-14 rounded-full bg-yellow-400 border-2 border-white shadow-[0_0_25px_#facc15]';
+        playTone(640, 75, 'sawtooth');
+      }, randomDelay + 120));
+
+      gateTimers.push(setTimeout(() => {
+        lights[2].className = 'w-12 h-12 md:w-14 md:h-14 rounded-full bg-yellow-400 border-2 border-white shadow-[0_0_25px_#facc15]';
+        playTone(640, 75, 'sawtooth');
+      }, randomDelay + 240));
+
+      gateTimers.push(setTimeout(() => {
+        lights[3].className = 'w-12 h-12 md:w-14 md:h-14 rounded-full bg-green-400 border-2 border-white shadow-[0_0_30px_#22c55e]';
+        gateGreenTime = performance.now();
+        gateStatus.textContent = '🟢 ¡GO! ¡GO! ¡DALE PEDAL!';
+        gateStatus.className = 'bg-green-500/20 border-2 border-green-400 py-3 px-4 text-center font-racing font-bold italic uppercase text-xl text-green-400 mb-5';
+        playTone(2250, 360, 'square');
+      }, randomDelay + 360));
+    });
+
+    btnSnapGate?.addEventListener('click', () => {
+      if (!gateRunning) return;
+      clearGateTimers();
+      gateRunning = false;
+      btnStartGate.disabled = false;
+      btnStartGate.classList.remove('opacity-60');
+      btnSnapGate.disabled = true;
+      btnSnapGate.className = 'bg-zinc-800 text-zinc-500 font-black uppercase italic py-3.5 px-4 transform -skew-x-6 transition cursor-not-allowed';
+
+      if (gateGreenTime === 0) {
+        gateStatus.textContent = '❌ ¡SALIDA EN FALSO! SALISTE ANTES DEL VERDE';
+        gateStatus.className = 'bg-red-600/20 border-2 border-red-500 py-3 px-4 text-center font-racing font-bold italic uppercase text-base text-red-400 mb-5';
+        playTone(220, 400);
+      } else {
+        const reactionMs = Math.round(performance.now() - gateGreenTime);
+        let rank = reactionMs < 180 ? '⚡ ¡HOLESHOT ÉLITE!' : reactionMs < 280 ? '🔥 ¡SALIDA PRO!' : '🏁 ¡BUEN PIQUE!';
+        gateStatus.textContent = `${rank} Reacción: ${reactionMs} ms`;
+        gateStatus.className = 'bg-sky-500/20 border-2 border-sky-400 py-3 px-4 text-center font-racing font-bold italic uppercase text-lg text-sky-300 mb-5';
+      }
+    });
+
+    // Formulario de Leads
+    const leadForm = document.getElementById('leadForm');
+    const leadMensaje = document.getElementById('leadMensaje');
+    leadForm?.addEventListener('submit', e => {
+      e.preventDefault();
+      const val = document.getElementById('leadInput').value.trim();
+      if (!val) return;
+      try {
+        guardarLead(val);
+        leadForm.reset();
+        leadMensaje.textContent = '✓ ¡Listo! Te avisaremos de todas las válidas y entrenamientos.';
+        leadMensaje.className = 'mt-4 inline-block bg-green-400 text-black font-black italic uppercase px-6 py-2 transform -skew-x-6';
+      } catch (err) {
+        leadMensaje.textContent = err.message;
+        leadMensaje.className = 'mt-4 inline-block bg-yellow-400 text-black font-black italic uppercase px-6 py-2 transform -skew-x-6';
+      }
+    });
+  </script>
+</body>
+</html>

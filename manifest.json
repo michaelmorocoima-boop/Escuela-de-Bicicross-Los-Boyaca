@@ -1,0 +1,51 @@
+{
+  "name": "Escuela de Bicicross Los Boyacá BMX",
+  "short_name": "Boyacá BMX",
+  "description": "App Móvil Oficial de la Escuela de Bicicross Los Boyacá. Carnet Digital QR, Solvencia, Simulador de Partidor Pro-Gate, Mangas en Vivo e Inscripciones.",
+  "start_url": "/app.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "categories": ["sports", "education", "fitness"],
+  "icons": [
+    {
+      "src": "/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Abrir App Móvil BMX",
+      "short_name": "App BMX",
+      "url": "/app.html",
+      "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Consultar Solvencia / Pagar Mes",
+      "short_name": "Pagar Mes",
+      "url": "/registro.html?tab=mensualidad",
+      "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Inscribir en Copa BMX",
+      "short_name": "Copa BMX",
+      "url": "/registro-valida.html",
+      "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscripción y Solvencia | Escuela de Bicicross Los Boyacá</title>
+  <meta name="description" content="Inscripción de nuevos pilotos, consulta de solvencia por cédula o placa BMX y reporte rápido de mensualidades.">
+  <meta name="theme-color" content="#0ea5e9">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/svg+xml" href="./assets/icon.svg">
+  <link rel="apple-touch-icon" href="./assets/icon-192.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,700&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100vw;
+    }
+    img, picture, svg, video {
+      max-width: 100%;
+      height: auto;
+    }
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, .font-racing { font-family: 'Chakra Petch', sans-serif; }
+  </style>
+</head>
+<body class="bg-zinc-950 text-white antialiased selection:bg-yellow-400 selection:text-black min-h-screen">
+
+  <!-- HEADER & NAVBAR SEMÁNTICO -->
+  <header>
+    <nav class="bg-black text-white p-4 border-b-4 border-sky-500">
+      <div class="container mx-auto px-4 max-w-6xl flex justify-between items-center">
+        <a href="index.html" class="flex items-center gap-2.5">
+          <div class="w-9 h-9 bg-yellow-400 flex items-center justify-center transform -skew-x-12">
+            <span class="font-racing font-black text-black text-sm">BMX</span>
+          </div>
+          <span class="font-racing text-2xl font-black italic tracking-wider text-white transform -skew-x-6">
+            LOS <span class="text-sky-400">BOYACÁ</span>
+          </span>
+        </a>
+        <div class="flex items-center gap-3">
+          <a href="admin.html" class="text-zinc-400 hover:text-white text-xs font-black uppercase border border-zinc-700 px-3 py-2 transform -skew-x-6">🔐 Admin</a>
+          <a href="index.html" class="text-yellow-400 font-black italic uppercase text-xs border border-yellow-400 px-3.5 py-2 hover:bg-yellow-400 hover:text-black transition transform -skew-x-6">
+            ← Volver al Inicio
+          </a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container mx-auto px-4 py-10 max-w-5xl relative">
+    <div class="absolute top-0 right-0 w-72 h-72 bg-sky-500 rounded-full mix-blend-screen filter blur-[110px] opacity-20 pointer-events-none"></div>
+
+    <!-- PANTALLA DE ÉXITO -->
+    <div id="pantallaExito" class="hidden flex-col items-center justify-center text-center py-12">
+      <div class="text-6xl mb-4">🏁</div>
+      <h1 id="exitoTitulo" class="text-4xl md:text-6xl font-black text-white uppercase italic transform -skew-x-6 mb-3">
+        ¡Registro <span class="text-yellow-400">Completado!</span>
+      </h1>
+      <p id="exitoSubtitulo" class="text-zinc-300 text-lg mb-8 max-w-xl">
+        Tu operación en la <strong>Escuela de Bicicross Los Boyacá</strong> ha sido procesada con éxito.
+      </p>
+
+      <div class="bg-zinc-900 border-2 border-sky-400 p-7 max-w-md w-full transform -skew-x-2 shadow-[8px_8px_0px_#facc15] mb-8 text-left">
+        <div class="flex justify-between items-center border-b border-zinc-800 pb-3 mb-4">
+          <span class="font-racing font-black italic text-yellow-400 text-sm uppercase">ESCUELA LOS BOYACÁ BMX</span>
+          <span id="exitoCodigo" class="bg-sky-400 text-black font-black text-xs px-2.5 py-1">ESC-000</span>
+        </div>
+        <div class="space-y-2 text-sm">
+          <p class="text-zinc-400">PILOTO: <span id="exitoAtleta" class="text-white font-black uppercase"></span></p>
+          <p class="text-zinc-400">NIVEL / MES: <span id="exitoNivel" class="text-sky-400 font-black uppercase"></span></p>
+          <p class="text-zinc-400">CATEGORÍA: <span id="exitoCategoria" class="text-green-400 font-black uppercase"></span></p>
+          <p class="text-zinc-400">REPRESENTANTE: <span id="exitoRep" class="text-white font-bold uppercase"></span></p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-4">
+        <a id="btnWhatsappExito" href="#" target="_blank" class="bg-green-500 hover:bg-green-400 text-black font-black italic uppercase text-lg px-8 py-4 transform -skew-x-6 shadow-[4px_4px_0px_#fff] transition">
+          📲 Enviar Comprobante por WhatsApp
+        </a>
+        <a href="index.html" class="bg-zinc-900 border border-zinc-700 hover:border-yellow-400 text-white font-black italic uppercase text-lg px-8 py-4 transform -skew-x-6 transition">
+          Volver al Inicio
+        </a>
+      </div>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL CON 2 PESTAÑAS: NUEVO INGRESO vs SOLVENCIA / MENSUALIDAD -->
+    <div id="contenedorFormulario">
+      <div class="text-center mb-8">
+        <h1 class="text-4xl md:text-6xl font-black text-white uppercase italic transform -skew-x-6 mb-2">
+          Portal de <span class="text-yellow-400">Atletas BMX</span>
+        </h1>
+        <p class="text-zinc-400 italic text-base md:text-lg font-medium">
+          Selecciona si vas a inscribir un nuevo piloto o si vas a consultar solvencia / pagar el mes de un alumno regular:
+        </p>
+      </div>
+
+      <!-- SELECTOR DE 3 PESTAÑAS -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+        <button type="button" id="tabBtnNuevo" class="py-4 px-5 font-racing font-black italic uppercase text-base md:text-lg transform -skew-x-6 border-2 border-yellow-400 bg-yellow-400 text-black shadow-[5px_5px_0px_#0ea5e9] transition">
+          🚲 1. Nuevo Ingreso Escuela
+        </button>
+        <button type="button" id="tabBtnMensualidad" class="py-4 px-5 font-racing font-black italic uppercase text-base md:text-lg transform -skew-x-6 border-2 border-zinc-700 bg-zinc-900 text-zinc-300 hover:border-green-400 transition">
+          💳 2. Pagar Mensualidad (15s)
+        </button>
+        <button type="button" id="tabBtnUsuario" class="py-4 px-5 font-racing font-black italic uppercase text-base md:text-lg transform -skew-x-6 border-2 border-sky-400 bg-zinc-900 text-sky-400 hover:bg-sky-400 hover:text-black transition">
+          👤 3. Generar Usuario / Acceso Alumno
+        </button>
+      </div>
+
+      <!-- ================================================================== -->
+      <!-- PESTAÑA C: GENERAR USUARIO POR ALUMNO Y PORTAL DEL ALUMNO          -->
+      <!-- (REGISTRO DE PAGOS Y DATOS DE COMPETENCIAS DE LA ESCUELA)          -->
+      <!-- ================================================================== -->
+      <div id="panelUsuarioAlumno" class="hidden space-y-8 mb-10">
+        <!-- BLOQUE SUPERIOR: ACCESO ALUMNO + GENERADOR DE USUARIO POR ALUMNO -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Sub-panel 1: Iniciar Sesión como Alumno -->
+          <div class="bg-zinc-900 border-2 border-sky-400 p-6 md:p-8 shadow-[6px_6px_0px_#0ea5e9]">
+            <div class="bg-black inline-block px-5 py-2 transform -skew-x-6 shadow-[3px_3px_0px_#0ea5e9] mb-4">
+              <h2 class="text-lg md:text-xl font-black uppercase italic text-sky-400">
+                🔐 Ingresar al Portal del Alumno
+              </h2>
+            </div>
+            <p class="text-zinc-300 text-xs md:text-sm mb-4">
+              Ingresa con tu <strong>Usuario de Alumno</strong>, <strong>Placa BMX</strong> (ej. <code>#07</code>) o <strong>Cédula</strong> para ver tu historial de pagos y resultados en las competencias de la escuela:
+            </p>
+            <form id="formLoginAlumno" class="space-y-4">
+              <div>
+                <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Usuario, Placa o Cédula *</label>
+                <input type="text" id="loginAlumnoUser" required placeholder="Ej. santiago07, #07 o 16450123" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-sky-400 focus:outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Contraseña de Acceso (Opcional, defecto: 1234)</label>
+                <input type="password" id="loginAlumnoPass" placeholder="Clave 1234 o déjalo vacío para entrar" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-sky-400 focus:outline-none">
+              </div>
+              <p id="errLoginAlumno" class="hidden text-xs font-black uppercase text-red-400 bg-red-950/60 border border-red-500 p-2.5 text-center"></p>
+              <button type="submit" class="w-full bg-sky-400 hover:bg-yellow-400 text-black font-black italic uppercase py-3.5 transform -skew-x-6 shadow-[4px_4px_0px_#fff] transition cursor-pointer">
+                Entrar a Mi Cuenta de Alumno →
+              </button>
+            </form>
+
+            <!-- Acceso Directo por Lista de Alumnos -->
+            <div class="mt-5 pt-4 border-t border-zinc-800 space-y-2">
+              <span class="block text-[11px] text-yellow-400 font-black uppercase">⚡ O Selecciona Directamente a un Alumno de la Lista:</span>
+              <div class="flex gap-2">
+                <select id="quickSelectAlumnoLogin" class="flex-1 px-3 py-2.5 bg-zinc-950 border border-sky-400 text-yellow-300 font-bold text-xs focus:outline-none"></select>
+                <button type="button" id="btnQuickSelectGo" class="bg-sky-400 hover:bg-yellow-400 text-black font-black uppercase text-xs px-4 py-2.5 transform -skew-x-6 cursor-pointer shrink-0">
+                  Ver Perfil →
+                </button>
+              </div>
+              <div class="flex flex-wrap gap-2 pt-1">
+                <button type="button" data-demo-user="santiago07" class="btn-demo-alumno bg-zinc-950 border border-sky-500/50 hover:border-yellow-400 text-sky-400 text-xs font-black px-3 py-1.5 cursor-pointer">
+                  👤 Santiago (#07)
+                </button>
+                <button type="button" data-demo-user="valentina12" class="btn-demo-alumno bg-zinc-950 border border-sky-500/50 hover:border-yellow-400 text-sky-400 text-xs font-black px-3 py-1.5 cursor-pointer">
+                  👤 Valentina (#12)
+                </button>
+                <button type="button" data-demo-user="matias25" class="btn-demo-alumno bg-zinc-950 border border-sky-500/50 hover:border-yellow-400 text-sky-400 text-xs font-black px-3 py-1.5 cursor-pointer">
+                  👤 Matías (#25)
+                </button>
+                <button type="button" data-demo-user="liam88" class="btn-demo-alumno bg-zinc-950 border border-sky-500/50 hover:border-yellow-400 text-sky-400 text-xs font-black px-3 py-1.5 cursor-pointer">
+                  👤 Liam (#88)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sub-panel 2: Generar / Crear Usuario por Alumno -->
+          <div class="bg-zinc-900 border-2 border-yellow-400 p-6 md:p-8 shadow-[6px_6px_0px_#facc15]">
+            <div class="bg-black inline-block px-5 py-2 transform -skew-x-6 shadow-[3px_3px_0px_#facc15] mb-4">
+              <h2 class="text-lg md:text-xl font-black uppercase italic text-yellow-400">
+                ⚙️ Generar Usuario por Alumno
+              </h2>
+            </div>
+            <p class="text-zinc-300 text-xs md:text-sm mb-4">
+              Selecciona a un piloto inscrito en la escuela y asígnale (o actualiza) su <strong>Nombre de Usuario</strong> y <strong>Contraseña</strong> para consultar sus pagos y competencias:
+            </p>
+            <form id="formGenerarUsuario" class="space-y-4">
+              <div>
+                <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Seleccionar Alumno de la Escuela *</label>
+                <select id="selectAtletaUsuario" required class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-yellow-400 focus:outline-none">
+                </select>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Nuevo Usuario *</label>
+                  <input type="text" id="inputNuevoUsuario" required placeholder="Ej. santiago07" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-yellow-400 font-bold lowercase focus:border-yellow-400 focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Contraseña *</label>
+                  <input type="text" id="inputNuevaClave" required placeholder="Ej. 1234" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-yellow-400 focus:outline-none">
+                </div>
+              </div>
+              <p id="msgUsuarioGenerado" class="hidden text-xs font-black uppercase text-green-400 bg-green-950/70 border border-green-500 p-2.5 text-center"></p>
+              <button type="submit" class="w-full bg-yellow-400 hover:bg-green-400 text-black font-black italic uppercase py-3.5 transform -skew-x-6 shadow-[4px_4px_0px_#0ea5e9] transition cursor-pointer">
+                ✓ Guardar / Generar Usuario del Alumno
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- EXPEDIENTE ACTIVO DEL ALUMNO LOGUEADO (PAGOS + COMPETENCIAS ESCUELA) -->
+        <div id="vistaExpedienteAlumno" class="hidden space-y-8">
+          <!-- Cabecera de Perfil del Alumno -->
+          <div class="bg-zinc-900 border-2 border-green-400 p-6 md:p-8 shadow-[8px_8px_0px_#22c55e]">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800 pb-5 mb-5">
+              <div>
+                <div class="flex flex-wrap items-center gap-2 mb-2">
+                  <span id="expPlaca" class="bg-yellow-400 text-black font-racing font-black italic text-xl px-3 py-0.5 transform -skew-x-6">#07</span>
+                  <span id="expUsuarioTag" class="bg-sky-500/20 border border-sky-400 text-sky-300 text-xs font-black px-3 py-1">👤 @santiago07</span>
+                  <span id="expSolvencia" class="bg-green-500 text-black font-racing font-black italic text-xs px-3 py-1 uppercase">SOLVENTE</span>
+                </div>
+                <h3 id="expNombre" class="text-3xl md:text-4xl font-black uppercase italic text-white">SANTIAGO GÓMEZ</h3>
+                <p id="expCategoria" class="text-sm font-bold text-sky-400 uppercase mt-1">SEMILLITAS • Semillitas 5 y 6 años - Masculino</p>
+              </div>
+              <div class="flex flex-wrap items-center gap-3">
+                <button type="button" id="btnIrPagarMesAlumno" class="bg-green-500 hover:bg-yellow-400 text-black font-black italic uppercase text-xs px-4 py-3 transform -skew-x-6">
+                  💳 Reportar Nuevo Pago ($40)
+                </button>
+                <a href="valida.html" class="bg-yellow-400 hover:bg-sky-400 text-black font-black italic uppercase text-xs px-4 py-3 transform -skew-x-6">
+                  🏆 Inscribir en Válida ($8)
+                </a>
+                <button type="button" id="btnCerrarSesionAlumno" class="bg-zinc-950 border border-zinc-700 hover:border-red-500 text-zinc-300 font-black uppercase text-xs px-4 py-3">
+                  Salir
+                </button>
+              </div>
+            </div>
+
+            <!-- KPIs del Alumno -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div class="bg-zinc-950 border border-zinc-800 p-4">
+                <span class="block text-[10px] font-black uppercase text-zinc-400">Representante / Teléfono</span>
+                <span id="expRep" class="text-sm font-black text-white uppercase block mt-1">CARLOS GÓMEZ</span>
+                <span id="expTel" class="text-xs text-zinc-400">0414-8213344</span>
+              </div>
+              <div class="bg-zinc-950 border border-zinc-800 p-4">
+                <span class="block text-[10px] font-black uppercase text-zinc-400">Último Mes Pagado</span>
+                <span id="expUltimoMes" class="text-lg font-racing font-black italic text-yellow-400 block mt-1">OCTUBRE 2026</span>
+              </div>
+              <div class="bg-zinc-950 border border-zinc-800 p-4">
+                <span class="block text-[10px] font-black uppercase text-zinc-400">Total Pagos Registrados</span>
+                <span id="expTotalPagado" class="text-2xl font-racing font-black italic text-green-400 block mt-1">$58.00 USD</span>
+              </div>
+              <div class="bg-zinc-950 border border-zinc-800 p-4">
+                <span class="block text-[10px] font-black uppercase text-zinc-400">Puntos Ranking Escuela</span>
+                <span id="expPuntosRanking" class="text-2xl font-racing font-black italic text-sky-400 block mt-1">41 PTS</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN 1 DEL EXPEDIENTE: REGISTRO HISTÓRICO DE PAGOS DEL ALUMNO -->
+          <div class="bg-zinc-900 border-2 border-zinc-800 p-6 md:p-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
+              <div>
+                <h3 class="text-2xl font-black uppercase italic text-yellow-400">
+                  💳 Registro de Datos de Pago del Alumno
+                </h3>
+                <p class="text-xs text-zinc-400">Historial unificado de Inscripción en la Escuela ($10), Mensualidades ($40) e Inscripciones en Competencias ($8).</p>
+              </div>
+              <span id="badgeConteoPagos" class="bg-zinc-950 border border-yellow-400 text-yellow-400 text-xs font-black px-3 py-1.5 uppercase self-start">0 Pagos</span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr class="bg-zinc-950 text-zinc-400 uppercase border-b border-zinc-800">
+                    <th class="p-3">Código</th>
+                    <th class="p-3">Tipo de Pago</th>
+                    <th class="p-3">Concepto / Mes / Evento</th>
+                    <th class="p-3">Monto USD</th>
+                    <th class="p-3">Método y Referencia</th>
+                    <th class="p-3">Fecha</th>
+                    <th class="p-3">Estado</th>
+                  </tr>
+                </thead>
+                <tbody id="tablaPagosAlumno" class="divide-y divide-zinc-800 font-medium"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- SECCIÓN 2 DEL EXPEDIENTE: DATOS DE COMPETENCIAS DE LA ESCUELA Y RESULTADOS -->
+          <div class="bg-zinc-900 border-2 border-sky-400 p-6 md:p-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
+              <div>
+                <h3 class="text-2xl font-black uppercase italic text-sky-400">
+                  🏆 Datos de Competencias de la Escuela y Resultados
+                </h3>
+                <p class="text-xs text-zinc-400">Competencias oficiales y chequeos realizados por la Escuela Los Boyacá, mangas asignadas, posiciones y puntos del alumno.</p>
+              </div>
+              <span class="bg-sky-500/20 border border-sky-400 text-sky-300 text-xs font-black px-3 py-1.5 uppercase self-start">Pista Los Boyacá</span>
+            </div>
+            <div id="gridCompetenciasAlumno" class="grid grid-cols-1 md:grid-cols-3 gap-5"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="panelMensualidad" class="hidden bg-zinc-900 p-6 md:p-10 shadow-[8px_8px_0px_#22c55e] border-2 border-green-400 mb-10">
+        <div class="bg-black inline-block px-7 py-2.5 transform -skew-x-6 shadow-[4px_4px_0px_#22c55e] mb-6">
+          <h2 class="text-xl md:text-2xl font-black uppercase italic text-green-400">
+            💳 Consulta de Solvencia y Pago Rápido (Alumnos Regulares)
+          </h2>
+        </div>
+
+        <p class="text-zinc-300 text-sm md:text-base mb-5">
+          Escribe la <strong>Cédula del Representante</strong>, el <strong>Número de Placa del niño</strong> (ej. <code>#07</code>, <code>#12</code>, <code>#25</code>) o su <strong>Nombre</strong> para cargar su ficha al instante sin volver a llenar todos los datos:
+        </p>
+
+        <!-- Buscador Instantáneo -->
+        <div class="flex flex-col sm:flex-row gap-3 mb-4">
+          <input type="text" id="inputBuscarAtleta" placeholder="Ingresa Cédula (ej. 16450123), Placa (ej. #07 o #12) o Nombre..." class="flex-1 px-5 py-4 bg-zinc-950 border-2 border-sky-400 text-white font-bold uppercase focus:outline-none">
+          <button type="button" id="btnBuscarAtleta" class="bg-sky-400 hover:bg-yellow-400 text-black font-black italic uppercase px-8 py-4 transform -skew-x-6 shadow-[4px_4px_0px_#fff] transition">
+            🔍 Buscar Piloto
+          </button>
+        </div>
+
+        <!-- Botones de prueba rápida -->
+        <div class="flex flex-wrap items-center gap-2 mb-8 text-xs">
+          <span class="text-zinc-400 font-bold uppercase">Prueba rápida con atletas registrados:</span>
+          <button type="button" data-quick="#07" class="btn-quick-search bg-zinc-950 border border-zinc-700 hover:border-yellow-400 text-yellow-400 font-bold px-3 py-1">Placa #07 (Santiago)</button>
+          <button type="button" data-quick="#12" class="btn-quick-search bg-zinc-950 border border-zinc-700 hover:border-yellow-400 text-yellow-400 font-bold px-3 py-1">Placa #12 (Valentina - Pendiente)</button>
+          <button type="button" data-quick="#25" class="btn-quick-search bg-zinc-950 border border-zinc-700 hover:border-yellow-400 text-yellow-400 font-bold px-3 py-1">Placa #25 (Matías)</button>
+          <button type="button" data-quick="#88" class="btn-quick-search bg-zinc-950 border border-zinc-700 hover:border-yellow-400 text-yellow-400 font-bold px-3 py-1">Placa #88 (Liam)</button>
+        </div>
+
+        <!-- Resultado de la Búsqueda y Ficha de Solvencia -->
+        <div id="resultadoBusqueda" class="hidden space-y-8">
+          <div class="bg-zinc-950 border-2 border-sky-400 p-6 transform -skew-x-1">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800 pb-4 mb-4">
+              <div>
+                <span id="fichaPlaca" class="bg-yellow-400 text-black font-racing font-black italic text-lg px-3 py-0.5 transform -skew-x-6 inline-block mb-1">#07</span>
+                <h3 id="fichaNombre" class="text-2xl md:text-3xl font-black uppercase italic text-white">SANTIAGO GÓMEZ</h3>
+                <p id="fichaCategoria" class="text-sm font-bold text-sky-400 uppercase">Semillitas 5 y 6 años - Masculino</p>
+              </div>
+              <div class="text-left md:text-right">
+                <span class="text-xs font-black uppercase text-zinc-400 block mb-1">ESTADO DE SOLVENCIA ACTUAL</span>
+                <span id="fichaSolvenciaBadge" class="inline-block px-4 py-2 font-racing font-black italic text-base uppercase">SOLVENTE</span>
+                <p id="fichaUltimoMes" class="text-xs text-zinc-400 mt-1">Último mes reportado: OCTUBRE 2026</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-zinc-300">
+              <div><strong>Representante:</strong> <span id="fichaRep"></span></div>
+              <div><strong>Cédula:</strong> <span id="fichaCedula"></span></div>
+              <div><strong>Teléfono:</strong> <span id="fichaTel"></span></div>
+            </div>
+          </div>
+
+          <!-- Formulario de 15 segundos para reportar el nuevo mes -->
+          <form id="formPagoMensualidad" class="space-y-6 bg-zinc-950 p-6 border border-zinc-800">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800 pb-4">
+              <div>
+                <h4 class="text-xl font-black uppercase italic text-yellow-400">
+                  ⚡ Reportar Pago de Nueva Mensualidad en 15 Segundos
+                </h4>
+                <p class="text-xs text-zinc-400">Pago Móvil BDV (0102) • Tel: <strong class="text-white">0412-9861147</strong> • CI: <strong class="text-white">V-21.387.698</strong> (Michael Morocoima)</p>
+              </div>
+              <div class="bg-zinc-900 border border-green-400/50 px-4 py-2 text-right">
+                <span class="block text-[10px] font-black uppercase text-zinc-400">MONTO MENSUALIDAD</span>
+                <span id="montoMesBolivares" class="text-xl font-racing font-black italic text-green-400">35.242,40 Bs.</span>
+                <span id="montoMesUsdBadge" class="text-white font-bold text-sm ml-1">( $40.00 )</span>
+              </div>
+            </div>
+            <input type="hidden" id="mensualidadAtletaId">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-black uppercase text-zinc-300 mb-2">Mes a Cancelar *</label>
+                <select id="mes_cancelar" required class="w-full px-4 py-3.5 bg-zinc-900 border border-zinc-700 text-white font-bold">
+                  <option value="OCTUBRE 2026">OCTUBRE 2026</option>
+                  <option value="NOVIEMBRE 2026" selected>NOVIEMBRE 2026</option>
+                  <option value="DICIEMBRE 2026">DICIEMBRE 2026</option>
+                  <option value="ENERO 2027">ENERO 2027</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-black uppercase text-zinc-300 mb-2">Método de Pago *</label>
+                <select id="metodo_pago_mes" required class="w-full px-4 py-3.5 bg-zinc-900 border border-zinc-700 text-white font-bold">
+                  <option value="Pago Movil">Pago Móvil</option>
+                  <option value="Transferencia">Transferencia Bancaria</option>
+                  <option value="Efectivo Pista">Efectivo / Divisas en Pista</option>
+                </select>
+              </div>
+              <div id="grupoRefMes">
+                <label class="block text-xs font-black uppercase text-zinc-300 mb-2">Número de Referencia *</label>
+                <input type="text" id="referencia_mes" required placeholder="EJ. 904512" class="w-full px-4 py-3.5 bg-zinc-900 border border-zinc-700 text-white font-bold uppercase">
+              </div>
+              <div id="grupoCapMes">
+                <label class="block text-xs font-black uppercase text-zinc-300 mb-2">Subir Capture de Pago *</label>
+                <input type="file" id="capture_mes" accept="image/*" class="w-full px-3 py-2.5 bg-zinc-900 border border-zinc-700 text-xs text-zinc-300">
+              </div>
+            </div>
+            <button type="submit" id="btnEnviarMensualidad" class="w-full bg-green-500 hover:bg-yellow-400 text-black font-black italic uppercase text-xl py-4 transform -skew-x-6 shadow-[5px_5px_0px_#fff] transition cursor-pointer">
+              ✓ Enviar Reporte de Mensualidad →
+            </button>
+          </form>
+        </div>
+
+        <div id="noEncontradoMsg" class="hidden bg-red-600/20 border border-red-500 p-4 text-center text-sm font-bold text-red-300">
+          No se encontró ningún atleta con ese dato. Verifica la cédula o placa, o inscríbelo en la pestaña "1. Nuevo Ingreso".
+        </div>
+      </div>
+
+      <!-- ================================================================== -->
+      <!-- PESTAÑA A: FORMULARIO DE NUEVO INGRESO A LA ESCUELA                -->
+      <!-- ================================================================== -->
+      <form id="formEscuela" class="bg-zinc-900 p-6 md:p-10 shadow-[8px_8px_0px_#0ea5e9] border-2 border-sky-400 flex flex-col gap-10 relative z-10">
+
+        <!-- SECCIÓN 1: DATOS DEL ATLETA -->
+        <div>
+          <div class="bg-black inline-block px-7 py-2.5 transform -skew-x-6 shadow-[4px_4px_0px_#facc15] mb-7">
+            <h2 class="text-xl md:text-2xl font-black uppercase italic text-yellow-400">
+              1. Datos del Piloto / Atleta
+            </h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="nombre_atleta" class="block text-sm font-black uppercase text-zinc-300 mb-2">Nombres del Atleta *</label>
+              <input type="text" id="nombre_atleta" required placeholder="EJ. SANTIAGO ALEJANDRO" class="w-full px-4 py-3.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:border-yellow-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label for="apellido_atleta" class="block text-sm font-black uppercase text-zinc-300 mb-2">Apellidos del Atleta *</label>
+              <input type="text" id="apellido_atleta" required placeholder="EJ. PÉREZ ROJAS" class="w-full px-4 py-3.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:border-yellow-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label for="fecha_nacimiento" class="block text-sm font-black uppercase text-zinc-300 mb-2">Fecha de Nacimiento *</label>
+              <input type="date" id="fecha_nacimiento" required class="w-full px-4 py-3.5 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-yellow-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label for="numero_placa" class="block text-sm font-black uppercase text-zinc-300 mb-2">Número de Placa Deseado (Opcional)</label>
+              <input type="text" id="numero_placa" placeholder="EJ. #77" class="w-full px-4 py-3.5 bg-zinc-950 border border-zinc-700 text-yellow-400 font-racing font-black uppercase focus:border-yellow-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label for="nivel_escuela" class="block text-sm font-black uppercase text-zinc-300 mb-2">Nivel / Plan de Entrenamiento *</label>
+              <select id="nivel_escuela" required class="w-full px-4 py-3.5 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-yellow-400 focus:outline-none">
+                <option value="BALANCE">Balance / Strider (2 a 4 años)</option>
+                <option value="SEMILLITAS">Semillitas / Iniciación (5 a 7 años)</option>
+                <option value="NOVATOS">Novatos / Desarrollo (8 a 12 años)</option>
+                <option value="EXPERTOS">Expertos / Selección Competencia</option>
+                <option value="MASTER_OPEN">Open / Élite y Master Adultos (+17 años)</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="posee_bici" class="block text-sm font-black uppercase text-zinc-300 mb-2">¿Posee Bicicleta y Casco?</label>
+              <select id="posee_bici" class="w-full px-4 py-3.5 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-yellow-400 focus:outline-none">
+                <option value="SI_COMPLETO">Sí, posee bicicleta y casco Full Face</option>
+                <option value="SOLO_BICI">Solo posee bicicleta (requiere casco)</option>
+                <option value="NO_POSEE">No posee aún (requiere asesoría/préstamo inicial)</option>
+              </select>
+            </div>
+
+            <!-- Género -->
+            <div class="md:col-span-2">
+              <span class="block text-sm font-black uppercase text-zinc-300 mb-2">Género del Atleta *</span>
+              <div class="flex gap-4">
+                <input type="hidden" id="genero_atleta" required>
+                <button type="button" id="btnMasc" class="flex-1 py-3.5 bg-zinc-950 border border-zinc-700 text-zinc-400 font-black uppercase transition hover:border-sky-400">
+                  MASCULINO
+                </button>
+                <button type="button" id="btnFem" class="flex-1 py-3.5 bg-zinc-950 border border-zinc-700 text-zinc-400 font-black uppercase transition hover:border-yellow-400">
+                  FEMENINO
+                </button>
+              </div>
+            </div>
+
+            <div class="md:col-span-2">
+              <label for="condicion_medica" class="block text-sm font-black uppercase text-zinc-300 mb-2">Tipo de Sangre / Alergia o Condición Médica</label>
+              <input type="text" id="condicion_medica" placeholder="EJ. O+ / NINGUNA ALERGIA" class="w-full px-4 py-3.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:border-yellow-400 focus:outline-none">
+            </div>
+          </div>
+
+          <div class="mt-6 bg-zinc-950 p-5 border border-zinc-800 text-center transform -skew-x-2">
+            <p class="text-xs font-black text-zinc-400 uppercase tracking-wider mb-1">Categoría Oficial según Año Calendario</p>
+            <p id="categoriaDisplay" class="text-2xl md:text-3xl font-racing font-black italic uppercase text-green-400">
+              Seleccione fecha de nacimiento y género
+            </p>
+            <input type="hidden" id="categoria_final">
+          </div>
+        </div>
+
+        <!-- SECCIÓN 2: DATOS DEL REPRESENTANTE -->
+        <div>
+          <div class="bg-black inline-block px-7 py-2.5 transform -skew-x-6 shadow-[4px_4px_0px_#0ea5e9] mb-7">
+            <h2 class="text-xl md:text-2xl font-black uppercase italic text-sky-400">
+              2. Datos del Representante (o Atleta Adulto)
+            </h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="nombre_rep" class="block text-sm font-black uppercase text-zinc-300 mb-2">Nombre y Apellido del Representante *</label>
+              <input type="text" id="nombre_rep" required placeholder="EJ. MARÍA ROJAS" class="w-full px-4 py-3.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:border-sky-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label for="cedula_rep" class="block text-sm font-black uppercase text-zinc-300 mb-2">Cédula de Identidad *</label>
+              <input type="text" id="cedula_rep" required placeholder="EJ. 16543210" class="w-full px-4 py-3.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:border-sky-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label for="telefono_rep" class="block text-sm font-black uppercase text-zinc-300 mb-2">Teléfono WhatsApp *</label>
+              <input type="tel" id="telefono_rep" required placeholder="EJ. 0424-8000000" class="w-full px-4 py-3.5 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-sky-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label for="sector_res" class="block text-sm font-black uppercase text-zinc-300 mb-2">Sector / Urbanización *</label>
+              <input type="text" id="sector_res" required placeholder="EJ. BOYACÁ III, BARCELONA" class="w-full px-4 py-3.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:border-sky-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label for="usuario_nuevo_alumno" class="block text-sm font-black uppercase text-yellow-400 mb-2">Crear Usuario del Alumno (Portal Pagos/Competencias)</label>
+              <input type="text" id="usuario_nuevo_alumno" placeholder="EJ. santiago07 (Si se deja vacío se genera automático)" class="w-full px-4 py-3.5 bg-zinc-950 border border-yellow-400/60 text-yellow-400 font-bold lowercase focus:border-yellow-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label for="clave_nuevo_alumno" class="block text-sm font-black uppercase text-yellow-400 mb-2">Contraseña del Alumno</label>
+              <input type="text" id="clave_nuevo_alumno" value="1234" placeholder="EJ. 1234" class="w-full px-4 py-3.5 bg-zinc-950 border border-yellow-400/60 text-white font-bold focus:border-yellow-400 focus:outline-none">
+            </div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN 3: REPORTE DE PAGO -->
+        <div>
+          <div class="bg-black inline-block px-7 py-2.5 transform -skew-x-6 shadow-[4px_4px_0px_#22c55e] mb-7">
+            <h2 class="text-xl md:text-2xl font-black uppercase italic text-green-400">
+              3. Reporte de Pago
+            </h2>
+          </div>
+
+          <div class="bg-zinc-950 p-6 border-l-4 border-yellow-400 mb-6 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex-1 w-full md:pr-6 md:border-r border-zinc-800">
+              <span class="block text-xs font-black uppercase text-zinc-400 tracking-wider mb-1">COSTO DE INSCRIPCIÓN ESCUELA</span>
+              <div class="flex items-center gap-3">
+                <span id="montoBolivares" class="text-3xl font-racing font-black italic text-green-400">8.810,60 Bs.</span>
+                <span id="montoUsdBadge" class="text-white font-bold text-lg bg-zinc-800 px-3 py-1">( $10.00 )</span>
+              </div>
+              <span id="infoMensualidadCosto" class="text-xs text-yellow-400 font-black uppercase mt-1.5 block">💳 Mensualidad Regular: $40.00 USD (<span id="montoMesRefBs">35.242,40 Bs.</span>)</span>
+              <span id="tasaDisplay" class="text-xs text-sky-400 font-bold uppercase mt-1 block">TASA BCV: Cargando...</span>
+              <p id="avisoCopiado" class="text-xs text-zinc-400 font-medium mt-3">
+                👆 Toca cualquier recuadro bancario para copiarlo al portapapeles.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm w-full md:w-auto flex-1">
+              <button type="button" id="copyBanco" data-copy="0102" data-label="Banco" class="btn-copy-dato text-left bg-black p-3.5 border border-zinc-800 hover:border-yellow-400 transition">
+                <span class="block text-[11px] text-zinc-400 font-black uppercase">Banco</span>
+                <span id="txtBanco" class="text-white font-bold">Banco de Venezuela (0102)</span>
+              </button>
+              <button type="button" id="copyTel" data-copy="04129861147" data-label="Teléfono" class="btn-copy-dato text-left bg-black p-3.5 border border-zinc-800 hover:border-yellow-400 transition">
+                <span class="block text-[11px] text-zinc-400 font-black uppercase">Teléfono Pago Móvil</span>
+                <span id="txtTel" class="text-white font-bold">0412-9861147</span>
+              </button>
+              <button type="button" id="copyCed" data-copy="21387698" data-label="Cédula" class="btn-copy-dato text-left bg-black p-3.5 border border-zinc-800 hover:border-yellow-400 transition">
+                <span class="block text-[11px] text-zinc-400 font-black uppercase">Cédula de Identidad</span>
+                <span id="txtCed" class="text-white font-bold">V-21.387.698</span>
+              </button>
+              <div class="bg-black p-3.5 border border-zinc-800">
+                <span class="block text-[11px] text-zinc-400 font-black uppercase">Titular</span>
+                <span id="txtTitular" class="text-white font-bold text-xs">Michael Morocoima</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="metodo_pago" class="block text-sm font-black uppercase text-zinc-300 mb-2">Método de Pago *</label>
+              <select id="metodo_pago" required class="w-full px-4 py-3.5 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-green-400 focus:outline-none">
+                <option value="Pago Movil">Pago Móvil</option>
+                <option value="Transferencia">Transferencia Bancaria</option>
+                <option value="Efectivo Pista">Efectivo / Divisas en Pista</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="fecha_pago" class="block text-sm font-black uppercase text-zinc-300 mb-2">Fecha del Pago *</label>
+              <input type="date" id="fecha_pago" required class="w-full px-4 py-3.5 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-green-400 focus:outline-none">
+            </div>
+
+            <div id="grupoReferencia">
+              <label for="referencia" class="block text-sm font-black uppercase text-zinc-300 mb-2">Número de Referencia *</label>
+              <input type="text" id="referencia" required placeholder="EJ. 849201" class="w-full px-4 py-3.5 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:border-green-400 focus:outline-none">
+            </div>
+
+            <div id="grupoCapture">
+              <label for="comprobante" class="block text-sm font-black uppercase text-zinc-300 mb-2">Capture de Pago (Subida Cloud / Local)</label>
+              <div class="relative w-full h-14 bg-zinc-950 border-2 border-dashed border-zinc-700 hover:border-green-400 transition flex items-center justify-center cursor-pointer">
+                <input type="file" id="comprobante" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                <div class="text-center pointer-events-none flex items-center gap-2 px-3 truncate">
+                  <span>📸</span>
+                  <span id="nombreArchivo" class="text-xs font-bold text-zinc-400 uppercase truncate">Subir imagen del comprobante</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN 4: REGLAMENTO -->
+        <div class="bg-zinc-950 p-6 border border-zinc-800 text-center">
+          <button type="button" id="btnAbrirTerminos" class="text-yellow-400 hover:text-yellow-300 font-black italic uppercase underline text-sm md:text-base mb-4">
+            📖 Leer Reglamento de Seguridad y Exención de Responsabilidad
+          </button>
+          <div class="flex items-center justify-center gap-3">
+            <input type="checkbox" id="checkTerminos" required class="w-5 h-5 accent-green-500 cursor-pointer">
+            <label for="checkTerminos" class="text-zinc-200 font-bold text-sm md:text-base cursor-pointer">
+              Acepto el reglamento interno, uso obligatorio de casco y exención de responsabilidad.
+            </label>
+          </div>
+        </div>
+
+        <div id="mensajeError" class="hidden text-center bg-red-600 text-white font-black text-base uppercase p-4 transform -skew-x-2"></div>
+
+        <button type="submit" id="btnProcesar" class="bg-yellow-400 hover:bg-green-400 text-black font-black italic uppercase text-2xl py-5 transition-all transform -skew-x-6 shadow-[6px_6px_0px_#0ea5e9] cursor-pointer">
+          Completar Inscripción en la Escuela →
+        </button>
+      </form>
+    </div>
+
+    <!-- MODAL REGLAMENTO -->
+    <div id="modalTerminos" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4">
+      <div class="bg-zinc-900 border-2 border-yellow-400 max-w-xl w-full p-6 md:p-8 transform -skew-x-2 shadow-[8px_8px_0px_#0ea5e9]">
+        <h2 class="text-2xl font-black uppercase italic text-yellow-400 mb-4">Reglamento y Exención de Responsabilidad</h2>
+        <div class="space-y-3 text-zinc-300 text-sm mb-6 leading-relaxed">
+          <p>1. Todo atleta debe ingresar a la Pista de Bicicross Los Boyacá con su <strong>casco integral (Full Face) abrochado</strong>, guantes completos, suéter manga larga y pantalón largo.</p>
+          <p>2. Declaro que el atleta se encuentra apto físicamente para la práctica del Bicicross (BMX Racing) y asumo los riesgos propios de este deporte de acción.</p>
+          <p>3. Libero de responsabilidad civil o penal a la directiva y entrenadores de la Escuela de Bicicross Los Boyacá ante caídas o incidentes fortuitos propios de la actividad en pista.</p>
+        </div>
+        <button type="button" id="btnAceptarTerminos" class="w-full bg-green-500 hover:bg-green-400 text-black font-black uppercase italic py-3.5">
+          Entendido, Acepto el Reglamento
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- BOTÓN FLOTANTE DE WHATSAPP -->
+  <a href="https://wa.me/584129861147" target="_blank" rel="noopener" class="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-green-500 hover:bg-yellow-400 text-black font-black italic uppercase text-xs px-4 py-3 transform -skew-x-6 shadow-[4px_4px_0px_#000] border-2 border-white">
+    <span>💬</span> <span>Soporte WhatsApp</span>
+  </a>
+
+  <script type="module">
+    import {
+      getConfig,
+      fetchTasaBcv,
+      formatBs,
+      calcularCategoriaBmx,
+      guardarInscripcionEscuela,
+      procesarYSubirCapture,
+      buscarAtletaRegular,
+      registrarPagoMensualidad,
+      getInscripcionesEscuela,
+      generarUsuarioAlumno,
+      loginAlumno,
+      getAlumnoLogueado,
+      logoutAlumno,
+      obtenerExpedienteAlumno
+    } from './js/store.js?v=9';
+
+    const config = getConfig();
+    const fechaPagoInput = document.getElementById('fecha_pago');
+    const fechaNacInput = document.getElementById('fecha_nacimiento');
+    const hoy = new Date().toISOString().split('T')[0];
+    fechaPagoInput.value = hoy;
+    fechaNacInput.max = hoy;
+
+    // Manejo de 3 Pestañas (Nuevo Ingreso vs Solvencia/Mensualidad vs Usuario Alumno)
+    const tabBtnNuevo = document.getElementById('tabBtnNuevo');
+    const tabBtnMensualidad = document.getElementById('tabBtnMensualidad');
+    const tabBtnUsuario = document.getElementById('tabBtnUsuario');
+    const formEscuela = document.getElementById('formEscuela');
+    const panelMensualidad = document.getElementById('panelMensualidad');
+    const panelUsuarioAlumno = document.getElementById('panelUsuarioAlumno');
+
+    const clsInactivo = 'py-4 px-5 font-racing font-black italic uppercase text-base md:text-lg transform -skew-x-6 border-2 border-zinc-700 bg-zinc-900 text-zinc-300 hover:border-yellow-400 transition';
+
+    function activarTab(modo) {
+      formEscuela.classList.add('hidden');
+      panelMensualidad.classList.add('hidden');
+      panelUsuarioAlumno.classList.add('hidden');
+      tabBtnNuevo.className = clsInactivo;
+      tabBtnMensualidad.className = clsInactivo;
+      tabBtnUsuario.className = clsInactivo;
+
+      if (modo === 'mensualidad') {
+        panelMensualidad.classList.remove('hidden');
+        tabBtnMensualidad.className = 'py-4 px-5 font-racing font-black italic uppercase text-base md:text-lg transform -skew-x-6 border-2 border-green-400 bg-green-400 text-black shadow-[5px_5px_0px_#0ea5e9] transition';
+      } else if (modo === 'usuario') {
+        panelUsuarioAlumno.classList.remove('hidden');
+        tabBtnUsuario.className = 'py-4 px-5 font-racing font-black italic uppercase text-base md:text-lg transform -skew-x-6 border-2 border-sky-400 bg-sky-400 text-black shadow-[5px_5px_0px_#facc15] transition';
+        poblarSelectAtletasUsuario();
+        const logueado = getAlumnoLogueado();
+        const lista = getInscripcionesEscuela();
+        const idTarget = logueado ? logueado.id : (lista[0] ? lista[0].id : null);
+        if (idTarget) {
+          renderizarExpedienteAlumno(idTarget);
+        }
+      } else {
+        formEscuela.classList.remove('hidden');
+        tabBtnNuevo.className = 'py-4 px-5 font-racing font-black italic uppercase text-base md:text-lg transform -skew-x-6 border-2 border-yellow-400 bg-yellow-400 text-black shadow-[5px_5px_0px_#0ea5e9] transition';
+      }
+    }
+
+    tabBtnNuevo.addEventListener('click', () => activarTab('nuevo'));
+    tabBtnMensualidad.addEventListener('click', () => activarTab('mensualidad'));
+    tabBtnUsuario.addEventListener('click', () => activarTab('usuario'));
+
+    // =========================================================================
+    // LÓGICA DE GENERACIÓN DE USUARIO POR ALUMNO Y PORTAL DEL ALUMNO
+    // =========================================================================
+    const selectAtletaUsuario = document.getElementById('selectAtletaUsuario');
+    const inputNuevoUsuario = document.getElementById('inputNuevoUsuario');
+    const inputNuevaClave = document.getElementById('inputNuevaClave');
+    const msgUsuarioGenerado = document.getElementById('msgUsuarioGenerado');
+
+    function poblarSelectAtletasUsuario() {
+      const lista = getInscripcionesEscuela();
+      selectAtletaUsuario.innerHTML = lista.map(a =>
+        `<option value="${a.id}">${a.numero_placa || '#S/N'} - ${a.nombre_atleta} ${a.apellido_atleta} (Usuario actual: ${a.usuario || 'sin asignar'})</option>`
+      ).join('');
+
+      const quickSelect = document.getElementById('quickSelectAlumnoLogin');
+      if (quickSelect) {
+        quickSelect.innerHTML = lista.map(a =>
+          `<option value="${a.id}">${a.numero_placa || '#S/N'} • ${a.nombre_atleta} ${a.apellido_atleta} (@${a.usuario || 'alumno'})</option>`
+        ).join('');
+      }
+
+      if (lista.length > 0) {
+        actualizarCamposGenerador(lista[0].id);
+      }
+    }
+
+    function actualizarCamposGenerador(atletaId) {
+      const lista = getInscripcionesEscuela();
+      const a = lista.find(item => item.id === atletaId);
+      if (!a) return;
+      const sugerido = a.usuario || `${(a.nombre_atleta || 'piloto').split(' ')[0].toLowerCase()}${String(a.numero_placa || '').replace(/[^0-9]/g, '') || 'bmx'}`;
+      inputNuevoUsuario.value = sugerido;
+      inputNuevaClave.value = a.clave_acceso || '1234';
+    }
+
+    selectAtletaUsuario.addEventListener('change', e => actualizarCamposGenerador(e.target.value));
+
+    document.getElementById('formGenerarUsuario').addEventListener('submit', e => {
+      e.preventDefault();
+      msgUsuarioGenerado.classList.add('hidden');
+      const res = generarUsuarioAlumno({
+        atletaId: selectAtletaUsuario.value,
+        usuario: inputNuevoUsuario.value,
+        clave: inputNuevaClave.value
+      });
+      if (!res.ok) {
+        msgUsuarioGenerado.textContent = `⚠️ ${res.error}`;
+        msgUsuarioGenerado.className = 'text-xs font-black uppercase text-red-400 bg-red-950/70 border border-red-500 p-2.5 text-center';
+        msgUsuarioGenerado.classList.remove('hidden');
+        return;
+      }
+      msgUsuarioGenerado.textContent = `✓ Usuario @${res.atleta.usuario} (Clave: ${res.atleta.clave_acceso}) guardado para ${res.atleta.nombre_atleta}. ¡Abriendo su expediente!`;
+      msgUsuarioGenerado.className = 'text-xs font-black uppercase text-green-400 bg-green-950/70 border border-green-500 p-2.5 text-center';
+      msgUsuarioGenerado.classList.remove('hidden');
+      poblarSelectAtletasUsuario();
+      selectAtletaUsuario.value = res.atleta.id;
+      loginAlumno(res.atleta.usuario, res.atleta.clave_acceso);
+      renderizarExpedienteAlumno(res.atleta.id);
+    });
+
+    function renderizarExpedienteAlumno(atletaId) {
+      const exp = obtenerExpedienteAlumno(atletaId);
+      const contenedor = document.getElementById('vistaExpedienteAlumno');
+      if (!exp) {
+        contenedor.classList.add('hidden');
+        return;
+      }
+      contenedor.classList.remove('hidden');
+      const a = exp.atleta;
+
+      document.getElementById('expPlaca').textContent = a.numero_placa || '#S/N';
+      document.getElementById('expUsuarioTag').textContent = `👤 @${a.usuario || 'alumno'} (Clave: ${a.clave_acceso || '1234'})`;
+      document.getElementById('expNombre').textContent = `${a.nombre_atleta} ${a.apellido_atleta}`;
+      document.getElementById('expCategoria').textContent = `${a.nivel} • ${a.categoria}`;
+      document.getElementById('expRep').textContent = `${a.nombre_rep} (CI: ${a.cedula_rep})`;
+      document.getElementById('expTel').textContent = a.telefono_rep;
+      document.getElementById('expUltimoMes').textContent = a.mes_pagado || 'OCTUBRE 2026';
+      document.getElementById('expTotalPagado').textContent = `$${exp.totalPagadoUsd.toFixed(2)} USD`;
+      document.getElementById('expPuntosRanking').textContent = `${exp.puntosTotales} PTS`;
+
+      const solvBadge = document.getElementById('expSolvencia');
+      const solv = (a.solvencia || 'SOLVENTE').toUpperCase();
+      solvBadge.textContent = solv;
+      solvBadge.className = solv.includes('PENDIENTE')
+        ? 'bg-red-600 text-white font-racing font-black italic text-xs px-3 py-1 uppercase'
+        : solv.includes('VERIFICAC')
+          ? 'bg-yellow-400 text-black font-racing font-black italic text-xs px-3 py-1 uppercase'
+          : 'bg-green-500 text-black font-racing font-black italic text-xs px-3 py-1 uppercase';
+
+      // Tabla de Historial de Pagos del Alumno
+      document.getElementById('badgeConteoPagos').textContent = `${exp.historialPagos.length} Pagos Registrados`;
+      const tbodyPagos = document.getElementById('tablaPagosAlumno');
+      if (exp.historialPagos.length === 0) {
+        tbodyPagos.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-zinc-500">Sin pagos registrados todavía.</td></tr>`;
+      } else {
+        tbodyPagos.innerHTML = exp.historialPagos.map(p => {
+          const estColor = (p.estado || '').includes('VERIFICADO') || (p.estado || '').includes('SOLVENTE') || (p.estado || '').includes('CONFIRMADA')
+            ? 'bg-green-500/20 text-green-400 border-green-500'
+            : 'bg-yellow-400/20 text-yellow-300 border-yellow-400';
+          return `
+            <tr class="hover:bg-zinc-950/70">
+              <td class="p-3 font-black text-sky-400">${p.id}</td>
+              <td class="p-3 font-black text-white uppercase">${p.tipo}</td>
+              <td class="p-3 text-zinc-300 font-bold uppercase">${p.concepto}</td>
+              <td class="p-3 font-racing font-black text-green-400 text-sm">$${Number(p.monto_usd || 0).toFixed(2)}</td>
+              <td class="p-3 text-zinc-300">${p.metodo_pago} <span class="text-yellow-400 font-bold">(Ref: ${p.referencia})</span></td>
+              <td class="p-3 text-zinc-400">${p.fecha_pago}</td>
+              <td class="p-3"><span class="border px-2 py-0.5 text-[10px] font-black uppercase ${estColor}">${p.estado}</span></td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Tarjetas de Competencias de la Escuela y Resultados del Alumno
+      const gridComp = document.getElementById('gridCompetenciasAlumno');
+      gridComp.innerHTML = exp.competenciasAlumno.map(c => {
+        const r = c.resultadoAlumno;
+        const m = c.mangaAsignada;
+        const estadoCompCls = c.estado === 'FINALIZADA'
+          ? 'bg-zinc-800 text-zinc-300 border-zinc-600'
+          : 'bg-green-500/20 text-green-400 border-green-400';
+
+        return `
+          <div class="bg-zinc-950 border-2 ${r ? 'border-yellow-400' : 'border-zinc-800'} p-5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="text-[10px] font-black uppercase px-2 py-0.5 border ${estadoCompCls}">${c.estado}</span>
+                <span class="text-xs font-bold text-zinc-400">${c.fecha}</span>
+              </div>
+              <h4 class="text-lg font-racing font-black italic uppercase text-white mb-1">${c.nombre}</h4>
+              <p class="text-xs text-sky-400 font-bold uppercase mb-4">📍 ${c.lugar} • Costo: $${Number(c.costo_usd || 8).toFixed(2)}</p>
+
+              ${r ? `
+                <div class="bg-zinc-900 border border-yellow-400/50 p-3.5 mb-3 space-y-1.5">
+                  <span class="block text-[10px] font-black uppercase text-yellow-400">🏅 RESULTADO OFICIAL DEL ALUMNO</span>
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="text-zinc-400 font-bold">Posición Final:</span>
+                    <span class="font-racing font-black text-base text-white">${r.posicion}</span>
+                  </div>
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="text-zinc-400 font-bold">Puntos Ganados:</span>
+                    <span class="font-racing font-black text-green-400">+${r.puntos} PTS</span>
+                  </div>
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="text-zinc-400 font-bold">Tiempo Partidor:</span>
+                    <span class="font-mono font-bold text-sky-400">${r.tiempo_partidor || 'Registrado'}</span>
+                  </div>
+                </div>
+              ` : `
+                <div class="bg-zinc-900 border border-zinc-800 p-3.5 mb-3 text-xs text-zinc-400">
+                  Sin resultado cargado aún en este evento.
+                </div>
+              `}
+
+              ${m ? `
+                <div class="bg-zinc-900/70 border border-sky-500/40 p-3 text-xs">
+                  <span class="block text-[10px] font-black uppercase text-sky-400 mb-1">🚦 CARRILES EN PARTIDOR (MANGAS)</span>
+                  <p class="text-white font-bold">M1: Carril ${m.carrilM1} | M2: Carril ${m.carrilM2} | M3: Carril ${m.carrilM3}</p>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Login de Alumno
+    const errLoginAlumno = document.getElementById('errLoginAlumno');
+    document.getElementById('formLoginAlumno').addEventListener('submit', e => {
+      e.preventDefault();
+      errLoginAlumno.classList.add('hidden');
+      const u = document.getElementById('loginAlumnoUser').value;
+      const p = document.getElementById('loginAlumnoPass').value;
+      const atleta = loginAlumno(u, p);
+      if (!atleta) {
+        errLoginAlumno.textContent = 'No se encontró el alumno. Verifica la placa o selecciónalo abajo en la lista.';
+        errLoginAlumno.classList.remove('hidden');
+        return;
+      }
+      renderizarExpedienteAlumno(atleta.id);
+      document.getElementById('vistaExpedienteAlumno').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // Botón de Selección Rápida en Lista de Alumnos
+    document.getElementById('btnQuickSelectGo')?.addEventListener('click', () => {
+      const atId = document.getElementById('quickSelectAlumnoLogin')?.value;
+      if (atId) {
+        sessionStorage.setItem('boyaca_bmx_alumno_session_v1', atId);
+        renderizarExpedienteAlumno(atId);
+        document.getElementById('vistaExpedienteAlumno')?.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+
+    // Botones Demo 1-Clic para probar el Acceso de Alumnos
+    document.querySelectorAll('.btn-demo-alumno').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const u = btn.getAttribute('data-demo-user');
+        document.getElementById('loginAlumnoUser').value = u;
+        document.getElementById('loginAlumnoPass').value = '1234';
+        const atleta = loginAlumno(u, '1234');
+        if (atleta) {
+          renderizarExpedienteAlumno(atleta.id);
+          document.getElementById('vistaExpedienteAlumno').scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    document.getElementById('btnCerrarSesionAlumno').addEventListener('click', () => {
+      logoutAlumno();
+      document.getElementById('vistaExpedienteAlumno').classList.add('hidden');
+    });
+
+    document.getElementById('btnIrPagarMesAlumno').addEventListener('click', () => {
+      const log = getAlumnoLogueado();
+      activarTab('mensualidad');
+      if (log) {
+        inputBuscarAtleta.value = log.numero_placa || log.cedula_rep;
+        ejecutarBusqueda(inputBuscarAtleta.value);
+      }
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('tab') === 'mensualidad') {
+      activarTab('mensualidad');
+    } else if (params.get('tab') === 'usuario') {
+      activarTab('usuario');
+    }
+    const nivelParam = params.get('nivel');
+    if (nivelParam) {
+      const selectNivel = document.getElementById('nivel_escuela');
+      if ([...selectNivel.options].some(o => o.value === nivelParam)) {
+        selectNivel.value = nivelParam;
+      }
+    }
+
+    // Buscador de Solvencia y Alumnos Regulares
+    const inputBuscarAtleta = document.getElementById('inputBuscarAtleta');
+    const btnBuscarAtleta = document.getElementById('btnBuscarAtleta');
+    const resultadoBusqueda = document.getElementById('resultadoBusqueda');
+    const noEncontradoMsg = document.getElementById('noEncontradoMsg');
+    let atletaSeleccionado = null;
+
+    function ejecutarBusqueda(q) {
+      const encontrados = buscarAtletaRegular(q);
+      if (encontrados.length === 0) {
+        resultadoBusqueda.classList.add('hidden');
+        noEncontradoMsg.classList.remove('hidden');
+        return;
+      }
+      noEncontradoMsg.classList.add('hidden');
+      resultadoBusqueda.classList.remove('hidden');
+      const a = encontrados[0];
+      atletaSeleccionado = a;
+
+      document.getElementById('mensualidadAtletaId').value = a.id;
+      document.getElementById('fichaPlaca').textContent = a.numero_placa || '#S/N';
+      document.getElementById('fichaNombre').textContent = `${a.nombre_atleta} ${a.apellido_atleta}`;
+      document.getElementById('fichaCategoria').textContent = `${a.nivel} • ${a.categoria}`;
+      document.getElementById('fichaRep').textContent = a.nombre_rep;
+      document.getElementById('fichaCedula').textContent = a.cedula_rep;
+      document.getElementById('fichaTel').textContent = a.telefono_rep;
+      document.getElementById('fichaUltimoMes').textContent = `Último mes registrado: ${a.mes_pagado || 'OCTUBRE 2026'}`;
+
+      const badge = document.getElementById('fichaSolvenciaBadge');
+      const solv = (a.solvencia || 'SOLVENTE').toUpperCase();
+      badge.textContent = solv;
+      if (solv.includes('PENDIENTE')) {
+        badge.className = 'inline-block px-4 py-2 font-racing font-black italic text-base uppercase bg-red-600 text-white';
+      } else if (solv.includes('VERIFICAC')) {
+        badge.className = 'inline-block px-4 py-2 font-racing font-black italic text-base uppercase bg-yellow-400 text-black';
+      } else {
+        badge.className = 'inline-block px-4 py-2 font-racing font-black italic text-base uppercase bg-green-500 text-black';
+      }
+    }
+
+    btnBuscarAtleta.addEventListener('click', () => ejecutarBusqueda(inputBuscarAtleta.value));
+    inputBuscarAtleta.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        ejecutarBusqueda(inputBuscarAtleta.value);
+      }
+    });
+    document.querySelectorAll('.btn-quick-search').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const q = btn.getAttribute('data-quick');
+        inputBuscarAtleta.value = q;
+        ejecutarBusqueda(q);
+      });
+    });
+
+    // Envío de Mensualidad Rápida (15 seg)
+    document.getElementById('metodo_pago_mes').addEventListener('change', e => {
+      const refInput = document.getElementById('referencia_mes');
+      if (e.target.value === 'Efectivo Pista') {
+        refInput.value = 'PAGO EN PISTA';
+      } else if (refInput.value === 'PAGO EN PISTA') {
+        refInput.value = '';
+      }
+    });
+
+    document.getElementById('formPagoMensualidad').addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!atletaSeleccionado) return;
+      const btn = document.getElementById('btnEnviarMensualidad');
+      btn.textContent = 'PROCESANDO REPORTE...';
+      btn.disabled = true;
+
+      const fileMes = document.getElementById('capture_mes').files[0];
+      const imgUrl = fileMes ? await procesarYSubirCapture(fileMes, `mes-${atletaSeleccionado.id}`) : '';
+      const mesPagado = document.getElementById('mes_cancelar').value;
+      const metodo = document.getElementById('metodo_pago_mes').value;
+      const ref = document.getElementById('referencia_mes').value.trim().toUpperCase() || 'PAGO EN PISTA';
+
+      let regPago;
+      try {
+        regPago = await registrarPagoMensualidad({
+          atleta_id: atletaSeleccionado.id,
+          nombre_atleta: `${atletaSeleccionado.nombre_atleta} ${atletaSeleccionado.apellido_atleta}`,
+          numero_placa: atletaSeleccionado.numero_placa,
+          cedula_rep: atletaSeleccionado.cedula_rep,
+          mes_pagado: mesPagado,
+          metodo_pago: metodo,
+          referencia: ref,
+          fecha_pago: hoy,
+          comprobante_img: imgUrl
+        });
+      } catch (err) {
+        alert(err.message || "Error al procesar el pago");
+        btn.disabled = false;
+        btn.textContent = '💳 REPORTAR PAGO DE MENSUALIDAD →';
+        return;
+      }
+
+      document.getElementById('contenedorFormulario').classList.add('hidden');
+      const exito = document.getElementById('pantallaExito');
+      exito.classList.remove('hidden');
+      exito.classList.add('flex');
+
+      document.getElementById('exitoTitulo').innerHTML = `¡Mensualidad <span class="text-green-400">Reportada!</span>`;
+      document.getElementById('exitoCodigo').textContent = regPago.id;
+      document.getElementById('exitoAtleta').textContent = `${atletaSeleccionado.nombre_atleta} ${atletaSeleccionado.apellido_atleta} (${atletaSeleccionado.numero_placa})`;
+      document.getElementById('exitoNivel').textContent = mesPagado;
+      document.getElementById('exitoCategoria').textContent = atletaSeleccionado.categoria;
+      document.getElementById('exitoRep').textContent = `${atletaSeleccionado.nombre_rep}`;
+
+      const textoWa = encodeURIComponent(
+        `💳 *REPORTE DE MENSUALIDAD - ESCUELA LOS BOYACÁ*\n` +
+        `• *Atleta:* ${atletaSeleccionado.nombre_atleta} ${atletaSeleccionado.apellido_atleta} (${atletaSeleccionado.numero_placa})\n` +
+        `• *Mes Cancelado:* ${mesPagado}\n` +
+        `• *Método:* ${metodo} (Ref: ${ref})`
+      );
+      document.getElementById('btnWhatsappExito').href = `https://wa.me/${config.whatsapp}?text=${textoWa}`;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Poblar datos bancarios y costos ($10 Inscripción / $40 Mensualidad)
+    const precioInsc = config.precioInscripcionEscuela || 10;
+    const precioMes = config.precioMensualidad || 40;
+    document.getElementById('montoUsdBadge').textContent = `( $${precioInsc.toFixed(2)} )`;
+    document.getElementById('montoMesUsdBadge').textContent = `( $${precioMes.toFixed(2)} )`;
+    document.getElementById('txtBanco').textContent = config.pagoMovil.banco;
+    document.getElementById('copyBanco').setAttribute('data-copy', config.pagoMovil.codigoBanco);
+    document.getElementById('txtTel').textContent = config.pagoMovil.telefonoDisplay;
+    document.getElementById('copyTel').setAttribute('data-copy', config.pagoMovil.telefono);
+    document.getElementById('txtCed').textContent = config.pagoMovil.cedulaDisplay;
+    document.getElementById('copyCed').setAttribute('data-copy', config.pagoMovil.cedula);
+    document.getElementById('txtTitular').textContent = config.pagoMovil.titular;
+
+    fetchTasaBcv().then(tasa => {
+      document.getElementById('montoBolivares').textContent = `${formatBs(precioInsc, tasa)} Bs.`;
+      document.getElementById('montoMesBolivares').textContent = `${formatBs(precioMes, tasa)} Bs.`;
+      document.getElementById('montoMesRefBs').textContent = `${formatBs(precioMes, tasa)} Bs.`;
+      document.getElementById('tasaDisplay').textContent = `TASA BCV: ${tasa.toLocaleString('es-VE')} Bs.`;
+    });
+
+    const avisoCopiado = document.getElementById('avisoCopiado');
+    document.querySelectorAll('.btn-copy-dato').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const dato = btn.getAttribute('data-copy');
+        const label = btn.getAttribute('data-label');
+        navigator.clipboard.writeText(dato);
+        avisoCopiado.textContent = `✓ ¡${label} (${dato}) copiado al portapapeles!`;
+        avisoCopiado.className = 'text-xs text-green-400 font-black uppercase mt-3';
+      });
+    });
+
+    const generoInput = document.getElementById('genero_atleta');
+    const btnMasc = document.getElementById('btnMasc');
+    const btnFem = document.getElementById('btnFem');
+    const catDisplay = document.getElementById('categoriaDisplay');
+    const catFinal = document.getElementById('categoria_final');
+
+    function actualizarCategoria() {
+      const cat = calcularCategoriaBmx(fechaNacInput.value, generoInput.value);
+      if (cat) {
+        catDisplay.textContent = cat;
+        catFinal.value = cat;
+      } else {
+        catDisplay.textContent = 'Seleccione fecha de nacimiento válida y género';
+        catFinal.value = '';
+      }
+    }
+
+    function seleccionarGenero(gen) {
+      generoInput.value = gen;
+      btnMasc.className = 'flex-1 py-3.5 bg-zinc-950 border border-zinc-700 text-zinc-400 font-black uppercase transition';
+      btnFem.className = 'flex-1 py-3.5 bg-zinc-950 border border-zinc-700 text-zinc-400 font-black uppercase transition';
+      if (gen === 'Masculino') {
+        btnMasc.classList.add('border-sky-400', 'text-sky-400');
+      } else {
+        btnFem.classList.add('border-yellow-400', 'text-yellow-400');
+      }
+      actualizarCategoria();
+    }
+
+    btnMasc.addEventListener('click', () => seleccionarGenero('Masculino'));
+    btnFem.addEventListener('click', () => seleccionarGenero('Femenino'));
+    fechaNacInput.addEventListener('change', actualizarCategoria);
+
+    const metodoPago = document.getElementById('metodo_pago');
+    const grupoReferencia = document.getElementById('grupoReferencia');
+    const inputReferencia = document.getElementById('referencia');
+    const grupoCapture = document.getElementById('grupoCapture');
+
+    metodoPago.addEventListener('change', e => {
+      if (e.target.value === 'Efectivo Pista') {
+        grupoReferencia.classList.add('hidden');
+        grupoCapture.classList.add('hidden');
+        inputReferencia.required = false;
+        inputReferencia.value = 'PAGO EN PISTA';
+      } else {
+        grupoReferencia.classList.remove('hidden');
+        grupoCapture.classList.remove('hidden');
+        inputReferencia.required = true;
+        if (inputReferencia.value === 'PAGO EN PISTA') inputReferencia.value = '';
+      }
+    });
+
+    document.getElementById('comprobante').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      document.getElementById('nombreArchivo').textContent = file.name;
+      document.getElementById('nombreArchivo').classList.add('text-green-400');
+    });
+
+    const modalTerminos = document.getElementById('modalTerminos');
+    document.getElementById('btnAbrirTerminos').addEventListener('click', () => {
+      modalTerminos.classList.remove('hidden');
+      modalTerminos.classList.add('flex');
+    });
+    document.getElementById('btnAceptarTerminos').addEventListener('click', () => {
+      modalTerminos.classList.add('hidden');
+      modalTerminos.classList.remove('flex');
+      document.getElementById('checkTerminos').checked = true;
+    });
+
+    document.getElementById('formEscuela').addEventListener('submit', async e => {
+      e.preventDefault();
+      const errBox = document.getElementById('mensajeError');
+      errBox.classList.add('hidden');
+
+      if (!generoInput.value) {
+        errBox.textContent = 'Por favor selecciona el género del atleta.';
+        errBox.classList.remove('hidden');
+        return;
+      }
+
+      const btn = document.getElementById('btnProcesar');
+      btn.textContent = 'SUBIENDO CAPTURE Y GUARDANDO...';
+      btn.disabled = true;
+
+      const file = document.getElementById('comprobante').files[0];
+      const urlCapture = file ? await procesarYSubirCapture(file, 'escuela') : '';
+      const rawPlaca = document.getElementById('numero_placa').value.trim().toUpperCase();
+      const placaFormateada = rawPlaca ? (rawPlaca.startsWith('#') ? rawPlaca : `#${rawPlaca}`) : '#S/N';
+      const nombreAtletaVal = document.getElementById('nombre_atleta').value.trim().toUpperCase();
+      const usuarioInputVal = document.getElementById('usuario_nuevo_alumno').value.trim().toLowerCase();
+      const claveInputVal = document.getElementById('clave_nuevo_alumno').value.trim() || '1234';
+      const usuarioAuto = usuarioInputVal || `${nombreAtletaVal.split(' ')[0].toLowerCase()}${placaFormateada.replace(/[^0-9]/g, '') || Math.floor(10 + Math.random() * 89)}`;
+
+      const datos = {
+        nombre_atleta: nombreAtletaVal,
+        apellido_atleta: document.getElementById('apellido_atleta').value.trim().toUpperCase(),
+        numero_placa: placaFormateada,
+        usuario: usuarioAuto,
+        clave_acceso: claveInputVal,
+        fecha_nacimiento: fechaNacInput.value,
+        genero: generoInput.value,
+        nivel: document.getElementById('nivel_escuela').value,
+        categoria: catFinal.value || 'POR ASIGNAR',
+        posee_bici: document.getElementById('posee_bici').value,
+        condicion_medica: document.getElementById('condicion_medica').value.trim().toUpperCase() || 'NINGUNA',
+        nombre_rep: document.getElementById('nombre_rep').value.trim().toUpperCase(),
+        cedula_rep: document.getElementById('cedula_rep').value.trim().toUpperCase(),
+        telefono_rep: document.getElementById('telefono_rep').value.trim(),
+        sector_res: document.getElementById('sector_res').value.trim().toUpperCase(),
+        metodo_pago: metodoPago.value,
+        referencia: inputReferencia.value.trim().toUpperCase() || 'PAGO EN PISTA',
+        fecha_pago: fechaPagoInput.value,
+        comprobante_img: urlCapture
+      };
+
+      let guardado;
+      try {
+        guardado = await guardarInscripcionEscuela(datos);
+      } catch (err) {
+        alert(err.message || "Error al procesar la inscripción");
+        btn.disabled = false;
+        btn.innerHTML = '🏁 ¡COMPLETAR INSCRIPCIÓN OFICIAL ($10) EN LA ESCUELA! →';
+        return;
+      }
+
+      document.getElementById('contenedorFormulario').classList.add('hidden');
+      const exito = document.getElementById('pantallaExito');
+      exito.classList.remove('hidden');
+      exito.classList.add('flex');
+
+      document.getElementById('exitoCodigo').textContent = guardado.id;
+      document.getElementById('exitoAtleta').textContent = `${datos.nombre_atleta} ${datos.apellido_atleta} (${datos.numero_placa}) • Usuario: @${datos.usuario}`;
+      document.getElementById('exitoNivel').textContent = datos.nivel;
+      document.getElementById('exitoCategoria').textContent = datos.categoria;
+      document.getElementById('exitoRep').textContent = `${datos.nombre_rep} (${datos.telefono_rep})`;
+
+      const textoWa = encodeURIComponent(
+        `🏁 *NUEVA INSCRIPCIÓN - ESCUELA DE BICICROSS LOS BOYACÁ*\n` +
+        `• *Ficha:* ${guardado.id}\n` +
+        `• *Atleta:* ${datos.nombre_atleta} ${datos.apellido_atleta} (${datos.numero_placa})\n` +
+        `• *Usuario Alumno:* ${datos.usuario} (Clave: ${datos.clave_acceso})\n` +
+        `• *Nivel:* ${datos.nivel}\n` +
+        `• *Categoría:* ${datos.categoria}\n` +
+        `• *Representante:* ${datos.nombre_rep} (${datos.cedula_rep})\n` +
+        `• *Pago:* ${datos.metodo_pago} (Ref: ${datos.referencia})`
+      );
+      document.getElementById('btnWhatsappExito').href = `https://wa.me/${config.whatsapp}?text=${textoWa}`;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+  <footer class="bg-black border-t-2 border-zinc-800 py-6 text-center text-xs text-zinc-500 mt-12">
+    <p>© 2026 Escuela de Bicicross Los Boyacá — Pista de Bicicross Parque de la Ciudad</p>
+  </footer>
+</body>
+</html>
