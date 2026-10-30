@@ -32,51 +32,13 @@
 <body class="bg-zinc-950 text-white min-h-screen">
 
   <!-- ====================================================================== -->
-  <!-- 1. PANTALLA DE LOGIN CON ACCESO GENERAL PARA DIRECTOR Y ADMINISTRADOR  -->
+  <!-- 1. VERIFICACIÓN DE SESIÓN DE SEGURIDAD (UN SOLO PORTAL GENERAL)        -->
   <!-- ====================================================================== -->
-  <div id="loginOverlay" class="fixed inset-0 bg-zinc-950 z-[200] flex items-center justify-center p-4">
-    <div class="bg-zinc-900 border-2 border-sky-400 p-8 max-w-md w-full transform -skew-x-2 shadow-[10px_10px_0px_#facc15]">
-      <div class="flex items-center gap-3 mb-6">
-        <div class="w-11 h-11 bg-yellow-400 flex items-center justify-center transform -skew-x-12">
-          <span class="font-racing font-black text-black text-lg">BMX</span>
-        </div>
-        <div>
-          <span class="text-xs font-black uppercase text-sky-400 tracking-widest block">ACCESO GENERAL DE CONFIGURACIÓN</span>
-          <h1 class="text-2xl font-black uppercase italic text-white">DIRECTIVA Y ADMINISTRADOR</h1>
-        </div>
-      </div>
-
-      <div class="mb-5 space-y-2">
-        <span class="block text-[11px] font-black uppercase text-zinc-400">⚡ Selecciona tu Rol de Acceso Rápido:</span>
-        <div class="grid grid-cols-2 gap-2">
-          <button type="button" id="btnQuickDirector" class="p-2.5 bg-black border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black font-black uppercase text-xs transition">
-            👑 Director Escuela<br><span class="text-[10px] font-normal lowercase">(director)</span>
-          </button>
-          <button type="button" id="btnQuickAdmin" class="p-2.5 bg-black border border-sky-400 text-sky-400 hover:bg-sky-400 hover:text-black font-black uppercase text-xs transition">
-            💻 Admin Página<br><span class="text-[10px] font-normal lowercase">(admin)</span>
-          </button>
-        </div>
-      </div>
-
-      <form id="formLogin" class="space-y-4">
-        <div>
-          <label class="block text-xs font-black uppercase text-zinc-300 mb-1">Usuario</label>
-          <input type="text" id="loginUser" value="director" required class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-yellow-400 focus:outline-none">
-        </div>
-        <div>
-          <label class="block text-xs font-black uppercase text-zinc-300 mb-1">Clave de Seguridad</label>
-          <input type="password" id="loginPass" value="director2026" required class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-yellow-400 focus:outline-none">
-        </div>
-        <div id="loginError" class="hidden bg-red-600 text-white text-xs font-black uppercase p-2.5 text-center">
-          Usuario o clave incorrectos. Usa director/director2026 o admin/boyaca2026.
-        </div>
-        <button type="submit" class="w-full bg-yellow-400 hover:bg-green-400 text-black font-black uppercase italic py-3.5 transform -skew-x-6 shadow-[4px_4px_0px_#0ea5e9] transition cursor-pointer">
-          🔓 Iniciar Sesión con Acceso General →
-        </button>
-        <a href="index.html" class="block text-center text-xs text-zinc-400 hover:text-white pt-2">← Volver a la página principal</a>
-      </form>
-    </div>
-  </div>
+  <script>
+    if (sessionStorage.getItem('boyaca_bmx_admin_session_v1') !== 'ACTIVA') {
+      window.location.replace('login.html');
+    }
+  </script>
 
   <!-- HEADER & NAVBAR ADMIN SEMÁNTICO -->
   <header>
@@ -193,6 +155,36 @@
               <tbody id="adminTablaPagosAlumno" class="divide-y divide-zinc-900"></tbody>
             </table>
           </div>
+        </div>
+      </div>
+
+      <!-- DIRECTORIO DE USUARIOS DEL SISTEMA Y GESTIÓN DE ACCESOS -->
+      <div class="mt-8 pt-6 border-t border-zinc-800">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+          <div>
+            <h3 class="text-base font-black uppercase text-yellow-400">
+              👥 Directorio de Usuarios del Portal BMX (<span id="countUsuariosSistema">0</span>)
+            </h3>
+            <span class="text-xs text-zinc-400">Control de credenciales, asignación de clave y eliminación de usuarios</span>
+          </div>
+          <button type="button" id="btnRecargarUsuariosAdmin" class="bg-zinc-950 border border-zinc-700 hover:border-yellow-400 text-xs font-black uppercase px-3 py-1.5 text-zinc-300">
+            🔄 Actualizar Lista
+          </button>
+        </div>
+        <div class="overflow-x-auto bg-zinc-950 border border-zinc-800">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-black text-zinc-400 uppercase font-black border-b border-zinc-800">
+                <th class="p-3">Placa / ID</th>
+                <th class="p-3">Atleta / Representante</th>
+                <th class="p-3">Usuario (@)</th>
+                <th class="p-3">Contraseña</th>
+                <th class="p-3">Rol / Nivel</th>
+                <th class="p-3">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaUsuariosSistemaBody" class="divide-y divide-zinc-800"></tbody>
+          </table>
         </div>
       </div>
     </section>
@@ -385,16 +377,55 @@
     <!-- 4. LISTADO DE INSCRITOS EN LA ESCUELA + CONTROL DE SOLVENCIA         -->
     <!-- ==================================================================== -->
     <section class="bg-zinc-900 border-2 border-sky-400 p-6 md:p-8 shadow-[6px_6px_0px_#0ea5e9] no-print">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
         <div>
-          <h2 class="text-2xl font-black uppercase italic text-sky-400">
-            🚲 Atletas de la Escuela y Estado de Solvencia (<span id="countEscuela">0</span>)
+          <div class="flex items-center gap-2 mb-1">
+            <span class="bg-sky-400 text-black font-black text-xs uppercase px-2.5 py-0.5 transform -skew-x-6">BASE DE DATOS POR MESES</span>
+            <span class="text-xs text-zinc-400">Total registrados: <strong id="countEscuela" class="text-white">0</strong></span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-black uppercase italic text-white">
+            🚲 Atletas de la Escuela y <span class="text-sky-400">Control de Solvencia</span>
           </h2>
-          <p class="text-xs text-zinc-400">Control de ingresos mensuales, solvencia, representantes y comprobantes.</p>
+          <p class="text-xs text-zinc-400 mt-1">Control de ingresos mensuales, solvencia, representantes y comprobantes.</p>
         </div>
-        <button id="btnExportEscuela" class="bg-zinc-950 border border-sky-400 text-sky-400 hover:bg-sky-400 hover:text-black font-black text-xs uppercase px-4 py-2.5 transition">
-          📥 Exportar Atletas CSV / Excel
-        </button>
+
+        <!-- Barra de Acciones del Administrador: Filtro de Mes + Botón Nuevo Alumno -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          <div class="flex items-center gap-1.5 bg-black border border-zinc-700 px-3 py-1.5">
+            <span class="text-xs text-zinc-400 font-bold uppercase">📅 Mes:</span>
+            <select id="filtroMesEscuela" class="bg-transparent text-yellow-400 font-black text-xs uppercase focus:outline-none cursor-pointer"></select>
+          </div>
+          <button type="button" id="btnAbrirModalNuevoAlumno" class="bg-yellow-400 hover:bg-green-400 text-black font-racing font-black italic uppercase text-xs px-4 py-2.5 transform -skew-x-6 shadow-[3px_3px_0px_#0ea5e9] transition cursor-pointer">
+            + 🏁 Ingresar Alumno (Admin)
+          </button>
+          <button id="btnExportEscuela" class="bg-zinc-950 border border-sky-400 text-sky-400 hover:bg-sky-400 hover:text-black font-black text-xs uppercase px-3.5 py-2.5 transition cursor-pointer">
+            📥 Exportar CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- RESUMEN FINANCIERO Y CONTABLE DEL MES SELECCIONADO -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+        <div class="bg-zinc-950 border border-zinc-800 p-3">
+          <span class="text-[10px] uppercase font-black text-zinc-400 block">Total en Mes</span>
+          <span id="kpiMesTotal" class="text-xl font-racing font-black text-white">0</span>
+        </div>
+        <div class="bg-zinc-950 border border-green-500/40 p-3">
+          <span class="text-[10px] uppercase font-black text-green-400 block">Solventes</span>
+          <span id="kpiMesSolventes" class="text-xl font-racing font-black text-green-400">0</span>
+        </div>
+        <div class="bg-zinc-950 border border-red-500/40 p-3">
+          <span class="text-[10px] uppercase font-black text-red-400 block">Pendientes</span>
+          <span id="kpiMesPendientes" class="text-xl font-racing font-black text-red-400">0</span>
+        </div>
+        <div class="bg-zinc-950 border border-yellow-400/40 p-3">
+          <span class="text-[10px] uppercase font-black text-yellow-300 block">Total (USD)</span>
+          <span id="kpiMesUsd" class="text-xl font-racing font-black text-yellow-400">$0.00</span>
+        </div>
+        <div class="bg-zinc-950 border border-sky-400/40 p-3 col-span-2 md:col-span-1">
+          <span class="text-[10px] uppercase font-black text-sky-400 block">Total (Bs BCV)</span>
+          <span id="kpiMesBs" class="text-sm font-mono font-black text-sky-300 block truncate">0,00 Bs</span>
+        </div>
       </div>
 
       <div class="overflow-x-auto">
@@ -594,6 +625,125 @@
     </div>
   </div>
 
+  <!-- ====================================================================== -->
+  <!-- MODAL: INGRESAR ALUMNO POR EL ADMINISTRADOR                            -->
+  <!-- ====================================================================== -->
+  <div id="modalIngresarAlumnoAdmin" class="fixed inset-0 bg-black/90 z-[300] hidden items-center justify-center p-4 overflow-y-auto no-print">
+    <div class="bg-zinc-900 border-2 border-yellow-400 max-w-2xl w-full p-6 my-8 transform -skew-x-1 shadow-[10px_10px_0px_#0ea5e9]">
+      <div class="flex justify-between items-center border-b border-zinc-800 pb-3 mb-4">
+        <div>
+          <span class="text-xs font-black uppercase text-yellow-400 block">GESTIÓN DIRECTA DE ALUMNOS</span>
+          <h3 class="text-xl md:text-2xl font-racing font-black uppercase italic text-white">🏁 Ingresar Nuevo Alumno (Admin)</h3>
+        </div>
+        <button type="button" id="btnCerrarModalNuevoAlumno" class="bg-zinc-950 border border-zinc-700 hover:border-yellow-400 text-white font-black text-xs uppercase px-3 py-1.5 cursor-pointer">
+          ✕ Cerrar
+        </button>
+      </div>
+
+      <form id="formIngresarAlumnoAdmin" class="space-y-4 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-black uppercase text-zinc-400 mb-1">Nombres del Atleta *</label>
+            <input type="text" id="adminNewNombre" required placeholder="Ej. PEDRO JOSÉ" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:border-yellow-400">
+          </div>
+          <div>
+            <label class="block font-black uppercase text-zinc-400 mb-1">Apellidos del Atleta *</label>
+            <input type="text" id="adminNewApellido" required placeholder="Ej. PÉREZ MORALES" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:border-yellow-400">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block font-black uppercase text-zinc-400 mb-1">Número de Placa *</label>
+            <input type="text" id="adminNewPlaca" required placeholder="#15" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 text-yellow-400 font-racing font-black text-sm uppercase focus:border-yellow-400">
+          </div>
+          <div>
+            <label class="block font-black uppercase text-zinc-400 mb-1">Fecha de Nacimiento *</label>
+            <input type="date" id="adminNewFechaNac" required class="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-yellow-400">
+          </div>
+          <div>
+            <label class="block font-black uppercase text-zinc-400 mb-1">Género *</label>
+            <select id="adminNewGenero" required class="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-yellow-400">
+              <option value="MASCULINO">MASCULINO</option>
+              <option value="FEMENINO">FEMENINO</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-black uppercase text-zinc-400 mb-1">Nivel en la Escuela *</label>
+            <select id="adminNewNivel" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 text-sky-400 font-bold focus:border-yellow-400">
+              <option value="Semillitas (2 a 6 años)">Semillitas (2 a 6 años - Balance / Pedal)</option>
+              <option value="Principiantes / Novatos">Principiantes / Novatos</option>
+              <option value="Expertos / Avanzados">Expertos / Avanzados</option>
+              <option value="Cruiser">Cruiser (Aro 24)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-black uppercase text-zinc-400 mb-1">Mes Contable de Inicio *</label>
+            <input type="text" id="adminNewMes" required value="NOVIEMBRE 2026" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 text-yellow-400 font-black uppercase focus:border-yellow-400">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block font-black uppercase text-zinc-400 mb-1">Nombre Representante *</label>
+            <input type="text" id="adminNewRep" required placeholder="Ej. MARÍA PÉREZ" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:border-yellow-400">
+          </div>
+          <div>
+            <label class="block font-black uppercase text-zinc-400 mb-1">Cédula Representante *</label>
+            <input type="text" id="adminNewCedulaRep" required placeholder="V-18456123" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold uppercase focus:border-yellow-400">
+          </div>
+          <div>
+            <label class="block font-black uppercase text-zinc-400 mb-1">Teléfono WhatsApp *</label>
+            <input type="tel" id="adminNewTel" required placeholder="0414-1234567" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-yellow-400">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-zinc-950 p-3 border border-zinc-800">
+          <div>
+            <label class="block font-black uppercase text-zinc-400 mb-1">Estado de Solvencia *</label>
+            <select id="adminNewSolvencia" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-green-400 font-black">
+              <option value="SOLVENTE">SOLVENTE (Pagado)</option>
+              <option value="PENDIENTE">PENDIENTE DE PAGO</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-black uppercase text-zinc-400 mb-1">Método de Pago</label>
+            <select id="adminNewMetodo" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white font-bold">
+              <option value="Pago Móvil">Pago Móvil</option>
+              <option value="Efectivo Dólares Pista">Efectivo Dólares Pista</option>
+              <option value="Punto de Venta Pista">Punto de Venta Pista</option>
+              <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-black uppercase text-zinc-400 mb-1">Referencia Bancaria</label>
+            <input type="text" id="adminNewRef" placeholder="Ej. 849201" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-yellow-300 font-bold uppercase">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-zinc-950 p-3 border border-sky-500/40">
+          <div>
+            <label class="block font-black uppercase text-sky-400 mb-1">Usuario de Acceso Asignado</label>
+            <input type="text" id="adminNewUsuario" placeholder="pedro15 (dejar vacío para auto)" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-yellow-400 font-bold lowercase">
+          </div>
+          <div>
+            <label class="block font-black uppercase text-sky-400 mb-1">Contraseña Inicial</label>
+            <input type="text" id="adminNewClave" placeholder="1234 (dejar vacío para auto)" class="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-white font-bold">
+          </div>
+        </div>
+
+        <p id="adminNewError" class="hidden text-xs font-black uppercase text-red-400 bg-red-950/70 border border-red-500 p-2 text-center"></p>
+
+        <button type="submit" id="btnSubmitNuevoAlumnoAdmin" class="w-full bg-yellow-400 hover:bg-green-400 text-black font-racing font-black italic uppercase text-sm py-3.5 transform -skew-x-6 shadow-[4px_4px_0px_#0ea5e9] transition cursor-pointer">
+          🏁 REGISTRAR ALUMNO EN LA BASE DE DATOS Y CREAR USUARIO →
+        </button>
+      </form>
+    </div>
+  </div>
+
   <script type="module">
     import {
       getConfig,
@@ -613,76 +763,53 @@
       conciliarPendientesConBanco,
       agregarMovimientosBancoLote,
       generarUsuarioAlumno,
+      guardarUsuarioAlumno,
       obtenerExpedienteAlumno,
       getCompetenciasEscuela,
       crearCompetenciaEscuela,
       registrarResultadoCompetencia,
-      eliminarCompetenciaEscuela
-    } from './js/store.js?v=9';
+      eliminarCompetenciaEscuela,
+      getMesesDisponibles,
+      filtrarAtletasPorMes,
+      getResumenBaseDatosMes,
+      ingresarAlumnoAdmin,
+      eliminarAlumnoAdmin,
+      getUsuariosSistema,
+      eliminarUsuarioAlumno,
+      fetchTasaBcv,
+      formatBs
+    } from './portal-store.js?v=10';
 
-    // Control de Login de Seguridad y Roles (Director vs Admin)
-    const loginOverlay = document.getElementById('loginOverlay');
-    const formLogin = document.getElementById('formLogin');
-    const loginError = document.getElementById('loginError');
     const roleBadge = document.getElementById('roleBadgeSession');
 
     function checkSession() {
-      if (isAdminLoggedIn()) {
-        loginOverlay.classList.add('hidden');
-        const rol = getAdminSessionRole();
-        if (roleBadge) {
-          const isDirector = typeof rol === 'string'
-            ? rol.toUpperCase().includes('DIRECTOR')
-            : (rol?.role === 'director' || String(rol?.role).includes('director'));
-          if (isDirector) {
-            roleBadge.textContent = '👑 Director: Michael Morocoima';
-            roleBadge.className = 'text-[11px] font-black uppercase px-2.5 py-1 bg-yellow-400 text-black transform -skew-x-6';
-          } else {
-            roleBadge.textContent = '💻 Administrador de la Página';
-            roleBadge.className = 'text-[11px] font-black uppercase px-2.5 py-1 bg-sky-400 text-black transform -skew-x-6';
-          }
-        }
-        cargarExpedienteAdmin();
-        poblarCompetenciasAdmin();
-      } else {
-        loginOverlay.classList.remove('hidden');
+      if (!isAdminLoggedIn()) {
+        window.location.replace('login.html');
+        return;
       }
+      const rol = getAdminSessionRole();
+      if (roleBadge) {
+        const isDirector = typeof rol === 'string'
+          ? rol.toUpperCase().includes('DIRECTOR')
+          : (rol?.role === 'director' || String(rol?.role).includes('director'));
+        if (isDirector) {
+          roleBadge.textContent = '👑 Director: Michael Morocoima';
+          roleBadge.className = 'text-[11px] font-black uppercase px-2.5 py-1 bg-yellow-400 text-black transform -skew-x-6';
+        } else {
+          roleBadge.textContent = '💻 Administrador de la Página';
+          roleBadge.className = 'text-[11px] font-black uppercase px-2.5 py-1 bg-sky-400 text-black transform -skew-x-6';
+        }
+      }
+      poblarMesesEscuela();
+      cargarExpedienteAdmin();
+      poblarCompetenciasAdmin();
+      cargarUsuariosSistemaAdmin();
     }
     checkSession();
 
-    // Botones de acceso rápido 1-clic
-    document.getElementById('btnQuickDirector')?.addEventListener('click', () => {
-      document.getElementById('loginUser').value = 'director';
-      document.getElementById('loginPass').value = 'director2026';
-      if (loginAdmin('director', 'director2026')) {
-        loginError.classList.add('hidden');
-        checkSession();
-      }
-    });
-    document.getElementById('btnQuickAdmin')?.addEventListener('click', () => {
-      document.getElementById('loginUser').value = 'admin';
-      document.getElementById('loginPass').value = 'boyaca2026';
-      if (loginAdmin('admin', 'boyaca2026')) {
-        loginError.classList.add('hidden');
-        checkSession();
-      }
-    });
-
-    formLogin.addEventListener('submit', e => {
-      e.preventDefault();
-      const u = document.getElementById('loginUser').value;
-      const p = document.getElementById('loginPass').value;
-      if (loginAdmin(u, p)) {
-        loginError.classList.add('hidden');
-        checkSession();
-      } else {
-        loginError.classList.remove('hidden');
-      }
-    });
-
-    document.getElementById('btnLogout').addEventListener('click', () => {
+    document.getElementById('btnLogout')?.addEventListener('click', () => {
       logoutAdmin();
-      checkSession();
+      window.location.href = 'login.html';
     });
 
     // =========================================================================
@@ -725,10 +852,10 @@
       cargarExpedienteAdmin(e.target.value);
     });
 
-    document.getElementById('formAdminGenerarUsuario')?.addEventListener('submit', e => {
+    document.getElementById('formAdminGenerarUsuario')?.addEventListener('submit', async e => {
       e.preventDefault();
       adminMsgUsuario.classList.add('hidden');
-      const res = generarUsuarioAlumno({
+      const res = await guardarUsuarioAlumno({
         atletaId: adminSelectAtleta.value,
         usuario: adminInputUsuario.value,
         clave: adminInputClave.value
@@ -743,7 +870,83 @@
       adminMsgUsuario.className = 'text-xs font-black uppercase text-green-400 bg-green-950/70 border border-green-500 p-2 text-center';
       adminMsgUsuario.classList.remove('hidden');
       cargarExpedienteAdmin(res.atleta.id);
+      cargarUsuariosSistemaAdmin();
       renderTablas();
+    });
+
+    function cargarUsuariosSistemaAdmin() {
+      const usuarios = getUsuariosSistema();
+      const countEl = document.getElementById('countUsuariosSistema');
+      if (countEl) countEl.textContent = usuarios.length;
+      const tbody = document.getElementById('tablaUsuariosSistemaBody');
+      if (!tbody) return;
+
+      if (usuarios.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-zinc-500 italic">No hay usuarios registrados en el sistema.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = usuarios.map(u => {
+        const tieneClave = Boolean(u.clave_acceso);
+        return `
+          <tr class="hover:bg-zinc-900/60">
+            <td class="p-3 font-racing font-black text-yellow-400 text-sm">${u.numero_placa || '#S/N'} <span class="text-zinc-500 font-mono text-xs block">${u.id}</span></td>
+            <td class="p-3 font-bold text-white">${u.atleta}<br><span class="text-zinc-400 text-xs">${u.representante}</span></td>
+            <td class="p-3">
+              <span class="font-mono font-bold ${u.usuario ? 'text-sky-400 bg-sky-950/60 border border-sky-500/40 px-2 py-0.5' : 'text-zinc-500 italic'}">
+                ${u.usuario ? `@${u.usuario}` : 'Sin Usuario'}
+              </span>
+            </td>
+            <td class="p-3 font-mono text-zinc-300">
+              ${tieneClave ? `<span class="bg-zinc-900 border border-zinc-700 px-2 py-0.5 text-yellow-300">${u.clave_acceso}</span>` : `<span class="text-red-400 text-[11px] italic">Sin Contraseña</span>`}
+            </td>
+            <td class="p-3">
+              <span class="text-[10px] font-black uppercase px-2 py-0.5 ${u.rol.includes('DIRECTOR') ? 'bg-yellow-400 text-black' : (u.rol.includes('ADMIN') ? 'bg-sky-400 text-black' : 'bg-zinc-800 text-zinc-300')}">
+                ${u.rol}
+              </span>
+            </td>
+            <td class="p-3 space-x-2 whitespace-nowrap">
+              ${u.tipo === 'ALUMNO' ? `
+                <button type="button" data-action="edit-credencial" data-id="${u.id}" class="text-xs font-black uppercase text-sky-400 hover:underline cursor-pointer">
+                  ✏️ Editar Clave
+                </button>
+                <button type="button" data-action="del-usuario" data-id="${u.id}" class="text-xs font-black uppercase text-red-400 hover:underline cursor-pointer">
+                  🗑️ Eliminar Usuario
+                </button>
+              ` : `
+                <span class="text-[11px] text-zinc-500 italic">Cuenta Maestra</span>
+              `}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('tablaUsuariosSistemaBody')?.addEventListener('click', async e => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      const action = btn.getAttribute('data-action');
+      const id = btn.getAttribute('data-id');
+
+      if (action === 'edit-credencial') {
+        adminSelectAtleta.value = id;
+        sincronizarCamposUsuarioAdmin(id);
+        document.getElementById('seccionUsuariosAlumnos')?.scrollIntoView({ behavior: 'smooth' });
+        adminInputClave.focus();
+      } else if (action === 'del-usuario') {
+        const u = getUsuariosSistema().find(x => x.id === id);
+        const nom = u ? u.atleta : id;
+        if (confirm(`¿Estás seguro de ELIMINAR el usuario y contraseña de acceso de ${nom}?\nEl atleta ya no podrá ingresar al portal privado hasta que le asignes nuevas credenciales.`)) {
+          eliminarUsuarioAlumno(id);
+          cargarUsuariosSistemaAdmin();
+          sincronizarCamposUsuarioAdmin(adminSelectAtleta.value);
+          renderTablas();
+        }
+      }
+    });
+
+    document.getElementById('btnRecargarUsuariosAdmin')?.addEventListener('click', () => {
+      cargarUsuariosSistemaAdmin();
     });
 
     function cargarExpedienteAdmin(atletaId = null) {
@@ -996,13 +1199,51 @@
 
     // Tablas y Visor de Captures
     let itemActualModal = null;
+    const filtroMesSelect = document.getElementById('filtroMesEscuela');
+
+    function poblarMesesEscuela() {
+      if (!filtroMesSelect) return;
+      const meses = getMesesDisponibles();
+      const actualVal = filtroMesSelect.value;
+      filtroMesSelect.innerHTML = `<option value="TODOS">TODOS LOS MESES</option>` +
+        meses.map(m => `<option value="${m}">${m}</option>`).join('');
+      if (actualVal && (actualVal === 'TODOS' || meses.includes(actualVal))) {
+        filtroMesSelect.value = actualVal;
+      } else {
+        filtroMesSelect.value = meses[0] || 'TODOS';
+      }
+      actualizarKpisMesAdmin();
+    }
+
+    function actualizarKpisMesAdmin() {
+      const mes = filtroMesSelect ? filtroMesSelect.value : 'TODOS';
+      const resumen = getResumenBaseDatosMes(mes);
+      const kpiTotal = document.getElementById('kpiMesTotal');
+      const kpiSolv = document.getElementById('kpiMesSolventes');
+      const kpiPend = document.getElementById('kpiMesPendientes');
+      const kpiUsd = document.getElementById('kpiMesUsd');
+      const kpiBs = document.getElementById('kpiMesBs');
+
+      if (kpiTotal) kpiTotal.textContent = resumen.totalAlumnos;
+      if (kpiSolv) kpiSolv.textContent = resumen.solventes;
+      if (kpiPend) kpiPend.textContent = resumen.pendientes;
+      if (kpiUsd) kpiUsd.textContent = `$${resumen.totalUsd}`;
+      if (kpiBs) kpiBs.textContent = `${resumen.totalBs} Bs`;
+    }
+
+    filtroMesSelect?.addEventListener('change', () => {
+      actualizarKpisMesAdmin();
+      renderTablas();
+    });
 
     function renderTablas() {
       const validas = getInscripcionesValida();
-      const escuelas = getInscripcionesEscuela();
+      const todasEscuelas = getInscripcionesEscuela();
+      const mesSeleccionado = filtroMesSelect ? filtroMesSelect.value : 'TODOS';
+      const escuelas = filtrarAtletasPorMes(mesSeleccionado);
 
       document.getElementById('countValida').textContent = validas.length;
-      document.getElementById('countEscuela').textContent = escuelas.length;
+      document.getElementById('countEscuela').textContent = todasEscuelas.length;
 
       const tbodyValida = document.getElementById('tablaValidaBody');
       if (validas.length === 0) {
@@ -1040,7 +1281,7 @@
 
       const tbodyEscuela = document.getElementById('tablaEscuelaBody');
       if (escuelas.length === 0) {
-        tbodyEscuela.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-zinc-500 italic">Aún no hay atletas registrados en la escuela.</td></tr>`;
+        tbodyEscuela.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-zinc-500 italic">No hay atletas registrados en el mes seleccionado (${mesSeleccionado}).</td></tr>`;
       } else {
         tbodyEscuela.innerHTML = escuelas.map(item => `
           <tr class="hover:bg-zinc-950/60">
@@ -1066,11 +1307,11 @@
               </span>
             </td>
             <td class="p-3 space-x-2 whitespace-nowrap">
-              <button data-action="toggle-escuela" data-id="${item.id}" data-state="${item.estado_verificacion}" class="text-xs font-black uppercase text-green-400 hover:underline">
+              <button data-action="toggle-escuela" data-id="${item.id}" data-state="${item.estado_verificacion}" class="text-xs font-black uppercase text-green-400 hover:underline cursor-pointer">
                 ${item.estado_verificacion === 'VERIFICADO' ? 'Marcar Pendiente' : '✓ Aprobar Mes'}
               </button>
-              <button data-action="del-escuela" data-id="${item.id}" class="text-xs font-black uppercase text-red-400 hover:underline">
-                Borrar
+              <button data-action="del-escuela" data-id="${item.id}" class="text-xs font-black uppercase text-red-400 hover:underline cursor-pointer">
+                🗑️ Eliminar
               </button>
             </td>
           </tr>
@@ -1137,12 +1378,81 @@
         renderTablas();
         cargarExpedienteAdmin();
       } else if (action === 'del-escuela') {
-        await eliminarInscripcion('escuela', id);
-        renderTablas();
-        poblarSelectAtletasAdmin();
+        const atleta = getInscripcionesEscuela().find(a => a.id === id);
+        const nom = atleta ? `${atleta.nombre_atleta} ${atleta.apellido_atleta} (${atleta.numero_placa})` : id;
+        if (confirm(`¿Estás seguro de ELIMINAR permanentemente a ${nom} de la escuela?\nSe revocará su usuario y se borrarán todos sus registros asociados.`)) {
+          await eliminarAlumnoAdmin(id);
+          renderTablas();
+          poblarSelectAtletasAdmin();
+          cargarUsuariosSistemaAdmin();
+          poblarMesesEscuela();
+          cargarExpedienteAdmin();
+        }
       } else if (action === 'del-comp-escuela') {
         eliminarCompetenciaEscuela(id);
         poblarCompetenciasAdmin();
+      }
+    });
+
+    // Control del Modal de Ingresar Alumno (Admin)
+    const modalNuevoAlumno = document.getElementById('modalIngresarAlumnoAdmin');
+    document.getElementById('btnAbrirModalNuevoAlumno')?.addEventListener('click', () => {
+      const mesActual = filtroMesSelect?.value !== 'TODOS' ? filtroMesSelect?.value : 'NOVIEMBRE 2026';
+      document.getElementById('adminNewMes').value = mesActual;
+      document.getElementById('adminNewFechaNac').value = '2019-05-15';
+      modalNuevoAlumno?.classList.remove('hidden');
+      modalNuevoAlumno?.classList.add('flex');
+    });
+
+    document.getElementById('btnCerrarModalNuevoAlumno')?.addEventListener('click', () => {
+      modalNuevoAlumno?.classList.add('hidden');
+      modalNuevoAlumno?.classList.remove('flex');
+    });
+
+    document.getElementById('formIngresarAlumnoAdmin')?.addEventListener('submit', async e => {
+      e.preventDefault();
+      const errBox = document.getElementById('adminNewError');
+      errBox.classList.add('hidden');
+      const btn = document.getElementById('btnSubmitNuevoAlumnoAdmin');
+      btn.disabled = true;
+      btn.textContent = 'REGISTRANDO EN BASE DE DATOS...';
+
+      try {
+        const datos = {
+          nombre_atleta: document.getElementById('adminNewNombre').value,
+          apellido_atleta: document.getElementById('adminNewApellido').value,
+          numero_placa: document.getElementById('adminNewPlaca').value,
+          fecha_nacimiento: document.getElementById('adminNewFechaNac').value,
+          genero: document.getElementById('adminNewGenero').value,
+          nivel: document.getElementById('adminNewNivel').value,
+          mes_pagado: document.getElementById('adminNewMes').value,
+          nombre_rep: document.getElementById('adminNewRep').value,
+          cedula_rep: document.getElementById('adminNewCedulaRep').value,
+          telefono_rep: document.getElementById('adminNewTel').value,
+          solvencia: document.getElementById('adminNewSolvencia').value,
+          metodo_pago: document.getElementById('adminNewMetodo').value,
+          referencia: document.getElementById('adminNewRef').value,
+          usuario: document.getElementById('adminNewUsuario').value,
+          clave_acceso: document.getElementById('adminNewClave').value
+        };
+
+        const nuevo = await ingresarAlumnoAdmin(datos);
+        modalNuevoAlumno?.classList.add('hidden');
+        modalNuevoAlumno?.classList.remove('flex');
+        document.getElementById('formIngresarAlumnoAdmin').reset();
+
+        poblarMesesEscuela();
+        renderTablas();
+        poblarSelectAtletasAdmin();
+        cargarUsuariosSistemaAdmin();
+        cargarExpedienteAdmin(nuevo.id);
+        alert(`✓ ¡Alumno registrado con éxito!\nPiloto: ${nuevo.nombre_atleta} ${nuevo.apellido_atleta} (${nuevo.numero_placa})\nUsuario asignado: @${nuevo.usuario}\nContraseña: ${nuevo.clave_acceso}`);
+      } catch (err) {
+        errBox.textContent = `⚠️ ${err.message || 'Error al ingresar alumno'}`;
+        errBox.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🏁 REGISTRAR ALUMNO EN LA BASE DE DATOS Y CREAR USUARIO →';
       }
     });
 

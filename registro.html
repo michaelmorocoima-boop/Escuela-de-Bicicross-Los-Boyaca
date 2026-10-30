@@ -42,7 +42,7 @@
           </span>
         </a>
         <div class="flex items-center gap-3">
-          <a href="admin.html" class="text-zinc-400 hover:text-white text-xs font-black uppercase border border-zinc-700 px-3 py-2 transform -skew-x-6">🔐 Admin</a>
+          <a href="login.html" class="text-zinc-400 hover:text-white text-xs font-black uppercase border border-zinc-700 px-3 py-2 transform -skew-x-6">🔐 Acceso</a>
           <a href="index.html" class="text-yellow-400 font-black italic uppercase text-xs border border-yellow-400 px-3.5 py-2 hover:bg-yellow-400 hover:text-black transition transform -skew-x-6">
             ← Volver al Inicio
           </a>
@@ -116,90 +116,40 @@
       <!-- (REGISTRO DE PAGOS Y DATOS DE COMPETENCIAS DE LA ESCUELA)          -->
       <!-- ================================================================== -->
       <div id="panelUsuarioAlumno" class="hidden space-y-8 mb-10">
-        <!-- BLOQUE SUPERIOR: ACCESO ALUMNO + GENERADOR DE USUARIO POR ALUMNO -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Sub-panel 1: Iniciar Sesión como Alumno -->
-          <div class="bg-zinc-900 border-2 border-sky-400 p-6 md:p-8 shadow-[6px_6px_0px_#0ea5e9]">
-            <div class="bg-black inline-block px-5 py-2 transform -skew-x-6 shadow-[3px_3px_0px_#0ea5e9] mb-4">
-              <h2 class="text-lg md:text-xl font-black uppercase italic text-sky-400">
-                🔐 Ingresar al Portal del Alumno
-              </h2>
-            </div>
-            <p class="text-zinc-300 text-xs md:text-sm mb-4">
-              Ingresa con tu <strong>Usuario de Alumno</strong>, <strong>Placa BMX</strong> (ej. <code>#07</code>) o <strong>Cédula</strong> para ver tu historial de pagos y resultados en las competencias de la escuela:
-            </p>
-            <form id="formLoginAlumno" class="space-y-4">
-              <div>
-                <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Usuario, Placa o Cédula *</label>
-                <input type="text" id="loginAlumnoUser" required placeholder="Ej. santiago07, #07 o 16450123" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-sky-400 focus:outline-none">
-              </div>
-              <div>
-                <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Contraseña de Acceso (Opcional, defecto: 1234)</label>
-                <input type="password" id="loginAlumnoPass" placeholder="Clave 1234 o déjalo vacío para entrar" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-sky-400 focus:outline-none">
-              </div>
-              <p id="errLoginAlumno" class="hidden text-xs font-black uppercase text-red-400 bg-red-950/60 border border-red-500 p-2.5 text-center"></p>
-              <button type="submit" class="w-full bg-sky-400 hover:bg-yellow-400 text-black font-black italic uppercase py-3.5 transform -skew-x-6 shadow-[4px_4px_0px_#fff] transition cursor-pointer">
-                Entrar a Mi Cuenta de Alumno →
-              </button>
-            </form>
 
-            <!-- Acceso Directo por Lista de Alumnos -->
-            <div class="mt-5 pt-4 border-t border-zinc-800 space-y-2">
-              <span class="block text-[11px] text-yellow-400 font-black uppercase">⚡ O Selecciona Directamente a un Alumno de la Lista:</span>
-              <div class="flex gap-2">
-                <select id="quickSelectAlumnoLogin" class="flex-1 px-3 py-2.5 bg-zinc-950 border border-sky-400 text-yellow-300 font-bold text-xs focus:outline-none"></select>
-                <button type="button" id="btnQuickSelectGo" class="bg-sky-400 hover:bg-yellow-400 text-black font-black uppercase text-xs px-4 py-2.5 transform -skew-x-6 cursor-pointer shrink-0">
-                  Ver Perfil →
-                </button>
-              </div>
-              <div class="flex flex-wrap gap-2 pt-1">
-                <button type="button" data-demo-user="santiago07" class="btn-demo-alumno bg-zinc-950 border border-sky-500/50 hover:border-yellow-400 text-sky-400 text-xs font-black px-3 py-1.5 cursor-pointer">
-                  👤 Santiago (#07)
-                </button>
-                <button type="button" data-demo-user="valentina12" class="btn-demo-alumno bg-zinc-950 border border-sky-500/50 hover:border-yellow-400 text-sky-400 text-xs font-black px-3 py-1.5 cursor-pointer">
-                  👤 Valentina (#12)
-                </button>
-                <button type="button" data-demo-user="matias25" class="btn-demo-alumno bg-zinc-950 border border-sky-500/50 hover:border-yellow-400 text-sky-400 text-xs font-black px-3 py-1.5 cursor-pointer">
-                  👤 Matías (#25)
-                </button>
-                <button type="button" data-demo-user="liam88" class="btn-demo-alumno bg-zinc-950 border border-sky-500/50 hover:border-yellow-400 text-sky-400 text-xs font-black px-3 py-1.5 cursor-pointer">
-                  👤 Liam (#88)
-                </button>
-              </div>
-            </div>
+        <!-- BLOQUE 1: ACCESO REQUERIDO (SI NO ESTÁ AUTENTICADO) -->
+        <div id="bloqueAccesoRequerido" class="hidden bg-zinc-900 border-2 border-yellow-400 p-8 max-w-xl mx-auto text-center shadow-[10px_10px_0px_#facc15]">
+          <div class="w-16 h-16 bg-zinc-950 border-2 border-yellow-400 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-3xl">🔐</span>
           </div>
+          <h2 class="text-2xl md:text-3xl font-racing font-black uppercase italic text-white mb-2">
+            Expediente <span class="text-yellow-400">Privado del Alumno</span>
+          </h2>
+          <p class="text-zinc-300 text-xs md:text-sm mb-6 leading-relaxed">
+            Por estrictas normas de privacidad y seguridad, cada piloto o representante debe iniciar sesión en el <strong>Portal de Acceso General</strong> con su usuario y contraseña para ver su ficha, solvencia, historial de pagos y mangas de competencia. Nadie más tiene acceso a tu información.
+          </p>
+          <a href="login.html" class="inline-block bg-yellow-400 hover:bg-green-400 text-black font-racing font-black italic uppercase text-base md:text-lg px-8 py-4 transform -skew-x-6 shadow-[5px_5px_0px_#0ea5e9] transition cursor-pointer">
+            INGRESAR POR EL PORTAL DE ACCESO GENERAL →
+          </a>
+        </div>
 
-          <!-- Sub-panel 2: Generar / Crear Usuario por Alumno -->
-          <div class="bg-zinc-900 border-2 border-yellow-400 p-6 md:p-8 shadow-[6px_6px_0px_#facc15]">
-            <div class="bg-black inline-block px-5 py-2 transform -skew-x-6 shadow-[3px_3px_0px_#facc15] mb-4">
-              <h2 class="text-lg md:text-xl font-black uppercase italic text-yellow-400">
-                ⚙️ Generar Usuario por Alumno
-              </h2>
+        <!-- BLOQUE 2: MODO SUPERVISOR DIRECTIVO (SOLO PARA DIRECTOR/ADMIN) -->
+        <div id="bloqueSupervisorAdmin" class="hidden bg-zinc-900 border-2 border-yellow-400 p-5 shadow-[6px_6px_0px_#facc15]">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <span class="bg-yellow-400 text-black text-[10px] font-black uppercase px-2.5 py-0.5 transform -skew-x-6 inline-block mb-1">
+                👑 MODO SUPERVISIÓN DIRECTIVA
+              </span>
+              <p class="text-xs text-zinc-300">
+                Como Director o Administrador autenticado, puedes auditar el expediente de cualquier alumno:
+              </p>
             </div>
-            <p class="text-zinc-300 text-xs md:text-sm mb-4">
-              Selecciona a un piloto inscrito en la escuela y asígnale (o actualiza) su <strong>Nombre de Usuario</strong> y <strong>Contraseña</strong> para consultar sus pagos y competencias:
-            </p>
-            <form id="formGenerarUsuario" class="space-y-4">
-              <div>
-                <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Seleccionar Alumno de la Escuela *</label>
-                <select id="selectAtletaUsuario" required class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-yellow-400 focus:outline-none">
-                </select>
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Nuevo Usuario *</label>
-                  <input type="text" id="inputNuevoUsuario" required placeholder="Ej. santiago07" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-yellow-400 font-bold lowercase focus:border-yellow-400 focus:outline-none">
-                </div>
-                <div>
-                  <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Contraseña *</label>
-                  <input type="text" id="inputNuevaClave" required placeholder="Ej. 1234" class="w-full px-4 py-3 bg-zinc-950 border border-zinc-700 text-white font-bold focus:border-yellow-400 focus:outline-none">
-                </div>
-              </div>
-              <p id="msgUsuarioGenerado" class="hidden text-xs font-black uppercase text-green-400 bg-green-950/70 border border-green-500 p-2.5 text-center"></p>
-              <button type="submit" class="w-full bg-yellow-400 hover:bg-green-400 text-black font-black italic uppercase py-3.5 transform -skew-x-6 shadow-[4px_4px_0px_#0ea5e9] transition cursor-pointer">
-                ✓ Guardar / Generar Usuario del Alumno
-              </button>
-            </form>
+            <div class="flex items-center gap-3">
+              <select id="selectAuditoriaAdmin" class="px-3 py-2 bg-zinc-950 border border-yellow-400 text-yellow-300 font-bold text-xs focus:outline-none"></select>
+              <a href="admin.html" class="bg-zinc-950 border border-zinc-700 hover:border-yellow-400 text-white font-black text-xs uppercase px-3 py-2">
+                ← Volver al Admin
+              </a>
+            </div>
           </div>
         </div>
 
@@ -657,8 +607,9 @@
       loginAlumno,
       getAlumnoLogueado,
       logoutAlumno,
+      isAdminLoggedIn,
       obtenerExpedienteAlumno
-    } from './js/store.js?v=9';
+    } from './portal-store.js?v=10';
 
     const config = getConfig();
     const fechaPagoInput = document.getElementById('fecha_pago');
@@ -691,12 +642,29 @@
       } else if (modo === 'usuario') {
         panelUsuarioAlumno.classList.remove('hidden');
         tabBtnUsuario.className = 'py-4 px-5 font-racing font-black italic uppercase text-base md:text-lg transform -skew-x-6 border-2 border-sky-400 bg-sky-400 text-black shadow-[5px_5px_0px_#facc15] transition';
-        poblarSelectAtletasUsuario();
+        
         const logueado = getAlumnoLogueado();
-        const lista = getInscripcionesEscuela();
-        const idTarget = logueado ? logueado.id : (lista[0] ? lista[0].id : null);
-        if (idTarget) {
-          renderizarExpedienteAlumno(idTarget);
+        const isAdmin = isAdminLoggedIn();
+        const bRequerido = document.getElementById('bloqueAccesoRequerido');
+        const bSupervisor = document.getElementById('bloqueSupervisorAdmin');
+        const vExp = document.getElementById('vistaExpedienteAlumno');
+
+        if (logueado) {
+          bRequerido?.classList.add('hidden');
+          bSupervisor?.classList.add('hidden');
+          vExp?.classList.remove('hidden');
+          renderizarExpedienteAlumno(logueado.id);
+        } else if (isAdmin) {
+          bRequerido?.classList.add('hidden');
+          bSupervisor?.classList.remove('hidden');
+          vExp?.classList.remove('hidden');
+          poblarSelectSupervisorAdmin();
+          const sel = document.getElementById('selectAuditoriaAdmin');
+          if (sel && sel.value) renderizarExpedienteAlumno(sel.value);
+        } else {
+          vExp?.classList.add('hidden');
+          bSupervisor?.classList.add('hidden');
+          bRequerido?.classList.remove('hidden');
         }
       } else {
         formEscuela.classList.remove('hidden');
@@ -708,60 +676,15 @@
     tabBtnMensualidad.addEventListener('click', () => activarTab('mensualidad'));
     tabBtnUsuario.addEventListener('click', () => activarTab('usuario'));
 
-    // =========================================================================
-    // LÓGICA DE GENERACIÓN DE USUARIO POR ALUMNO Y PORTAL DEL ALUMNO
-    // =========================================================================
-    const selectAtletaUsuario = document.getElementById('selectAtletaUsuario');
-    const inputNuevoUsuario = document.getElementById('inputNuevoUsuario');
-    const inputNuevaClave = document.getElementById('inputNuevaClave');
-    const msgUsuarioGenerado = document.getElementById('msgUsuarioGenerado');
-
-    function poblarSelectAtletasUsuario() {
+    function poblarSelectSupervisorAdmin() {
+      const sel = document.getElementById('selectAuditoriaAdmin');
+      if (!sel) return;
       const lista = getInscripcionesEscuela();
-      selectAtletaUsuario.innerHTML = lista.map(a =>
-        `<option value="${a.id}">${a.numero_placa || '#S/N'} - ${a.nombre_atleta} ${a.apellido_atleta} (Usuario actual: ${a.usuario || 'sin asignar'})</option>`
+      sel.innerHTML = lista.map(a =>
+        `<option value="${a.id}">${a.numero_placa || '#S/N'} • ${a.nombre_atleta} ${a.apellido_atleta}</option>`
       ).join('');
-
-      const quickSelect = document.getElementById('quickSelectAlumnoLogin');
-      if (quickSelect) {
-        quickSelect.innerHTML = lista.map(a =>
-          `<option value="${a.id}">${a.numero_placa || '#S/N'} • ${a.nombre_atleta} ${a.apellido_atleta} (@${a.usuario || 'alumno'})</option>`
-        ).join('');
-      }
-
-      if (lista.length > 0) {
-        actualizarCamposGenerador(lista[0].id);
-      }
+      sel.onchange = e => renderizarExpedienteAlumno(e.target.value);
     }
-
-    function actualizarCamposGenerador(atletaId) {
-      const lista = getInscripcionesEscuela();
-      const a = lista.find(item => item.id === atletaId);
-      if (!a) return;
-      const sugerido = a.usuario || `${(a.nombre_atleta || 'piloto').split(' ')[0].toLowerCase()}${String(a.numero_placa || '').replace(/[^0-9]/g, '') || 'bmx'}`;
-      inputNuevoUsuario.value = sugerido;
-      inputNuevaClave.value = a.clave_acceso || '1234';
-    }
-
-    selectAtletaUsuario.addEventListener('change', e => actualizarCamposGenerador(e.target.value));
-
-    document.getElementById('formGenerarUsuario').addEventListener('submit', e => {
-      e.preventDefault();
-      msgUsuarioGenerado.classList.add('hidden');
-      const res = generarUsuarioAlumno({
-        atletaId: selectAtletaUsuario.value,
-        usuario: inputNuevoUsuario.value,
-        clave: inputNuevaClave.value
-      });
-      if (!res.ok) {
-        msgUsuarioGenerado.textContent = `⚠️ ${res.error}`;
-        msgUsuarioGenerado.className = 'text-xs font-black uppercase text-red-400 bg-red-950/70 border border-red-500 p-2.5 text-center';
-        msgUsuarioGenerado.classList.remove('hidden');
-        return;
-      }
-      msgUsuarioGenerado.textContent = `✓ Usuario @${res.atleta.usuario} (Clave: ${res.atleta.clave_acceso}) guardado para ${res.atleta.nombre_atleta}. ¡Abriendo su expediente!`;
-      msgUsuarioGenerado.className = 'text-xs font-black uppercase text-green-400 bg-green-950/70 border border-green-500 p-2.5 text-center';
-      msgUsuarioGenerado.classList.remove('hidden');
       poblarSelectAtletasUsuario();
       selectAtletaUsuario.value = res.atleta.id;
       loginAlumno(res.atleta.usuario, res.atleta.clave_acceso);
@@ -874,50 +797,10 @@
       }).join('');
     }
 
-    // Login de Alumno
-    const errLoginAlumno = document.getElementById('errLoginAlumno');
-    document.getElementById('formLoginAlumno').addEventListener('submit', e => {
-      e.preventDefault();
-      errLoginAlumno.classList.add('hidden');
-      const u = document.getElementById('loginAlumnoUser').value;
-      const p = document.getElementById('loginAlumnoPass').value;
-      const atleta = loginAlumno(u, p);
-      if (!atleta) {
-        errLoginAlumno.textContent = 'No se encontró el alumno. Verifica la placa o selecciónalo abajo en la lista.';
-        errLoginAlumno.classList.remove('hidden');
-        return;
-      }
-      renderizarExpedienteAlumno(atleta.id);
-      document.getElementById('vistaExpedienteAlumno').scrollIntoView({ behavior: 'smooth' });
-    });
-
-    // Botón de Selección Rápida en Lista de Alumnos
-    document.getElementById('btnQuickSelectGo')?.addEventListener('click', () => {
-      const atId = document.getElementById('quickSelectAlumnoLogin')?.value;
-      if (atId) {
-        sessionStorage.setItem('boyaca_bmx_alumno_session_v1', atId);
-        renderizarExpedienteAlumno(atId);
-        document.getElementById('vistaExpedienteAlumno')?.scrollIntoView({ behavior: 'smooth' });
-      }
-    });
-
-    // Botones Demo 1-Clic para probar el Acceso de Alumnos
-    document.querySelectorAll('.btn-demo-alumno').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const u = btn.getAttribute('data-demo-user');
-        document.getElementById('loginAlumnoUser').value = u;
-        document.getElementById('loginAlumnoPass').value = '1234';
-        const atleta = loginAlumno(u, '1234');
-        if (atleta) {
-          renderizarExpedienteAlumno(atleta.id);
-          document.getElementById('vistaExpedienteAlumno').scrollIntoView({ behavior: 'smooth' });
-        }
-      });
-    });
-
-    document.getElementById('btnCerrarSesionAlumno').addEventListener('click', () => {
+    // Cierre de Sesión del Alumno
+    document.getElementById('btnCerrarSesionAlumno')?.addEventListener('click', () => {
       logoutAlumno();
-      document.getElementById('vistaExpedienteAlumno').classList.add('hidden');
+      window.location.href = 'login.html';
     });
 
     document.getElementById('btnIrPagarMesAlumno').addEventListener('click', () => {

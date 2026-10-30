@@ -1125,8 +1125,9 @@ export function loginAlumno(identificador, clave = "") {
       primerNombre === rawQ
     );
 
-    const claveAtleta = a.clave_acceso || "1234";
-    const passMatch = Boolean(pass) && (pass === claveAtleta || pass === "1234" || pass === "admin");
+    const claveAtleta = (a.clave_acceso || "").trim();
+    if (!claveAtleta) return false;
+    const passMatch = Boolean(pass) && pass === claveAtleta;
     return idMatch && passMatch;
   });
 
@@ -1363,16 +1364,16 @@ export function loginAdmin(user, pass) {
   const p = (pass || "").trim();
 
   const isDirector = (u === "director" || u === "michael" || u === "morocoima") &&
-                     (p === "director2026" || p === "director" || p === "1234" || p === "boyaca2026");
+                     (p === "director2026" || p === "morocoima2024");
   const isAdmin = (u === "admin" || u === "coach") &&
-                  (p === "boyaca2026" || p === "admin" || p === "1234" || p === "admin2026");
+                  (p === "boyaca2026" || p === "admin2026");
 
   if (isDirector) {
     sessionStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, "ACTIVA");
     sessionStorage.setItem(STORAGE_KEYS.ADMIN_ROLE, `DIRECTOR DE LA ESCUELA (${cfg.directorNombre || "Michael Morocoima"})`);
     return true;
   }
-  if (isAdmin || (u && (p === "boyaca2026" || p === "director2026" || p === "1234" || p === "admin"))) {
+  if (isAdmin) {
     sessionStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, "ACTIVA");
     sessionStorage.setItem(STORAGE_KEYS.ADMIN_ROLE, "ADMINISTRADOR DE LA PÁGINA (ACCESO GENERAL)");
     return true;

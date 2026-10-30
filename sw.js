@@ -1,11 +1,13 @@
-const CACHE_NAME = "boyaca-bmx-pwa-v9";
+const CACHE_NAME = "boyaca-bmx-pwa-v10";
 const ASSETS_TO_CACHE = [
   "./",
   "./app.html",
+  "./login.html",
   "./index.html",
   "./registro.html",
   "./registro-valida.html",
   "./admin.html",
+  "./portal-store.js",
   "./js/store.js",
   "./manifest.json",
   "./assets/hero-bmx.webp",

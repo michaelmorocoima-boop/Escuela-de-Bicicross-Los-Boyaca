@@ -20,6 +20,8 @@ ON CONFLICT (clave) DO NOTHING;
 -- 2. Tabla de Atletas Inscritos en la Escuela Permanente
 CREATE TABLE IF NOT EXISTS public.inscripciones_escuela (
   id TEXT PRIMARY KEY,
+  usuario TEXT,
+  clave_acceso TEXT DEFAULT '1234',
   nombre_atleta TEXT NOT NULL,
   apellido_atleta TEXT NOT NULL,
   cedula_atleta TEXT,
@@ -44,6 +46,11 @@ CREATE TABLE IF NOT EXISTS public.inscripciones_escuela (
   solvencia TEXT DEFAULT 'EN REVISIÓN',
   creado_en TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Migración segura por si la tabla ya existe
+ALTER TABLE public.inscripciones_escuela ADD COLUMN IF NOT EXISTS usuario TEXT;
+ALTER TABLE public.inscripciones_escuela ADD COLUMN IF NOT EXISTS clave_acceso TEXT DEFAULT '1234';
+
 
 -- 3. Tabla de Pagos de Mensualidades (Alumnos Regulares)
 CREATE TABLE IF NOT EXISTS public.pagos_mensualidad (
