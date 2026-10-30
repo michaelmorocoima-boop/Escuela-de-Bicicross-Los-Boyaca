@@ -35,7 +35,9 @@
   <!-- 1. VERIFICACIÓN DE SESIÓN DE SEGURIDAD (UN SOLO PORTAL GENERAL)        -->
   <!-- ====================================================================== -->
   <script>
-    if (sessionStorage.getItem('boyaca_bmx_admin_session_v1') !== 'ACTIVA') {
+    const isAdminActive = sessionStorage.getItem('boyaca_bmx_admin_session_v2') === 'ACTIVA' ||
+                          sessionStorage.getItem('boyaca_bmx_admin_session_v1') === 'ACTIVA';
+    if (!isAdminActive) {
       window.location.replace('login.html');
     }
   </script>

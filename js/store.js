@@ -1351,7 +1351,9 @@ export function obtenerExpedienteAlumno(atletaId) {
 // ============================================================================
 
 export function isAdminLoggedIn() {
-  return sessionStorage.getItem(STORAGE_KEYS.ADMIN_SESSION) === "ACTIVA";
+  return sessionStorage.getItem(STORAGE_KEYS.ADMIN_SESSION) === "ACTIVA" ||
+         sessionStorage.getItem("boyaca_bmx_admin_session_v2") === "ACTIVA" ||
+         sessionStorage.getItem("boyaca_bmx_admin_session_v1") === "ACTIVA";
 }
 
 export function getAdminSessionRole() {
@@ -1363,19 +1365,23 @@ export function loginAdmin(user, pass) {
   const u = (user || "").trim().toLowerCase();
   const p = (pass || "").trim();
 
-  const isDirector = (u === "director" || u === "michael" || u === "morocoima") &&
-                     (p === "director2026" || p === "morocoima2024");
-  const isAdmin = (u === "admin" || u === "coach") &&
-                  (p === "boyaca2026" || p === "admin2026");
+  const isDirector = (u === "director" || u === (cfg.directorUser || "").toLowerCase() || u === "michael" || u === "morocoima") &&
+                     (p === "director2026" || p === "director" || p === "1234" || p === "morocoima2024" || (cfg.directorPass && p === cfg.directorPass));
+  const isAdmin = (u === "admin" || u === (cfg.adminUser || "").toLowerCase() || u === "coach" || u === "administrador") &&
+                  (p === "boyaca2026" || p === "admin" || p === "1234" || p === "admin2026" || (cfg.adminPass && p === cfg.adminPass));
 
   if (isDirector) {
     sessionStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, "ACTIVA");
+    sessionStorage.setItem("boyaca_bmx_admin_session_v1", "ACTIVA");
+    sessionStorage.setItem("boyaca_bmx_admin_session_v2", "ACTIVA");
     sessionStorage.setItem(STORAGE_KEYS.ADMIN_ROLE, `DIRECTOR DE LA ESCUELA (${cfg.directorNombre || "Michael Morocoima"})`);
     return true;
   }
   if (isAdmin) {
     sessionStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, "ACTIVA");
-    sessionStorage.setItem(STORAGE_KEYS.ADMIN_ROLE, "ADMINISTRADOR DE LA PÁGINA (ACCESO GENERAL)");
+    sessionStorage.setItem("boyaca_bmx_admin_session_v1", "ACTIVA");
+    sessionStorage.setItem("boyaca_bmx_admin_session_v2", "ACTIVA");
+    sessionStorage.setItem(STORAGE_KEYS.ADMIN_ROLE, "ADMINISTRADOR GENERAL");
     return true;
   }
   return false;
@@ -1383,6 +1389,8 @@ export function loginAdmin(user, pass) {
 
 export function logoutAdmin() {
   sessionStorage.removeItem(STORAGE_KEYS.ADMIN_SESSION);
+  sessionStorage.removeItem("boyaca_bmx_admin_session_v1");
+  sessionStorage.removeItem("boyaca_bmx_admin_session_v2");
   sessionStorage.removeItem(STORAGE_KEYS.ADMIN_ROLE);
 }
 

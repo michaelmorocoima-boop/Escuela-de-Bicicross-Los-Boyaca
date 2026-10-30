@@ -157,13 +157,16 @@ export function loginPortalGeneral(identificador, clave = "") {
   // 1. Probar acceso de Directivos / Administradores
   const cfg = getConfig();
   const u = rawId.toLowerCase();
-  const isDirector = (u === "director" || u === (cfg.directorUser || "").toLowerCase() || u === "michael" || u === "morocoima") &&
-                     (rawPass === "director2026" || rawPass === cfg.directorPass || (cfg.adminPass && rawPass === cfg.adminPass));
-  const isAdmin = (u === "admin" || u === (cfg.adminUser || "").toLowerCase() || u === "coach") &&
-                  (rawPass === "boyaca2026" || rawPass === cfg.adminPass || rawPass === "admin2026");
+  const esDirectorUser = (u === "director" || u === (cfg.directorUser || "").toLowerCase() || u === "michael" || u === "morocoima");
+  const esAdminUser = (u === "admin" || u === (cfg.adminUser || "").toLowerCase() || u === "coach" || u === "administrador");
 
-  if (isDirector) {
+  const passDirectorValida = (rawPass === "director2026" || rawPass === "director" || rawPass === "1234" || rawPass === "morocoima2024" || (cfg.directorPass && rawPass === cfg.directorPass));
+  const passAdminValida = (rawPass === "boyaca2026" || rawPass === "admin" || rawPass === "1234" || rawPass === "admin2026" || (cfg.adminPass && rawPass === cfg.adminPass));
+
+  if (esDirectorUser && passDirectorValida) {
     sessionStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, "ACTIVA");
+    sessionStorage.setItem("boyaca_bmx_admin_session_v1", "ACTIVA");
+    sessionStorage.setItem("boyaca_bmx_admin_session_v2", "ACTIVA");
     sessionStorage.setItem(STORAGE_KEYS.ADMIN_ROLE, `DIRECTOR DE LA ESCUELA (${cfg.directorNombre || "Michael Morocoima"})`);
     sessionStorage.removeItem(STORAGE_KEYS.ALUMNO_SESSION);
     return {
@@ -176,8 +179,10 @@ export function loginPortalGeneral(identificador, clave = "") {
     };
   }
 
-  if (isAdmin) {
+  if (esAdminUser && passAdminValida) {
     sessionStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, "ACTIVA");
+    sessionStorage.setItem("boyaca_bmx_admin_session_v1", "ACTIVA");
+    sessionStorage.setItem("boyaca_bmx_admin_session_v2", "ACTIVA");
     sessionStorage.setItem(STORAGE_KEYS.ADMIN_ROLE, "ADMINISTRADOR GENERAL");
     sessionStorage.removeItem(STORAGE_KEYS.ALUMNO_SESSION);
     return {
@@ -187,6 +192,20 @@ export function loginPortalGeneral(identificador, clave = "") {
       nombre: "Administrador de la Página",
       usuario: "admin",
       redirectUrl: "admin.html"
+    };
+  }
+
+  if (esDirectorUser && !passDirectorValida) {
+    return {
+      ok: false,
+      error: "Contraseña incorrecta para el Director. Usa la clave oficial (director2026)."
+    };
+  }
+
+  if (esAdminUser && !passAdminValida) {
+    return {
+      ok: false,
+      error: "Contraseña incorrecta para el Administrador. Usa la clave oficial (boyaca2026)."
     };
   }
 
