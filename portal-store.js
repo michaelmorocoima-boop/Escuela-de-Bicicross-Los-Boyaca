@@ -75,7 +75,8 @@ const STORAGE_KEYS = {
   PAGOS_MENSUALIDAD: "boyaca_bmx_pagos_mensualidad_v3",
   ADMIN_SESSION: "boyaca_bmx_admin_session_v2",
   ADMIN_ROLE: "boyaca_bmx_admin_role_v1",
-  ALUMNO_SESSION: "boyaca_bmx_alumno_session_v1"
+  ALUMNO_SESSION: "boyaca_bmx_alumno_session_v1",
+  STAFF_USERS: "boyaca_bmx_staff_users_v2"
 };
 
 /**
@@ -252,6 +253,33 @@ export async function loginPortalGeneral(identificador, clave = "") {
     };
   }
 
+  // 1.1 Probar cuentas de personal administrativo (Staff, Director, Entrenador) creadas dinámicamente
+  const staffList = getStaffUsers();
+  const staffMatch = staffList.find(s => (s.usuario || "").toLowerCase() === u);
+  if (staffMatch) {
+    const coincide = await verificarPassword(rawPass, staffMatch.clave_hash, staffMatch.clave);
+    if (coincide) {
+      sessionStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, "ACTIVA");
+      sessionStorage.setItem("boyaca_bmx_admin_session_v1", "ACTIVA");
+      sessionStorage.setItem("boyaca_bmx_admin_session_v2", "ACTIVA");
+      sessionStorage.setItem(STORAGE_KEYS.ADMIN_ROLE, `${staffMatch.rol} (${staffMatch.nombre})`);
+      sessionStorage.removeItem(STORAGE_KEYS.ALUMNO_SESSION);
+      return {
+        ok: true,
+        tipo: "ADMIN",
+        rol: staffMatch.rol,
+        nombre: staffMatch.nombre,
+        usuario: staffMatch.usuario,
+        redirectUrl: "admin.html"
+      };
+    } else {
+      return {
+        ok: false,
+        error: `Contraseña incorrecta para ${staffMatch.nombre} (${staffMatch.rol}).`
+      };
+    }
+  }
+
   // 2. Probar acceso de Alumnos de la Escuela
   if (!rawPass) {
     return { ok: false, error: "Por favor escribe tu contraseña de acceso." };
@@ -344,41 +372,135 @@ export async function loginPortalGeneral(identificador, clave = "") {
  */
 
 /**
+ * ============================================================================
+ * GESTIÓN DE USUARIOS DE PERSONAL ADMINISTRATIVO (DIRECTOR, ADMIN, ENTRENADOR)
+ * ============================================================================
+ */
+export function getStaffUsers() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.STAFF_USERS);
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr : [];
+  } catch (_) {
+    return [];
+  }
+}
+
+export async function guardarUsuarioStaff(datos) {
+  const staff = getStaffUsers();
+  const id = datos.id || `staff-${Date.now().toString().slice(-5)}`;
+  const idx = staff.findIndex(s => s.id === id);
+  const u = (datos.usuario || "").trim().toLowerCase().replace(/\s+/g, "");
+  const p = (datos.clave || "").trim();
+
+  let hash = datos.clave_hash || "";
+  if (p && p !== "••••••••") {
+    hash = await hashPassword(p);
+  }
+
+  const nuevoStaff = {
+    id,
+    rol: (datos.rol || "ADMINISTRADOR GENERAL").toUpperCase(),
+    nombre: (datos.nombre || "Personal de la Escuela").trim().toUpperCase(),
+    usuario: u,
+    clave_hash: hash,
+    clave: "••••••••",
+    cedula: (datos.cedula || "").trim(),
+    telefono: (datos.telefono || "").trim(),
+    creado_en: datos.creado_en || new Date().toISOString()
+  };
+
+  if (idx !== -1) {
+    staff[idx] = nuevoStaff;
+  } else {
+    staff.push(nuevoStaff);
+  }
+
+  localStorage.setItem(STORAGE_KEYS.STAFF_USERS, JSON.stringify(staff));
+  return { ok: true, usuario: nuevoStaff };
+}
+
+export function eliminarUsuarioStaff(id) {
+  const staff = getStaffUsers().filter(s => s.id !== id);
+  localStorage.setItem(STORAGE_KEYS.STAFF_USERS, JSON.stringify(staff));
+  return { ok: true, mensaje: "Usuario de administración eliminado con éxito." };
+}
+
+/**
  * Retorna la lista consolidada de todos los usuarios del sistema.
  */
 export function getUsuariosSistema() {
   const cfg = getConfig();
   const lista = [];
 
-  // 1. Cuenta de Director
+  // 1. Cuenta Maestra de Director
   lista.push({
     id: "usr-director",
     usuario: cfg.directorUser || "director",
-    clave: cfg.directorPass || "director2026",
-    rol: "DIRECTOR",
+    clave: "🔒 SHA-256",
+    clave_hash: "master_director",
+    clave_acceso: "🔒 SHA-256",
+    tiene_clave: true,
+    cifrado: true,
+    rol: "DIRECTOR DE LA ESCUELA",
+    atleta: cfg.directorNombre || "Michael Morocoima (Director)",
     nombre: cfg.directorNombre || "Michael Morocoima (Director)",
+    representante: "Cuenta Directiva Principal",
     tipo: "DIRECTIVO",
     atleta_id: null,
+    numero_placa: "👑",
     placa: "👑",
     estado: "ACTIVO",
     creado_en: "2026-01-01"
   });
 
-  // 2. Cuenta de Administrador
+  // 2. Cuenta Maestra de Administrador
   lista.push({
     id: "usr-admin",
     usuario: cfg.adminUser || "admin",
-    clave: cfg.adminPass || "boyaca2026",
-    rol: "ADMINISTRADOR",
+    clave: "🔒 SHA-256",
+    clave_hash: "master_admin",
+    clave_acceso: "🔒 SHA-256",
+    tiene_clave: true,
+    cifrado: true,
+    rol: "ADMINISTRADOR GENERAL",
+    atleta: "Administrador de la Página",
     nombre: "Administrador de la Página",
+    representante: "Superusuario del Sistema",
     tipo: "ADMINISTRATIVO",
     atleta_id: null,
+    numero_placa: "💻",
     placa: "💻",
     estado: "ACTIVO",
     creado_en: "2026-01-01"
   });
 
-  // 3. Cuentas de Alumnos
+  // 3. Cuentas de Personal Administrativo / Staff creadas dinámicamente
+  const staff = getStaffUsers();
+  staff.forEach(s => {
+    lista.push({
+      id: s.id,
+      usuario: s.usuario,
+      clave: "🔒 SHA-256",
+      clave_hash: s.clave_hash,
+      clave_acceso: "🔒 SHA-256",
+      tiene_clave: true,
+      cifrado: true,
+      rol: s.rol,
+      atleta: s.nombre,
+      nombre: s.nombre,
+      representante: s.cedula ? `CI: ${s.cedula} • 📞 ${s.telefono || 'S/N'}` : "Personal Escuela",
+      tipo: "STAFF",
+      atleta_id: null,
+      numero_placa: s.rol.includes("DIRECTOR") ? "👑" : (s.rol.includes("ENTRENADOR") ? "⏱️" : "💻"),
+      placa: s.rol.includes("DIRECTOR") ? "👑" : (s.rol.includes("ENTRENADOR") ? "⏱️" : "💻"),
+      estado: "ACTIVO",
+      creado_en: s.creado_en
+    });
+  });
+
+  // 4. Cuentas de Alumnos
   const atletas = getInscripcionesEscuela();
   atletas.forEach(a => {
     const tieneSeguridad = Boolean(a.clave_hash || (a.clave_acceso && a.clave_acceso !== "••••••••"));
@@ -410,6 +532,130 @@ export function getUsuariosSistema() {
   });
 
   return lista;
+}
+
+/**
+ * Crea cualquier usuario del sistema (Director, Administrador, Entrenador o Alumno).
+ */
+export async function crearUsuarioGeneral(datos) {
+  const rol = (datos.rol || "ALUMNO").toUpperCase();
+  const nombre = (datos.nombre || "").trim().toUpperCase();
+  const usuario = (datos.usuario || "").trim().toLowerCase().replace(/\s+/g, "");
+  const clave = (datos.clave || "").trim();
+
+  if (!nombre) return { ok: false, error: "El nombre completo es obligatorio." };
+  if (!usuario) return { ok: false, error: "El nombre de usuario es obligatorio." };
+  if (!clave || clave.length < 4) return { ok: false, error: "La contraseña debe tener al menos 4 caracteres." };
+
+  const todos = getUsuariosSistema();
+  if (todos.some(x => (x.usuario || "").toLowerCase() === usuario)) {
+    return { ok: false, error: `El nombre de usuario "@${usuario}" ya está en uso. Elige otro.` };
+  }
+
+  if (rol.includes("DIRECTOR") || rol.includes("ADMIN") || rol.includes("ENTRENADOR")) {
+    const rolOficial = rol.includes("DIRECTOR")
+      ? "DIRECTOR DE LA ESCUELA"
+      : (rol.includes("ENTRENADOR") ? "ENTRENADOR / COMISARIO BMX" : "ADMINISTRADOR GENERAL");
+    return await guardarUsuarioStaff({
+      rol: rolOficial,
+      nombre,
+      usuario,
+      clave,
+      cedula: datos.cedula || "",
+      telefono: datos.telefono || ""
+    });
+  } else {
+    // Es Alumno / Piloto
+    return await ingresarAlumnoAdmin({
+      nombre_atleta: nombre.split(" ")[0] || "PILOTO",
+      apellido_atleta: nombre.split(" ").slice(1).join(" ") || "BMX",
+      numero_placa: datos.placa || "",
+      cedula_atleta: datos.cedula || "",
+      usuario: usuario,
+      clave_acceso: clave,
+      fecha_nacimiento: datos.fecha_nacimiento || "2018-05-10",
+      genero: datos.genero || "MASCULINO",
+      nivel: datos.nivel || "Principiantes / Novatos",
+      mes_pagado: datos.mes_pagado || "NOVIEMBRE 2026",
+      nombre_rep: datos.nombre_rep || `REP. DE ${nombre}`,
+      cedula_rep: datos.cedula_rep || datos.cedula || "V-00000000",
+      telefono_rep: datos.telefono || "0414-0000000",
+      solvencia: "SOLVENTE"
+    });
+  }
+}
+
+/**
+ * Reasigna la contraseña de CUALQUIER usuario (Director, Administrador, Staff o Alumno).
+ */
+export async function reasignarClaveCualquierUsuario({ id, nuevaClave }) {
+  if (!nuevaClave || nuevaClave.trim().length < 4) {
+    return { ok: false, error: "La nueva contraseña debe tener al menos 4 caracteres." };
+  }
+  const cleanPass = nuevaClave.trim();
+  const hash = await hashPassword(cleanPass);
+
+  // 1. Si es cuenta Staff
+  if (id.startsWith("staff-")) {
+    const staffList = getStaffUsers();
+    const idx = staffList.findIndex(s => s.id === id);
+    if (idx !== -1) {
+      staffList[idx].clave_hash = hash;
+      staffList[idx].clave = "••••••••";
+      localStorage.setItem(STORAGE_KEYS.STAFF_USERS, JSON.stringify(staffList));
+      return { ok: true, mensaje: `Contraseña actualizada con éxito para @${staffList[idx].usuario}` };
+    }
+  }
+
+  // 2. Si es cuenta Maestra
+  if (id === "usr-director") {
+    const cfg = getConfig();
+    cfg.directorPass = cleanPass;
+    saveConfig(cfg);
+    return { ok: true, mensaje: "Contraseña del Director actualizada con éxito." };
+  }
+  if (id === "usr-admin") {
+    const cfg = getConfig();
+    cfg.adminPass = cleanPass;
+    saveConfig(cfg);
+    return { ok: true, mensaje: "Contraseña del Administrador actualizada con éxito." };
+  }
+
+  // 3. Si es Alumno
+  const cleanId = String(id).replace(/^usr-atl-/, "");
+  const atletas = getInscripcionesEscuela();
+  const idx = atletas.findIndex(a => a.id === cleanId || a.id === id);
+  if (idx !== -1) {
+    atletas[idx].clave_hash = hash;
+    atletas[idx].clave_acceso = "••••••••";
+    localStorage.setItem(STORAGE_KEYS.INSCRIPCIONES_ESCUELA, JSON.stringify(atletas));
+
+    const sb = getSupabaseClient();
+    if (sb) {
+      try {
+        await sb.from("inscripciones_escuela").update({
+          clave_hash: hash,
+          clave_acceso: "••••••••"
+        }).eq("id", cleanId);
+      } catch (_) {}
+    }
+    return { ok: true, mensaje: `Contraseña actualizada para ${atletas[idx].nombre_atleta} (@${atletas[idx].usuario || atletas[idx].numero_placa})` };
+  }
+
+  return { ok: false, error: "Usuario no encontrado." };
+}
+
+/**
+ * Elimina cualquier tipo de usuario en el portal.
+ */
+export function eliminarCualquierUsuario(id) {
+  if (id.startsWith("staff-")) {
+    return eliminarUsuarioStaff(id);
+  }
+  if (id === "usr-director" || id === "usr-admin") {
+    return { ok: false, error: "Las cuentas maestras de la plataforma no se pueden eliminar por seguridad; puedes reasignarles su clave." };
+  }
+  return eliminarUsuarioAlumno(id);
 }
 
 /**

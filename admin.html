@@ -169,9 +169,14 @@
             </h3>
             <span class="text-xs text-zinc-400">Control de credenciales, asignación de clave y eliminación de usuarios</span>
           </div>
-          <button type="button" id="btnRecargarUsuariosAdmin" class="bg-zinc-950 border border-zinc-700 hover:border-yellow-400 text-xs font-black uppercase px-3 py-1.5 text-zinc-300">
-            🔄 Actualizar Lista
-          </button>
+          <div class="flex items-center gap-2">
+            <button type="button" id="btnAbrirModalNuevoUsuario" class="bg-yellow-400 hover:bg-green-400 text-black font-racing font-black italic uppercase text-xs px-3.5 py-2 transform -skew-x-6 shadow-[3px_3px_0px_#0ea5e9] transition cursor-pointer">
+              + Crear Nuevo Usuario
+            </button>
+            <button type="button" id="btnRecargarUsuariosAdmin" class="bg-zinc-950 border border-zinc-700 hover:border-yellow-400 text-xs font-black uppercase px-3 py-2 text-zinc-300">
+              🔄 Actualizar Lista
+            </button>
+          </div>
         </div>
         <div class="overflow-x-auto bg-zinc-950 border border-zinc-800">
           <table class="w-full text-left text-xs border-collapse">
@@ -746,6 +751,102 @@
     </div>
   </div>
 
+  <!-- ====================================================================== -->
+  <!-- MODAL: CREAR CUALQUIER USUARIO DEL PORTAL BMX (DIRECTOR, ADMIN, ALUMNO) -->
+  <!-- ====================================================================== -->
+  <div id="modalCrearUsuarioAdmin" class="fixed inset-0 bg-black/90 z-[320] hidden items-center justify-center p-4 overflow-y-auto no-print">
+    <div class="bg-zinc-900 border-2 border-yellow-400 max-w-lg w-full p-6 my-8 transform -skew-x-1 shadow-[10px_10px_0px_#0ea5e9]">
+      <div class="flex justify-between items-center border-b border-zinc-800 pb-3 mb-4">
+        <div>
+          <span class="text-xs font-black uppercase text-yellow-400 block">SEGURIDAD Y CONTROL DE ACCESOS</span>
+          <h3 class="text-xl font-racing font-black uppercase italic text-white">👤 Crear Nuevo Usuario del Portal</h3>
+        </div>
+        <button type="button" id="btnCerrarModalNuevoUsuario" class="text-zinc-400 hover:text-white text-2xl font-bold cursor-pointer">✕</button>
+      </div>
+
+      <form id="formCrearUsuarioAdmin" class="space-y-4">
+        <div>
+          <label class="block text-xs font-black uppercase text-zinc-300 mb-1">Tipo de Usuario / Rol *</label>
+          <select id="userNewRol" required class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-yellow-400 font-black text-xs uppercase focus:border-yellow-400">
+            <option value="ALUMNO">🚴 Alumno / Piloto de la Escuela</option>
+            <option value="DIRECTOR">👑 Director de la Escuela (Acceso Panel)</option>
+            <option value="ADMINISTRADOR">💻 Administrador General (Acceso Panel)</option>
+            <option value="ENTRENADOR">⏱️ Entrenador / Comisario BMX (Acceso Panel)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-black uppercase text-zinc-300 mb-1">Nombre Completo del Usuario *</label>
+          <input type="text" id="userNewNombre" required placeholder="Ej. PEDRO PÉREZ" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold text-xs uppercase focus:border-yellow-400">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-black uppercase text-zinc-300 mb-1">Nombre de Usuario (@) *</label>
+            <input type="text" id="userNewUsuario" required placeholder="pedro15" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 text-yellow-400 font-bold text-xs lowercase focus:border-yellow-400">
+          </div>
+          <div>
+            <label class="block text-xs font-black uppercase text-zinc-300 mb-1">Contraseña Inicial *</label>
+            <input type="text" id="userNewClave" required placeholder="Mínimo 4 caracteres" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold text-xs focus:border-yellow-400">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Cédula de Identidad</label>
+            <input type="text" id="userNewCedula" placeholder="V-28123456" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 text-white font-bold text-xs uppercase focus:border-yellow-400">
+          </div>
+          <div id="boxPlacaPiloto">
+            <label class="block text-xs font-black uppercase text-zinc-400 mb-1">Número de Placa BMX</label>
+            <input type="text" id="userNewPlaca" placeholder="#15 (Solo si es piloto)" class="w-full px-3 py-2 bg-zinc-950 border border-zinc-700 text-yellow-300 font-racing font-black text-xs uppercase focus:border-yellow-400">
+          </div>
+        </div>
+
+        <p id="userNewError" class="hidden text-xs font-black uppercase text-red-400 bg-red-950/70 border border-red-500 p-2 text-center"></p>
+
+        <button type="submit" id="btnSubmitCrearUsuario" class="w-full bg-yellow-400 hover:bg-green-400 text-black font-racing font-black italic uppercase text-sm py-3.5 transform -skew-x-6 shadow-[4px_4px_0px_#0ea5e9] transition cursor-pointer">
+          ✓ REGISTRAR Y ACTIVAR USUARIO (SHA-256) →
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================== -->
+  <!-- MODAL: REASIGNAR CONTRASEÑA CIFRADA (SHA-256)                          -->
+  <!-- ====================================================================== -->
+  <div id="modalReasignarClaveAdmin" class="fixed inset-0 bg-black/90 z-[330] hidden items-center justify-center p-4 overflow-y-auto no-print">
+    <div class="bg-zinc-900 border-2 border-sky-400 max-w-md w-full p-6 my-8 transform -skew-x-1 shadow-[10px_10px_0px_#facc15]">
+      <div class="flex justify-between items-center border-b border-zinc-800 pb-3 mb-4">
+        <div>
+          <span class="text-xs font-black uppercase text-sky-400 block">SEGURIDAD DEL SISTEMA</span>
+          <h3 class="text-lg font-racing font-black uppercase italic text-white">🔑 Reasignar Contraseña</h3>
+        </div>
+        <button type="button" id="btnCerrarModalReasignarClave" class="text-zinc-400 hover:text-white text-2xl font-bold cursor-pointer">✕</button>
+      </div>
+
+      <form id="formReasignarClaveAdmin" class="space-y-4">
+        <input type="hidden" id="resetUserId">
+        <div class="bg-zinc-950 p-3 border border-zinc-800">
+          <span class="block text-[11px] font-black uppercase text-zinc-400">Usuario Seleccionado:</span>
+          <span id="resetUserNombre" class="block text-sm font-bold text-white">SANTIAGO GÓMEZ</span>
+          <span id="resetUserLogin" class="block text-xs font-mono text-sky-400 font-bold">@santiago07</span>
+        </div>
+
+        <div>
+          <label class="block text-xs font-black uppercase text-zinc-300 mb-1">Nueva Contraseña *</label>
+          <input type="text" id="resetUserNuevaClave" required placeholder="Escribe la nueva contraseña" class="w-full px-3 py-2.5 bg-zinc-950 border border-zinc-700 text-yellow-400 font-bold text-sm focus:border-sky-400">
+          <span class="block text-[11px] text-zinc-500 mt-1">Se cifrará con el algoritmo irreversible SHA-256 antes de guardarse.</span>
+        </div>
+
+        <p id="resetUserError" class="hidden text-xs font-black uppercase text-red-400 bg-red-950/70 border border-red-500 p-2 text-center"></p>
+
+        <button type="submit" id="btnSubmitResetClave" class="w-full bg-sky-400 hover:bg-yellow-400 text-black font-racing font-black italic uppercase text-sm py-3 transform -skew-x-6 shadow-[4px_4px_0px_#fff] transition cursor-pointer">
+          ✓ GUARDAR NUEVA CONTRASEÑA (SHA-256) →
+        </button>
+      </form>
+    </div>
+  </div>
+
   <script type="module">
     import {
       getConfig,
@@ -778,9 +879,12 @@
       eliminarAlumnoAdmin,
       getUsuariosSistema,
       eliminarUsuarioAlumno,
+      crearUsuarioGeneral,
+      reasignarClaveCualquierUsuario,
+      eliminarCualquierUsuario,
       fetchTasaBcv,
       formatBs
-    } from './portal-store.js?v=10';
+    } from './portal-store.js?v=11';
 
     const roleBadge = document.getElementById('roleBadgeSession');
 
@@ -917,20 +1021,20 @@
               ${u.tiene_clave || u.clave_acceso ? `<span class="inline-flex items-center gap-1 bg-emerald-950/80 border border-emerald-500/60 px-2 py-0.5 text-emerald-300 font-bold text-[10px]" title="Cifrado matemáticamente con SHA-256 (Web Cryptography API)"><span class="text-xs">🔒</span> SHA-256</span>` : `<span class="text-red-400 text-[11px] italic">Sin Contraseña</span>`}
             </td>
             <td class="p-3">
-              <span class="text-[10px] font-black uppercase px-2 py-0.5 ${u.rol.includes('DIRECTOR') ? 'bg-yellow-400 text-black' : (u.rol.includes('ADMIN') ? 'bg-sky-400 text-black' : 'bg-zinc-800 text-zinc-300')}">
+              <span class="text-[10px] font-black uppercase px-2 py-0.5 ${u.rol.includes('DIRECTOR') ? 'bg-yellow-400 text-black' : (u.rol.includes('ADMIN') ? 'bg-sky-400 text-black' : (u.rol.includes('ENTRENADOR') ? 'bg-green-400 text-black' : 'bg-zinc-800 text-zinc-300'))}">
                 ${u.rol}
               </span>
             </td>
             <td class="p-3 space-x-2 whitespace-nowrap">
-              ${u.tipo === 'ALUMNO' ? `
-                <button type="button" data-action="edit-credencial" data-id="${u.id}" class="text-xs font-black uppercase text-sky-400 hover:underline cursor-pointer">
-                  🔑 Reasignar Clave
-                </button>
-                <button type="button" data-action="del-usuario" data-id="${u.id}" class="text-xs font-black uppercase text-red-400 hover:underline cursor-pointer">
-                  🗑️ Eliminar Usuario
+              <button type="button" data-action="reasignar-clave-modal" data-id="${u.id}" data-user="${u.usuario}" data-nombre="${u.atleta || u.nombre}" class="text-xs font-black uppercase text-sky-400 hover:underline cursor-pointer">
+                🔑 Reasignar Clave
+              </button>
+              ${u.id !== 'usr-director' && u.id !== 'usr-admin' ? `
+                <button type="button" data-action="del-usuario-general" data-id="${u.id}" data-nombre="${u.atleta || u.nombre}" class="text-xs font-black uppercase text-red-400 hover:underline cursor-pointer">
+                  🗑️ Eliminar
                 </button>
               ` : `
-                <span class="text-[11px] text-zinc-500 italic">Cuenta Maestra</span>
+                <span class="text-[10px] text-zinc-500 font-bold ml-1">Principal</span>
               `}
             </td>
           </tr>
@@ -938,27 +1042,150 @@
       }).join('');
     }
 
+    // Modal Crear Usuario General (Admin / Director / Entrenador / Alumno)
+    const modalCrearUsuario = document.getElementById('modalCrearUsuarioAdmin');
+    const formCrearUsuario = document.getElementById('formCrearUsuarioAdmin');
+    const errCrearUsuario = document.getElementById('userNewError');
+    const boxPlaca = document.getElementById('boxPlacaPiloto');
+    const selectRol = document.getElementById('userNewRol');
+
+    selectRol?.addEventListener('change', e => {
+      if (boxPlaca) {
+        if (e.target.value === 'ALUMNO') {
+          boxPlaca.classList.remove('hidden');
+        } else {
+          boxPlaca.classList.add('hidden');
+        }
+      }
+    });
+
+    document.getElementById('btnAbrirModalNuevoUsuario')?.addEventListener('click', () => {
+      errCrearUsuario?.classList.add('hidden');
+      formCrearUsuario?.reset();
+      if (boxPlaca) boxPlaca.classList.remove('hidden');
+      modalCrearUsuario?.classList.remove('hidden');
+      modalCrearUsuario?.classList.add('flex');
+    });
+
+    document.getElementById('btnCerrarModalNuevoUsuario')?.addEventListener('click', () => {
+      modalCrearUsuario?.classList.add('hidden');
+      modalCrearUsuario?.classList.remove('flex');
+    });
+
+    formCrearUsuario?.addEventListener('submit', async e => {
+      e.preventDefault();
+      errCrearUsuario?.classList.add('hidden');
+      const btn = document.getElementById('btnSubmitCrearUsuario');
+      btn.disabled = true;
+      btn.textContent = 'REGISTRANDO Y CIFRANDO SHA-256...';
+
+      try {
+        const datos = {
+          rol: document.getElementById('userNewRol').value,
+          nombre: document.getElementById('userNewNombre').value,
+          usuario: document.getElementById('userNewUsuario').value,
+          clave: document.getElementById('userNewClave').value,
+          cedula: document.getElementById('userNewCedula').value,
+          placa: document.getElementById('userNewPlaca').value
+        };
+
+        const res = await crearUsuarioGeneral(datos);
+        if (!res.ok) {
+          errCrearUsuario.textContent = `⚠️ ${res.error || 'No se pudo crear el usuario'}`;
+          errCrearUsuario.classList.remove('hidden');
+          return;
+        }
+
+        modalCrearUsuario?.classList.add('hidden');
+        modalCrearUsuario?.classList.remove('flex');
+        formCrearUsuario.reset();
+
+        cargarUsuariosSistemaAdmin();
+        poblarSelectAtletasAdmin();
+        renderTablas();
+
+        alert(`✓ ¡Usuario creado con éxito en el sistema!\nRol: ${datos.rol}\nNombre: ${datos.nombre}\nUsuario: @${datos.usuario}\nCifrado: Contraseña protegida con SHA-256\n\nEl usuario ya puede iniciar sesión desde el portal general login.html`);
+      } catch (err) {
+        errCrearUsuario.textContent = `⚠️ ${err.message || 'Error inesperado al crear usuario'}`;
+        errCrearUsuario.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '✓ REGISTRAR Y ACTIVAR USUARIO (SHA-256) →';
+      }
+    });
+
+    // Modal Reasignar Contraseña (Cualquier Usuario)
+    const modalResetClave = document.getElementById('modalReasignarClaveAdmin');
+    const formResetClave = document.getElementById('formReasignarClaveAdmin');
+    const errResetClave = document.getElementById('resetUserError');
+
+    document.getElementById('btnCerrarModalReasignarClave')?.addEventListener('click', () => {
+      modalResetClave?.classList.add('hidden');
+      modalResetClave?.classList.remove('flex');
+    });
+
+    formResetClave?.addEventListener('submit', async e => {
+      e.preventDefault();
+      errResetClave?.classList.add('hidden');
+      const btn = document.getElementById('btnSubmitResetClave');
+      const id = document.getElementById('resetUserId').value;
+      const nuevaClave = document.getElementById('resetUserNuevaClave').value;
+
+      btn.disabled = true;
+      btn.textContent = 'CIFRANDO Y GUARDANDO...';
+
+      try {
+        const res = await reasignarClaveCualquierUsuario({ id, nuevaClave });
+        if (!res.ok) {
+          errResetClave.textContent = `⚠️ ${res.error}`;
+          errResetClave.classList.remove('hidden');
+          return;
+        }
+
+        modalResetClave?.classList.add('hidden');
+        modalResetClave?.classList.remove('flex');
+        formResetClave.reset();
+
+        cargarUsuariosSistemaAdmin();
+        poblarSelectAtletasAdmin();
+        alert(`✓ ¡Contraseña reasignada con éxito!\nSe cifró matemáticamente con SHA-256.\n${res.mensaje}`);
+      } catch (err) {
+        errResetClave.textContent = `⚠️ ${err.message || 'Error al actualizar contraseña'}`;
+        errResetClave.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '✓ GUARDAR NUEVA CONTRASEÑA (SHA-256) →';
+      }
+    });
+
     document.getElementById('tablaUsuariosSistemaBody')?.addEventListener('click', async e => {
       const btn = e.target.closest('button');
       if (!btn) return;
       const action = btn.getAttribute('data-action');
       const id = btn.getAttribute('data-id');
+      const nom = btn.getAttribute('data-nombre') || id;
+      const usr = btn.getAttribute('data-user') || '';
 
-      const cleanId = String(id || '').replace(/^usr-atl-/, '');
-
-      if (action === 'edit-credencial') {
-        adminSelectAtleta.value = cleanId;
-        sincronizarCamposUsuarioAdmin(cleanId);
-        document.getElementById('seccionUsuariosAlumnos')?.scrollIntoView({ behavior: 'smooth' });
-        adminInputClave.focus();
-      } else if (action === 'del-usuario') {
-        const u = getUsuariosSistema().find(x => x.id === cleanId || x.id === id);
-        const nom = u ? u.atleta : cleanId;
-        if (confirm(`¿Estás seguro de ELIMINAR el usuario y contraseña de acceso de ${nom}?\nEl atleta ya no podrá ingresar al portal privado hasta que le asignes nuevas credenciales.`)) {
-          eliminarUsuarioAlumno(cleanId);
+      if (action === 'reasignar-clave-modal') {
+        document.getElementById('resetUserId').value = id;
+        document.getElementById('resetUserNombre').textContent = nom;
+        document.getElementById('resetUserLogin').textContent = usr ? `@${usr}` : id;
+        document.getElementById('resetUserNuevaClave').value = '';
+        errResetClave?.classList.add('hidden');
+        modalResetClave?.classList.remove('hidden');
+        modalResetClave?.classList.add('flex');
+        document.getElementById('resetUserNuevaClave').focus();
+      } else if (action === 'del-usuario-general') {
+        if (confirm(`¿Estás seguro de ELIMINAR el usuario de acceso de ${nom}?\nYa no podrá ingresar al portal del sistema.`)) {
+          const res = eliminarCualquierUsuario(id);
+          if (!res.ok) {
+            alert(`⚠️ ${res.error}`);
+            return;
+          }
           cargarUsuariosSistemaAdmin();
-          sincronizarCamposUsuarioAdmin(adminSelectAtleta.value);
+          poblarSelectAtletasAdmin();
           renderTablas();
+          alert(`✓ Usuario eliminado con éxito.`);
         }
       }
     });
