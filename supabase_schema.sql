@@ -49,7 +49,8 @@ CREATE TABLE IF NOT EXISTS public.inscripciones_escuela (
 
 -- Migración segura por si la tabla ya existe
 ALTER TABLE public.inscripciones_escuela ADD COLUMN IF NOT EXISTS usuario TEXT;
-ALTER TABLE public.inscripciones_escuela ADD COLUMN IF NOT EXISTS clave_acceso TEXT DEFAULT '1234';
+ALTER TABLE public.inscripciones_escuela ADD COLUMN IF NOT EXISTS clave_acceso TEXT DEFAULT '••••••••';
+ALTER TABLE public.inscripciones_escuela ADD COLUMN IF NOT EXISTS clave_hash TEXT;
 
 
 -- 3. Tabla de Pagos de Mensualidades (Alumnos Regulares)

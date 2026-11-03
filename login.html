@@ -327,7 +327,7 @@
       btnSubmit.textContent = 'VERIFICANDO ACCESO...';
 
       try {
-        const resultado = loginPortalGeneral(identificador, clave);
+        const resultado = await loginPortalGeneral(identificador, clave);
 
         if (resultado.ok) {
           successMsg.textContent = `✓ ¡Bienvenido, ${resultado.nombre}! Redirigiendo a tu información...`;

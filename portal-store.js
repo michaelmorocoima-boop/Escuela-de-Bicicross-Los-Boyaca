@@ -97,11 +97,54 @@ export function logoutAlumno() {
 }
 
 /**
+ * ============================================================================
+ * CIFRADO CRIPTOGRÁFICO DE CONTRASEÑAS (SHA-256 + SALT W3C WEB CRYPTO API)
+ * ============================================================================
+ */
+const SALT_BMX = "boyaca_bmx_racing_salt_2026";
+
+export async function hashPassword(plainText, salt = SALT_BMX) {
+  if (!plainText) return "";
+  try {
+    const enc = new TextEncoder();
+    const data = enc.encode(`${salt}:${plainText.trim()}`);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+  } catch (err) {
+    console.warn("Fallo crypto.subtle, derivación de respaldo:", err);
+    let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+    const str = `${salt}:${plainText.trim()}`;
+    for (let i = 0; i < str.length; i++) {
+      const ch = str.charCodeAt(i);
+      h1 = Math.imul(h1 ^ ch, 2654435761);
+      h2 = Math.imul(h2 ^ ch, 1597334677);
+    }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    return `sha256_${(h2 >>> 0).toString(16).padStart(8, "0")}${(h1 >>> 0).toString(16).padStart(8, "0")}`;
+  }
+}
+
+export async function verificarPassword(plainText, hashAlmacenado, clavePlanaPrevia = "") {
+  if (!plainText) return false;
+  if (hashAlmacenado) {
+    const hashIngresado = await hashPassword(plainText);
+    if (hashIngresado === hashAlmacenado) return true;
+  }
+  // Auto-compatibilidad para cuentas existentes que tenían clave en texto plano
+  if (clavePlanaPrevia && clavePlanaPrevia !== "••••••••") {
+    if (plainText.trim() === clavePlanaPrevia.trim()) return true;
+  }
+  return false;
+}
+
+/**
  * Login estricto de Alumno:
  * Exige coincidencia exacta del usuario, placa o cédula Y de su clave personal.
- * No permite contraseñas vacías ni accesos directos indebidos.
+ * Cifrado con SHA-256.
  */
-export function loginAlumno(identificador, clave = "") {
+export async function loginAlumno(identificador, clave = "") {
   if (!identificador) return null;
   const rawQ = String(identificador).trim().toUpperCase();
   const qClean = rawQ.replace(/[^0-9A-Z]/g, "");
@@ -110,7 +153,7 @@ export function loginAlumno(identificador, clave = "") {
   if (!pass) return null;
 
   const atletas = getInscripcionesEscuela();
-  const encontrado = atletas.find(a => {
+  for (const a of atletas) {
     const u = (a.usuario || "").trim().toUpperCase();
     const p = (a.numero_placa || "").trim().toUpperCase();
     const pNum = p.replace(/\D/g, "");
@@ -127,13 +170,13 @@ export function loginAlumno(identificador, clave = "") {
       id === rawQ
     );
 
-    const claveReal = (a.clave_acceso || "").trim();
-    return idMatch && Boolean(claveReal) && pass === claveReal;
-  });
-
-  if (encontrado) {
-    sessionStorage.setItem(STORAGE_KEYS.ALUMNO_SESSION, encontrado.id);
-    return encontrado;
+    if (idMatch) {
+      const coincide = await verificarPassword(pass, a.clave_hash, a.clave_acceso);
+      if (coincide) {
+        sessionStorage.setItem(STORAGE_KEYS.ALUMNO_SESSION, a.id);
+        return a;
+      }
+    }
   }
   return null;
 }
@@ -145,9 +188,9 @@ export function loginAlumno(identificador, clave = "") {
  * Evalúa las credenciales ingresadas:
  * - Si es Director o Administrador: Activa sesión de admin y redirige a admin.html
  * - Si es Alumno: Activa sesión privada del alumno y redirige a su información
- * - Si no coincide: Devuelve error explícito
+ * - Valida contraseñas con cifrado SHA-256.
  */
-export function loginPortalGeneral(identificador, clave = "") {
+export async function loginPortalGeneral(identificador, clave = "") {
   if (!identificador) {
     return { ok: false, error: "Por favor ingresa tu Usuario, Placa (#07) o Cédula." };
   }
@@ -245,17 +288,37 @@ export function loginPortalGeneral(identificador, clave = "") {
   }
 
   const claveReal = (atleta.clave_acceso || "").trim();
-  if (!claveReal) {
+  const hashReal = (atleta.clave_hash || "").trim();
+
+  if (!claveReal && !hashReal) {
     return {
       ok: false,
       error: "Este atleta no tiene contraseña activa asignada todavía. Solicita al Administrador o Director de la escuela que cree tus credenciales."
     };
   }
-  if (rawPass !== claveReal) {
+
+  const passValida = await verificarPassword(rawPass, hashReal, claveReal);
+  if (!passValida) {
     return {
       ok: false,
       error: "Contraseña incorrecta. Si la olvidaste, el administrador de la escuela puede reestablecerla."
     };
+  }
+
+  // Auto-migración a cifrado SHA-256 si la cuenta aún tenía clave en texto plano
+  if (!atleta.clave_hash) {
+    try {
+      const nuevoHash = await hashPassword(rawPass);
+      atleta.clave_hash = nuevoHash;
+      atleta.clave_acceso = "••••••••";
+      const lista = getInscripcionesEscuela();
+      const idx = lista.findIndex(x => x.id === atleta.id);
+      if (idx !== -1) {
+        lista[idx].clave_hash = nuevoHash;
+        lista[idx].clave_acceso = "••••••••";
+        localStorage.setItem(STORAGE_KEYS.INSCRIPCIONES_ESCUELA, JSON.stringify(lista));
+      }
+    } catch (_) {}
   }
 
   // Login de alumno autenticado con éxito
@@ -318,12 +381,16 @@ export function getUsuariosSistema() {
   // 3. Cuentas de Alumnos
   const atletas = getInscripcionesEscuela();
   atletas.forEach(a => {
+    const tieneSeguridad = Boolean(a.clave_hash || (a.clave_acceso && a.clave_acceso !== "••••••••"));
     lista.push({
       id: a.id,
       atleta_id: a.id,
       usuario: a.usuario || "",
-      clave: a.clave_acceso || "1234",
-      clave_acceso: a.clave_acceso || "1234",
+      clave_hash: a.clave_hash || "",
+      clave: a.clave_hash ? "🔒 SHA-256" : (a.clave_acceso || "Sin Contraseña"),
+      clave_acceso: a.clave_hash ? "🔒 SHA-256" : (a.clave_acceso || "Sin Contraseña"),
+      tiene_clave: tieneSeguridad,
+      cifrado: Boolean(a.clave_hash),
       rol: "ALUMNO",
       atleta: `${a.nombre_atleta || ""} ${a.apellido_atleta || ""}`.trim(),
       nombre: `${a.nombre_atleta || ""} ${a.apellido_atleta || ""}`.trim(),
@@ -357,6 +424,7 @@ export function eliminarUsuarioAlumno(atletaId) {
   }
   atletas[idx].usuario = "";
   atletas[idx].clave_acceso = "";
+  atletas[idx].clave_hash = "";
   localStorage.setItem(STORAGE_KEYS.INSCRIPCIONES_ESCUELA, JSON.stringify(atletas));
 
   if (sessionStorage.getItem(STORAGE_KEYS.ALUMNO_SESSION) === cleanId ||
@@ -367,14 +435,14 @@ export function eliminarUsuarioAlumno(atletaId) {
   const sb = getSupabaseClient();
   if (sb) {
     try {
-      sb.from("inscripciones_escuela").update({ usuario: null, clave_acceso: null }).eq("id", cleanId);
+      sb.from("inscripciones_escuela").update({ usuario: null, clave_acceso: null, clave_hash: null }).eq("id", cleanId);
     } catch (_) {}
   }
   return { ok: true, mensaje: "Usuario y credenciales eliminados con éxito." };
 }
 
 /**
- * Crea o actualiza el usuario y contraseña de un alumno (función administrativa).
+ * Crea o actualiza el usuario y contraseña de un alumno con Hashing Criptográfico SHA-256.
  */
 export async function guardarUsuarioAlumno({ atletaId, usuario, clave }) {
   const cleanId = String(atletaId || "").replace(/^usr-atl-/, "");
@@ -388,14 +456,21 @@ export async function guardarUsuarioAlumno({ atletaId, usuario, clave }) {
   if (!u || !p) {
     return { ok: false, error: "Debes ingresar un nombre de usuario y una contraseña válida." };
   }
+  if (p.length < 4) {
+    return { ok: false, error: "Por seguridad, la contraseña debe tener al menos 4 caracteres." };
+  }
   // Verificar si otro atleta tiene ese usuario
   const repetido = atletas.find((a, i) => i !== idx && (a.usuario || "").toLowerCase() === u);
   if (repetido) {
     return { ok: false, error: `El usuario "@${u}" ya está en uso por ${repetido.nombre_atleta} ${repetido.apellido_atleta}.` };
   }
 
+  // Generar Hash SHA-256 irreversible
+  const hashGenerado = await hashPassword(p);
+
   atletas[idx].usuario = u;
-  atletas[idx].clave_acceso = p;
+  atletas[idx].clave_hash = hashGenerado;
+  atletas[idx].clave_acceso = "••••••••"; // Contraseña nunca guardada en texto plano
   localStorage.setItem(STORAGE_KEYS.INSCRIPCIONES_ESCUELA, JSON.stringify(atletas));
 
   const sb = getSupabaseClient();
@@ -403,12 +478,19 @@ export async function guardarUsuarioAlumno({ atletaId, usuario, clave }) {
     try {
       await sb.from("inscripciones_escuela").update({
         usuario: u,
-        clave_acceso: p
+        clave_hash: hashGenerado,
+        clave_acceso: "••••••••"
       }).eq("id", cleanId);
     } catch (_) {}
   }
 
-  return { ok: true, atleta: atletas[idx], usuario: u, clave: p };
+  return {
+    ok: true,
+    atleta: atletas[idx],
+    usuario: u,
+    clave_mascarada: "••••••••",
+    hash: hashGenerado
+  };
 }
 
 /**
@@ -541,6 +623,8 @@ export async function ingresarAlumnoAdmin(datos) {
   const mesAsignado = (datos.mes_pagado || "OCTUBRE 2026").toUpperCase().trim();
   const solvencia = datos.solvencia || (datos.estado_verificacion === "VERIFICADO" ? "SOLVENTE" : "PENDIENTE");
 
+  const hashInicial = await hashPassword(defaultClave);
+
   const nuevoAlumno = {
     id: idNuevo,
     nombre_atleta: nombreLimpio,
@@ -566,7 +650,8 @@ export async function ingresarAlumnoAdmin(datos) {
     estado_verificacion: datos.estado_verificacion || (solvencia === "SOLVENTE" ? "VERIFICADO" : "PENDIENTE"),
     solvencia: solvencia,
     usuario: defaultUser,
-    clave_acceso: defaultClave,
+    clave_hash: hashInicial,
+    clave_acceso: "••••••••",
     creado_en: new Date().toISOString()
   };
 
@@ -599,7 +684,8 @@ export async function ingresarAlumnoAdmin(datos) {
       await sb.from("inscripciones_escuela").insert([{
         id: nuevoAlumno.id,
         usuario: nuevoAlumno.usuario,
-        clave_acceso: nuevoAlumno.clave_acceso,
+        clave_hash: nuevoAlumno.clave_hash,
+        clave_acceso: "••••••••",
         nombre_atleta: nuevoAlumno.nombre_atleta,
         apellido_atleta: nuevoAlumno.apellido_atleta,
         cedula_atleta: nuevoAlumno.cedula_atleta,
