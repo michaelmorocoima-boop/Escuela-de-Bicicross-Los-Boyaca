@@ -319,12 +319,16 @@ export function getUsuariosSistema() {
   const atletas = getInscripcionesEscuela();
   atletas.forEach(a => {
     lista.push({
-      id: `usr-atl-${a.id}`,
+      id: a.id,
       atleta_id: a.id,
       usuario: a.usuario || "",
       clave: a.clave_acceso || "1234",
+      clave_acceso: a.clave_acceso || "1234",
       rol: "ALUMNO",
+      atleta: `${a.nombre_atleta || ""} ${a.apellido_atleta || ""}`.trim(),
       nombre: `${a.nombre_atleta || ""} ${a.apellido_atleta || ""}`.trim(),
+      representante: `${a.nombre_rep || "Sin rep."} (CI: ${a.cedula_rep || "S/C"})`,
+      numero_placa: a.numero_placa || "#S/N",
       placa: a.numero_placa || "#S/N",
       nivel: a.nivel || "ESCUELA",
       categoria: a.categoria || "BMX RACING",
@@ -345,8 +349,9 @@ export function getUsuariosSistema() {
  * Elimina o revoca el usuario y credenciales de acceso de un alumno.
  */
 export function eliminarUsuarioAlumno(atletaId) {
+  const cleanId = String(atletaId || "").replace(/^usr-atl-/, "");
   const atletas = getInscripcionesEscuela();
-  const idx = atletas.findIndex(a => a.id === atletaId);
+  const idx = atletas.findIndex(a => a.id === cleanId || a.id === atletaId);
   if (idx === -1) {
     return { ok: false, error: "Atleta no encontrado." };
   }
@@ -354,14 +359,15 @@ export function eliminarUsuarioAlumno(atletaId) {
   atletas[idx].clave_acceso = "";
   localStorage.setItem(STORAGE_KEYS.INSCRIPCIONES_ESCUELA, JSON.stringify(atletas));
 
-  if (sessionStorage.getItem(STORAGE_KEYS.ALUMNO_SESSION) === atletaId) {
+  if (sessionStorage.getItem(STORAGE_KEYS.ALUMNO_SESSION) === cleanId ||
+      sessionStorage.getItem(STORAGE_KEYS.ALUMNO_SESSION) === atletaId) {
     sessionStorage.removeItem(STORAGE_KEYS.ALUMNO_SESSION);
   }
 
   const sb = getSupabaseClient();
   if (sb) {
     try {
-      sb.from("inscripciones_escuela").update({ usuario: null, clave_acceso: null }).eq("id", atletaId);
+      sb.from("inscripciones_escuela").update({ usuario: null, clave_acceso: null }).eq("id", cleanId);
     } catch (_) {}
   }
   return { ok: true, mensaje: "Usuario y credenciales eliminados con éxito." };
@@ -371,10 +377,11 @@ export function eliminarUsuarioAlumno(atletaId) {
  * Crea o actualiza el usuario y contraseña de un alumno (función administrativa).
  */
 export async function guardarUsuarioAlumno({ atletaId, usuario, clave }) {
+  const cleanId = String(atletaId || "").replace(/^usr-atl-/, "");
   const atletas = getInscripcionesEscuela();
-  const idx = atletas.findIndex(a => a.id === atletaId);
+  const idx = atletas.findIndex(a => a.id === cleanId || a.id === atletaId);
   if (idx === -1) {
-    return { ok: false, error: "Atleta no encontrado." };
+    return { ok: false, error: "Atleta no encontrado en la base de datos." };
   }
   const u = (usuario || "").trim().toLowerCase().replace(/\s+/g, "");
   const p = (clave || "").trim();
@@ -397,7 +404,7 @@ export async function guardarUsuarioAlumno({ atletaId, usuario, clave }) {
       await sb.from("inscripciones_escuela").update({
         usuario: u,
         clave_acceso: p
-      }).eq("id", atletaId);
+      }).eq("id", cleanId);
     } catch (_) {}
   }
 

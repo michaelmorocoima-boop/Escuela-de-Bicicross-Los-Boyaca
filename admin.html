@@ -802,6 +802,7 @@
           roleBadge.className = 'text-[11px] font-black uppercase px-2.5 py-1 bg-sky-400 text-black transform -skew-x-6';
         }
       }
+      poblarSelectAtletasAdmin();
       poblarMesesEscuela();
       cargarExpedienteAdmin();
       poblarCompetenciasAdmin();
@@ -842,10 +843,16 @@
     }
 
     function sincronizarCamposUsuarioAdmin(atletaId) {
+      const cleanId = String(atletaId || '').replace(/^usr-atl-/, '');
       const lista = getInscripcionesEscuela();
-      const a = lista.find(item => item.id === atletaId);
+      const a = lista.find(item => item.id === cleanId || item.id === atletaId);
       if (!a) return;
-      adminInputUsuario.value = a.usuario || `${a.nombre_atleta.split(' ')[0].toLowerCase()}${String(a.numero_placa || '').replace(/[^0-9]/g, '') || 'bmx'}`;
+      if (adminSelectAtleta && adminSelectAtleta.value !== a.id) {
+        adminSelectAtleta.value = a.id;
+      }
+      const nombreLimpio = (a.nombre_atleta || 'piloto').split(' ')[0].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
+      const numPlaca = String(a.numero_placa || '').replace(/[^0-9]/g, '') || '01';
+      adminInputUsuario.value = a.usuario || `${nombreLimpio}${numPlaca}`;
       adminInputClave.value = a.clave_acceso || '1234';
     }
 
@@ -857,8 +864,13 @@
     document.getElementById('formAdminGenerarUsuario')?.addEventListener('submit', async e => {
       e.preventDefault();
       adminMsgUsuario.classList.add('hidden');
+      const idAtleta = adminSelectAtleta.value;
+      if (!idAtleta) {
+        alert('Por favor selecciona un alumno de la lista.');
+        return;
+      }
       const res = await guardarUsuarioAlumno({
-        atletaId: adminSelectAtleta.value,
+        atletaId: idAtleta,
         usuario: adminInputUsuario.value,
         clave: adminInputClave.value
       });
@@ -866,6 +878,7 @@
         adminMsgUsuario.textContent = `⚠️ ${res.error}`;
         adminMsgUsuario.className = 'text-xs font-black uppercase text-red-400 bg-red-950/70 border border-red-500 p-2 text-center';
         adminMsgUsuario.classList.remove('hidden');
+        alert(`⚠️ ${res.error}`);
         return;
       }
       adminMsgUsuario.textContent = `✓ Credenciales guardadas: @${res.atleta.usuario} (Clave: ${res.atleta.clave_acceso}) para ${res.atleta.nombre_atleta}.`;
@@ -874,6 +887,7 @@
       cargarExpedienteAdmin(res.atleta.id);
       cargarUsuariosSistemaAdmin();
       renderTablas();
+      alert(`✓ ¡Credenciales asignadas exitosamente!\nPiloto: ${res.atleta.nombre_atleta} ${res.atleta.apellido_atleta}\nUsuario de acceso: @${res.atleta.usuario}\nContraseña: ${res.atleta.clave_acceso}\n\nEl alumno ya puede acceder a su portal desde login.html con estos datos.`);
     });
 
     function cargarUsuariosSistemaAdmin() {
@@ -930,16 +944,18 @@
       const action = btn.getAttribute('data-action');
       const id = btn.getAttribute('data-id');
 
+      const cleanId = String(id || '').replace(/^usr-atl-/, '');
+
       if (action === 'edit-credencial') {
-        adminSelectAtleta.value = id;
-        sincronizarCamposUsuarioAdmin(id);
+        adminSelectAtleta.value = cleanId;
+        sincronizarCamposUsuarioAdmin(cleanId);
         document.getElementById('seccionUsuariosAlumnos')?.scrollIntoView({ behavior: 'smooth' });
         adminInputClave.focus();
       } else if (action === 'del-usuario') {
-        const u = getUsuariosSistema().find(x => x.id === id);
-        const nom = u ? u.atleta : id;
+        const u = getUsuariosSistema().find(x => x.id === cleanId || x.id === id);
+        const nom = u ? u.atleta : cleanId;
         if (confirm(`¿Estás seguro de ELIMINAR el usuario y contraseña de acceso de ${nom}?\nEl atleta ya no podrá ingresar al portal privado hasta que le asignes nuevas credenciales.`)) {
-          eliminarUsuarioAlumno(id);
+          eliminarUsuarioAlumno(cleanId);
           cargarUsuariosSistemaAdmin();
           sincronizarCamposUsuarioAdmin(adminSelectAtleta.value);
           renderTablas();
@@ -1309,6 +1325,9 @@
               </span>
             </td>
             <td class="p-3 space-x-2 whitespace-nowrap">
+              <button data-action="asignar-clave-escuela" data-id="${item.id}" class="text-xs font-black uppercase text-yellow-400 hover:underline cursor-pointer">
+                🔑 Credenciales
+              </button>
               <button data-action="toggle-escuela" data-id="${item.id}" data-state="${item.estado_verificacion}" class="text-xs font-black uppercase text-green-400 hover:underline cursor-pointer">
                 ${item.estado_verificacion === 'VERIFICADO' ? 'Marcar Pendiente' : '✓ Aprobar Mes'}
               </button>
@@ -1379,6 +1398,13 @@
         await actualizarEstadoInscripcion('escuela', id, state === 'VERIFICADO' ? 'PENDIENTE' : 'VERIFICADO');
         renderTablas();
         cargarExpedienteAdmin();
+      } else if (action === 'asignar-clave-escuela') {
+        const cleanId = String(id || '').replace(/^usr-atl-/, '');
+        adminSelectAtleta.value = cleanId;
+        sincronizarCamposUsuarioAdmin(cleanId);
+        cargarExpedienteAdmin(cleanId);
+        document.getElementById('seccionUsuariosAlumnos')?.scrollIntoView({ behavior: 'smooth' });
+        adminInputClave.focus();
       } else if (action === 'del-escuela') {
         const atleta = getInscripcionesEscuela().find(a => a.id === id);
         const nom = atleta ? `${atleta.nombre_atleta} ${atleta.apellido_atleta} (${atleta.numero_placa})` : id;

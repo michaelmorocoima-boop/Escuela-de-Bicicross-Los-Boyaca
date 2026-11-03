@@ -685,11 +685,6 @@
       ).join('');
       sel.onchange = e => renderizarExpedienteAlumno(e.target.value);
     }
-      poblarSelectAtletasUsuario();
-      selectAtletaUsuario.value = res.atleta.id;
-      loginAlumno(res.atleta.usuario, res.atleta.clave_acceso);
-      renderizarExpedienteAlumno(res.atleta.id);
-    });
 
     function renderizarExpedienteAlumno(atletaId) {
       const exp = obtenerExpedienteAlumno(atletaId);
