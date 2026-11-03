@@ -884,7 +884,7 @@
       eliminarCualquierUsuario,
       fetchTasaBcv,
       formatBs
-    } from './portal-store.js?v=11';
+    } from './portal-store.js?v=15';
 
     const roleBadge = document.getElementById('roleBadgeSession');
 
@@ -957,7 +957,7 @@
       const nombreLimpio = (a.nombre_atleta || 'piloto').split(' ')[0].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
       const numPlaca = String(a.numero_placa || '').replace(/[^0-9]/g, '') || '01';
       adminInputUsuario.value = a.usuario || `${nombreLimpio}${numPlaca}`;
-      adminInputClave.value = a.clave_acceso || '1234';
+      adminInputClave.value = (a.clave_acceso && a.clave_acceso !== '••••••••') ? a.clave_acceso : '1234';
     }
 
     adminSelectAtleta?.addEventListener('change', e => {
@@ -1018,7 +1018,8 @@
               </span>
             </td>
             <td class="p-3 font-mono text-zinc-300">
-              ${u.tiene_clave || u.clave_acceso ? `<span class="inline-flex items-center gap-1 bg-emerald-950/80 border border-emerald-500/60 px-2 py-0.5 text-emerald-300 font-bold text-[10px]" title="Cifrado matemáticamente con SHA-256 (Web Cryptography API)"><span class="text-xs">🔒</span> SHA-256</span>` : `<span class="text-red-400 text-[11px] italic">Sin Contraseña</span>`}
+              <span class="bg-zinc-950 border border-zinc-700 px-2 py-0.5 text-yellow-300 font-mono font-bold text-xs select-all">${u.clave_acceso || '1234'}</span>
+              <span class="inline-flex items-center gap-1 bg-emerald-950/80 border border-emerald-500/60 px-1.5 py-0.5 text-emerald-300 font-bold text-[9px] ml-1" title="Cifrado con SHA-256 (Web Cryptography API)"><span class="text-xs">🔒</span> SHA-256</span>
             </td>
             <td class="p-3">
               <span class="text-[10px] font-black uppercase px-2 py-0.5 ${u.rol.includes('DIRECTOR') ? 'bg-yellow-400 text-black' : (u.rol.includes('ADMIN') ? 'bg-sky-400 text-black' : (u.rol.includes('ENTRENADOR') ? 'bg-green-400 text-black' : 'bg-zinc-800 text-zinc-300'))}">

@@ -1,4 +1,4 @@
-const CACHE_NAME = "boyaca-bmx-pwa-v10";
+const CACHE_NAME = "boyaca-bmx-pwa-v15";
 const ASSETS_TO_CACHE = [
   "./",
   "./app.html",

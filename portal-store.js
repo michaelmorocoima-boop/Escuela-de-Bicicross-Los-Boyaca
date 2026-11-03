@@ -338,12 +338,12 @@ export async function loginPortalGeneral(identificador, clave = "") {
     try {
       const nuevoHash = await hashPassword(rawPass);
       atleta.clave_hash = nuevoHash;
-      atleta.clave_acceso = "••••••••";
+      atleta.clave_acceso = rawPass;
       const lista = getInscripcionesEscuela();
       const idx = lista.findIndex(x => x.id === atleta.id);
       if (idx !== -1) {
         lista[idx].clave_hash = nuevoHash;
-        lista[idx].clave_acceso = "••••••••";
+        lista[idx].clave_acceso = rawPass;
         localStorage.setItem(STORAGE_KEYS.INSCRIPCIONES_ESCUELA, JSON.stringify(lista));
       }
     } catch (_) {}
@@ -399,13 +399,16 @@ export async function guardarUsuarioStaff(datos) {
     hash = await hashPassword(p);
   }
 
+  const claveGuardada = (p && p !== "••••••••") ? p : (idx !== -1 ? (staff[idx].clave_acceso || staff[idx].clave) : "1234");
+
   const nuevoStaff = {
     id,
     rol: (datos.rol || "ADMINISTRADOR GENERAL").toUpperCase(),
     nombre: (datos.nombre || "Personal de la Escuela").trim().toUpperCase(),
     usuario: u,
     clave_hash: hash,
-    clave: "••••••••",
+    clave: claveGuardada,
+    clave_acceso: claveGuardada,
     cedula: (datos.cedula || "").trim(),
     telefono: (datos.telefono || "").trim(),
     creado_en: datos.creado_en || new Date().toISOString()
@@ -418,7 +421,7 @@ export async function guardarUsuarioStaff(datos) {
   }
 
   localStorage.setItem(STORAGE_KEYS.STAFF_USERS, JSON.stringify(staff));
-  return { ok: true, usuario: nuevoStaff };
+  return { ok: true, usuario: nuevoStaff, mensaje: `Usuario @${nuevoStaff.usuario} creado y guardado con éxito.` };
 }
 
 export function eliminarUsuarioStaff(id) {
@@ -435,12 +438,13 @@ export function getUsuariosSistema() {
   const lista = [];
 
   // 1. Cuenta Maestra de Director
+  const passDir = cfg.directorPass || "director2026";
   lista.push({
     id: "usr-director",
     usuario: cfg.directorUser || "director",
-    clave: "🔒 SHA-256",
+    clave: passDir,
     clave_hash: "master_director",
-    clave_acceso: "🔒 SHA-256",
+    clave_acceso: passDir,
     tiene_clave: true,
     cifrado: true,
     rol: "DIRECTOR DE LA ESCUELA",
@@ -456,12 +460,13 @@ export function getUsuariosSistema() {
   });
 
   // 2. Cuenta Maestra de Administrador
+  const passAdm = cfg.adminPass || "boyaca2026";
   lista.push({
     id: "usr-admin",
     usuario: cfg.adminUser || "admin",
-    clave: "🔒 SHA-256",
+    clave: passAdm,
     clave_hash: "master_admin",
-    clave_acceso: "🔒 SHA-256",
+    clave_acceso: passAdm,
     tiene_clave: true,
     cifrado: true,
     rol: "ADMINISTRADOR GENERAL",
@@ -479,12 +484,13 @@ export function getUsuariosSistema() {
   // 3. Cuentas de Personal Administrativo / Staff creadas dinámicamente
   const staff = getStaffUsers();
   staff.forEach(s => {
+    const passStaff = s.clave_acceso || s.clave || "1234";
     lista.push({
       id: s.id,
       usuario: s.usuario,
-      clave: "🔒 SHA-256",
+      clave: passStaff,
       clave_hash: s.clave_hash,
-      clave_acceso: "🔒 SHA-256",
+      clave_acceso: passStaff,
       tiene_clave: true,
       cifrado: true,
       rol: s.rol,
@@ -503,14 +509,15 @@ export function getUsuariosSistema() {
   // 4. Cuentas de Alumnos
   const atletas = getInscripcionesEscuela();
   atletas.forEach(a => {
-    const tieneSeguridad = Boolean(a.clave_hash || (a.clave_acceso && a.clave_acceso !== "••••••••"));
+    const passMostrar = (a.clave_acceso && a.clave_acceso !== "••••••••") ? a.clave_acceso : (a.clave_hash ? "1234" : "Sin Contraseña");
+    const tieneSeguridad = Boolean(a.clave_hash || (a.clave_acceso && a.clave_acceso !== "Sin Contraseña"));
     lista.push({
       id: a.id,
       atleta_id: a.id,
       usuario: a.usuario || "",
       clave_hash: a.clave_hash || "",
-      clave: a.clave_hash ? "🔒 SHA-256" : (a.clave_acceso || "Sin Contraseña"),
-      clave_acceso: a.clave_hash ? "🔒 SHA-256" : (a.clave_acceso || "Sin Contraseña"),
+      clave: passMostrar,
+      clave_acceso: passMostrar,
       tiene_clave: tieneSeguridad,
       cifrado: Boolean(a.clave_hash),
       rol: "ALUMNO",
@@ -523,7 +530,7 @@ export function getUsuariosSistema() {
       categoria: a.categoria || "BMX RACING",
       cedula_rep: a.cedula_rep || "",
       telefono_rep: a.telefono_rep || "",
-      mes_pagado: a.mes_pagado || "OCTUBRE 2026",
+      mes_pagado: a.mes_pagado || "NOVIEMBRE 2026",
       solvencia: a.solvencia || "PENDIENTE",
       tipo: "ALUMNO",
       estado: a.usuario ? "ACTIVO" : "SIN USUARIO",
@@ -566,22 +573,27 @@ export async function crearUsuarioGeneral(datos) {
     });
   } else {
     // Es Alumno / Piloto
-    return await ingresarAlumnoAdmin({
-      nombre_atleta: nombre.split(" ")[0] || "PILOTO",
-      apellido_atleta: nombre.split(" ").slice(1).join(" ") || "BMX",
-      numero_placa: datos.placa || "",
-      cedula_atleta: datos.cedula || "",
-      usuario: usuario,
-      clave_acceso: clave,
-      fecha_nacimiento: datos.fecha_nacimiento || "2018-05-10",
-      genero: datos.genero || "MASCULINO",
-      nivel: datos.nivel || "Principiantes / Novatos",
-      mes_pagado: datos.mes_pagado || "NOVIEMBRE 2026",
-      nombre_rep: datos.nombre_rep || `REP. DE ${nombre}`,
-      cedula_rep: datos.cedula_rep || datos.cedula || "V-00000000",
-      telefono_rep: datos.telefono || "0414-0000000",
-      solvencia: "SOLVENTE"
-    });
+    try {
+      const nuevo = await ingresarAlumnoAdmin({
+        nombre_atleta: nombre.split(" ")[0] || "PILOTO",
+        apellido_atleta: nombre.split(" ").slice(1).join(" ") || "BMX",
+        numero_placa: datos.placa || "",
+        cedula_atleta: datos.cedula || "",
+        usuario: usuario,
+        clave_acceso: clave,
+        fecha_nacimiento: datos.fecha_nacimiento || "2018-05-10",
+        genero: datos.genero || "MASCULINO",
+        nivel: datos.nivel || "Principiantes / Novatos",
+        mes_pagado: datos.mes_pagado || "NOVIEMBRE 2026",
+        nombre_rep: datos.nombre_rep || `REP. DE ${nombre}`,
+        cedula_rep: datos.cedula_rep || datos.cedula || "V-00000000",
+        telefono_rep: datos.telefono || "0414-0000000",
+        solvencia: "SOLVENTE"
+      });
+      return { ok: true, usuario: nuevo.usuario, atleta: nuevo, mensaje: `Alumno @${nuevo.usuario} creado y registrado con éxito.` };
+    } catch (err) {
+      return { ok: false, error: err.message || "Error al crear el alumno en el sistema." };
+    }
   }
 }
 
@@ -601,7 +613,8 @@ export async function reasignarClaveCualquierUsuario({ id, nuevaClave }) {
     const idx = staffList.findIndex(s => s.id === id);
     if (idx !== -1) {
       staffList[idx].clave_hash = hash;
-      staffList[idx].clave = "••••••••";
+      staffList[idx].clave = cleanPass;
+      staffList[idx].clave_acceso = cleanPass;
       localStorage.setItem(STORAGE_KEYS.STAFF_USERS, JSON.stringify(staffList));
       return { ok: true, mensaje: `Contraseña actualizada con éxito para @${staffList[idx].usuario}` };
     }
@@ -627,7 +640,7 @@ export async function reasignarClaveCualquierUsuario({ id, nuevaClave }) {
   const idx = atletas.findIndex(a => a.id === cleanId || a.id === id);
   if (idx !== -1) {
     atletas[idx].clave_hash = hash;
-    atletas[idx].clave_acceso = "••••••••";
+    atletas[idx].clave_acceso = cleanPass;
     localStorage.setItem(STORAGE_KEYS.INSCRIPCIONES_ESCUELA, JSON.stringify(atletas));
 
     const sb = getSupabaseClient();
@@ -635,7 +648,7 @@ export async function reasignarClaveCualquierUsuario({ id, nuevaClave }) {
       try {
         await sb.from("inscripciones_escuela").update({
           clave_hash: hash,
-          clave_acceso: "••••••••"
+          clave_acceso: cleanPass
         }).eq("id", cleanId);
       } catch (_) {}
     }
@@ -716,7 +729,7 @@ export async function guardarUsuarioAlumno({ atletaId, usuario, clave }) {
 
   atletas[idx].usuario = u;
   atletas[idx].clave_hash = hashGenerado;
-  atletas[idx].clave_acceso = "••••••••"; // Contraseña nunca guardada en texto plano
+  atletas[idx].clave_acceso = p; // Contraseña legible para el panel administrativo
   localStorage.setItem(STORAGE_KEYS.INSCRIPCIONES_ESCUELA, JSON.stringify(atletas));
 
   const sb = getSupabaseClient();
@@ -725,7 +738,7 @@ export async function guardarUsuarioAlumno({ atletaId, usuario, clave }) {
       await sb.from("inscripciones_escuela").update({
         usuario: u,
         clave_hash: hashGenerado,
-        clave_acceso: "••••••••"
+        clave_acceso: p
       }).eq("id", cleanId);
     } catch (_) {}
   }
@@ -734,7 +747,7 @@ export async function guardarUsuarioAlumno({ atletaId, usuario, clave }) {
     ok: true,
     atleta: atletas[idx],
     usuario: u,
-    clave_mascarada: "••••••••",
+    clave_acceso: p,
     hash: hashGenerado
   };
 }
@@ -897,7 +910,7 @@ export async function ingresarAlumnoAdmin(datos) {
     solvencia: solvencia,
     usuario: defaultUser,
     clave_hash: hashInicial,
-    clave_acceso: "••••••••",
+    clave_acceso: defaultClave,
     creado_en: new Date().toISOString()
   };
 
@@ -931,7 +944,7 @@ export async function ingresarAlumnoAdmin(datos) {
         id: nuevoAlumno.id,
         usuario: nuevoAlumno.usuario,
         clave_hash: nuevoAlumno.clave_hash,
-        clave_acceso: "••••••••",
+        clave_acceso: defaultClave,
         nombre_atleta: nuevoAlumno.nombre_atleta,
         apellido_atleta: nuevoAlumno.apellido_atleta,
         cedula_atleta: nuevoAlumno.cedula_atleta,
