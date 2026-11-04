@@ -862,7 +862,7 @@
           <div class="pulse-dot"></div>
           <div class="bcv-info">
             <span class="bcv-title">TASA OFICIAL BCV DEL DÍA:</span>
-            <strong id="bcvTasaDisplay" class="bcv-rate">Consultando BCV...</strong>
+            <strong id="bcvTasaDisplay" class="bcv-rate">893,22 Bs. / USD</strong>
           </div>
         </div>
         <span id="bcvFechaDisplay" class="bcv-date">ACTUALIZADO HOY</span>
@@ -877,16 +877,16 @@
         <div class="price-card preventa">
           <span class="price-badge-preventa">🔥 PREVENTA</span>
           <div class="dates">1 al 16 de Noviembre</div>
-          <div class="amount"> <span>USD</span></div>
-          <div id="bsPreventa" class="amount-bs">Calculando en Bs...</div>
+          <div class="amount">$10 <span>USD</span></div>
+          <div id="bsPreventa" class="amount-bs">≈ 8.932,17 Bs.</div>
           <p class="sub">Tarifa especial por inscripción anticipada</p>
         </div>
 
         <!-- Regular -->
         <div class="price-card">
           <div class="dates">17 al 20 de Noviembre</div>
-          <div class="amount"> <span>USD</span></div>
-          <div id="bsRegular" class="amount-bs">Calculando en Bs...</div>
+          <div class="amount">$15 <span>USD</span></div>
+          <div id="bsRegular" class="amount-bs">≈ 13.398,26 Bs.</div>
           <p class="sub">Cierre definitivo de inscripciones y mangas</p>
         </div>
       </div>
@@ -940,13 +940,13 @@
 
           <div class="pago-field" onclick="copiarMontoPreventa()">
             <span class="label">Monto Preventa (1 al 16 Nov)</span>
-            <span id="pagoMontoPreventa" class="val accent">Calculando Bs...</span>
+            <span id="pagoMontoPreventa" class="val accent">8.932,17 Bs.</span>
             <span class="copy-hint"> a Tasa BCV (Tocar para copiar monto)</span>
           </div>
 
           <div class="pago-field" onclick="copiarMontoRegular()">
             <span class="label">Monto Regular (17 al 20 Nov)</span>
-            <span id="pagoMontoRegular" class="val">Calculando Bs...</span>
+            <span id="pagoMontoRegular" class="val">13.398,26 Bs.</span>
             <span class="copy-hint"> a Tasa BCV (Tocar para copiar monto)</span>
           </div>
         </div>
@@ -1132,8 +1132,8 @@
 
   <script>
     let tasaBcvActual = 893.22;
-    let montoPreventaBsTxt = '';
-    let montoRegularBsTxt = '';
+    let montoPreventaBsTxt = '8.932,17 Bs.';
+    let montoRegularBsTxt = '13.398,26 Bs.';
 
     function fmtBs(num) {
       return Number(num).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -1152,7 +1152,7 @@
         const timeout = setTimeout(() => ctrl.abort(), 4000);
         const res = await fetch('https://ve.dolarapi.com/v1/dolares/oficial', { signal: ctrl.signal });
         clearTimeout(timeout);
-        
+
         if (res.ok) {
           const data = await res.json();
           if (data && data.promedio && data.promedio > 0) {
@@ -1160,17 +1160,20 @@
             localStorage.setItem('tasa_bcv_boyaca', tasaBcvActual);
             if (data.fechaActualizacion) {
               const f = new Date(data.fechaActualizacion);
-              bcvFechaDisplay.textContent = 'ACTUALIZADO: ' + f.toLocaleDateString('es-VE', { day: '2-digit', month: 'short' }).toUpperCase();
+              if (bcvFechaDisplay) {
+                bcvFechaDisplay.textContent = 'ACTUALIZADO: ' + f.toLocaleDateString('es-VE', { day: '2-digit', month: 'short' }).toUpperCase();
+              }
             }
           }
         }
       } catch (err) {
+        console.warn('Usando tasa de respaldo/cache:', err);
         const cached = localStorage.getItem('tasa_bcv_boyaca');
         if (cached) tasaBcvActual = parseFloat(cached);
       }
 
-      const pBs = (10 * tasaBcvActual);
-      const rBs = (15 * tasaBcvActual);
+      const pBs = 10 * tasaBcvActual;
+      const rBs = 15 * tasaBcvActual;
       montoPreventaBsTxt = fmtBs(pBs) + ' Bs.';
       montoRegularBsTxt = fmtBs(rBs) + ' Bs.';
 
@@ -1183,23 +1186,36 @@
 
     function showToast(msg) {
       const toast = document.getElementById('copyToast');
+      if (!toast) return;
       toast.textContent = '✓ ' + msg + ' copiado';
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 2200);
     }
 
     function copiarDato(valor, etiqueta) {
-      navigator.clipboard.writeText(valor).then(() => {
-        showToast(etiqueta);
-      }).catch(() => {
-        const temp = document.createElement('textarea');
-        temp.value = valor;
-        document.body.appendChild(temp);
-        temp.select();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(valor).then(() => {
+          showToast(etiqueta);
+        }).catch(() => fallbackCopiar(valor, etiqueta));
+      } else {
+        fallbackCopiar(valor, etiqueta);
+      }
+    }
+
+    function fallbackCopiar(valor, etiqueta) {
+      const temp = document.createElement('textarea');
+      temp.value = valor;
+      temp.style.position = 'fixed';
+      temp.style.opacity = '0';
+      document.body.appendChild(temp);
+      temp.select();
+      try {
         document.execCommand('copy');
-        document.body.removeChild(temp);
         showToast(etiqueta);
-      });
+      } catch (e) {
+        prompt('Copia este dato manualmente:', valor);
+      }
+      document.body.removeChild(temp);
     }
 
     function copiarMontoPreventa() {
@@ -1211,31 +1227,16 @@
     }
 
     function copiarTodo() {
-      const texto = 'PAGO MÓVIL 3.ª COPA BMX BOYACÁ:
-' +
-        '• Banco: 0102 (Banco de Venezuela)
-' +
-        '• Teléfono: 04227151251
-' +
-        '• Cédula: V-14765900
-' +
-        '• Tasa BCV Oficial: ' + fmtBs(tasaBcvActual) + ' Bs./USD
-' +
-        '• Preventa (1-16 Nov): ' + montoPreventaBsTxt + ' ()
-' +
-        '• Regular (17-20 Nov): ' + montoRegularBsTxt + ' ()';
-
-      navigator.clipboard.writeText(texto).then(() => {
-        showToast('Datos de Pago Móvil con Montos');
-      }).catch(() => {
-        const temp = document.createElement('textarea');
-        temp.value = texto;
-        document.body.appendChild(temp);
-        temp.select();
-        document.execCommand('copy');
-        document.body.removeChild(temp);
-        showToast('Datos de Pago Móvil con Montos');
-      });
+      const lineas = [
+        '🏁 PAGO MÓVIL 3.ª COPA BMX BOYACÁ',
+        '• Banco: 0102 (Banco de Venezuela)',
+        '• Teléfono: 04227151251',
+        '• Cédula: V-14765900',
+        '• Tasa BCV Oficial: ' + fmtBs(tasaBcvActual) + ' Bs./USD',
+        '• Preventa (1-16 Nov): $10 USD = ' + montoPreventaBsTxt,
+        '• Regular (17-20 Nov): $15 USD = ' + montoRegularBsTxt
+      ];
+      copiarDato(lineas.join('\n'), 'Datos de Pago Móvil con Montos');
     }
 
     document.addEventListener('DOMContentLoaded', obtenerTasaBcvDiaria);
