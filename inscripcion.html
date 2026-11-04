@@ -179,6 +179,71 @@
       line-height: 1.6;
     }
 
+    /* BARRA EN VIVO DE TASA OFICIAL BCV */
+    .bcv-live-badge {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: linear-gradient(90deg, rgba(34, 197, 94, 0.18) 0%, rgba(0, 153, 255, 0.18) 100%);
+      border: 2px solid var(--green-tag);
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.25);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .pulse-dot {
+      width: 12px;
+      height: 12px;
+      background: var(--green-tag);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--green-tag);
+      animation: pulseBcv 1.4s infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulseBcv {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.35); opacity: 0.5; }
+    }
+
+    .bcv-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .bcv-title {
+      font-size: 0.88rem;
+      font-weight: 900;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .bcv-rate {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--yellow-tag);
+      font-family: monospace;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 10px rgba(250, 204, 21, 0.4);
+    }
+
+    .bcv-date {
+      font-size: 0.75rem;
+      color: var(--blue-bright);
+      font-weight: 800;
+      background: rgba(0, 153, 255, 0.2);
+      border: 1px solid rgba(0, 153, 255, 0.4);
+      padding: 4px 10px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
     /* Costos e Inscripción */
     .section-costos {
       border-left: 6px solid var(--blue-bright);
@@ -236,7 +301,7 @@
     }
 
     .price-card .amount {
-      font-size: 3rem;
+      font-size: 2.8rem;
       font-weight: 900;
       font-style: italic;
       color: var(--white);
@@ -247,6 +312,19 @@
     .price-card .amount span {
       font-size: 1.3rem;
       color: var(--blue-bright);
+    }
+
+    .amount-bs {
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: var(--yellow-tag);
+      margin-bottom: 8px;
+      font-family: monospace;
+      background: rgba(250, 204, 21, 0.12);
+      padding: 5px 12px;
+      border-radius: 4px;
+      display: inline-block;
+      border: 1px solid rgba(250, 204, 21, 0.3);
     }
 
     .price-card .sub {
@@ -344,7 +422,7 @@
       border: 1px solid #334155;
       font-size: 0.9rem;
       font-weight: 800;
-      padding: 10px 18px;
+      padding: 12px 18px;
       border-radius: 6px;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -744,6 +822,11 @@
         font-size: 1.05rem;
         padding: 16px 18px;
       }
+
+      .bcv-live-badge {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
@@ -766,12 +849,25 @@
       </div>
     </header>
 
-    <!-- 2. COSTOS DE INSCRIPCIÓN -->
+    <!-- 2. COSTOS DE INSCRIPCIÓN Y TASA BCV EN VIVO -->
     <section class="section-costos">
       <h2 class="section-title">
         <span class="title-pill">COSTOS</span>
         Inversión e Inscripciones
       </h2>
+
+      <!-- BARRA DE TASA BCV DIARIA EN TIEMPO REAL -->
+      <div class="bcv-live-badge">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div class="pulse-dot"></div>
+          <div class="bcv-info">
+            <span class="bcv-title">TASA OFICIAL BCV DEL DÍA:</span>
+            <strong id="bcvTasaDisplay" class="bcv-rate">Consultando BCV...</strong>
+          </div>
+        </div>
+        <span id="bcvFechaDisplay" class="bcv-date">ACTUALIZADO HOY</span>
+      </div>
+
       <p class="intro-desc">
         Asegura el cupo de tu corredor antes del cierre oficial de las listas de partida:
       </p>
@@ -782,6 +878,7 @@
           <span class="price-badge-preventa">🔥 PREVENTA</span>
           <div class="dates">1 al 16 de Noviembre</div>
           <div class="amount"> <span>USD</span></div>
+          <div id="bsPreventa" class="amount-bs">Calculando en Bs...</div>
           <p class="sub">Tarifa especial por inscripción anticipada</p>
         </div>
 
@@ -789,6 +886,7 @@
         <div class="price-card">
           <div class="dates">17 al 20 de Noviembre</div>
           <div class="amount"> <span>USD</span></div>
+          <div id="bsRegular" class="amount-bs">Calculando en Bs...</div>
           <p class="sub">Cierre definitivo de inscripciones y mangas</p>
         </div>
       </div>
@@ -839,15 +937,27 @@
             <span class="val">V-14765900</span>
             <span class="copy-hint">Tocar para copiar</span>
           </div>
+
+          <div class="pago-field" onclick="copiarMontoPreventa()">
+            <span class="label">Monto Preventa (1 al 16 Nov)</span>
+            <span id="pagoMontoPreventa" class="val accent">Calculando Bs...</span>
+            <span class="copy-hint"> a Tasa BCV (Tocar para copiar monto)</span>
+          </div>
+
+          <div class="pago-field" onclick="copiarMontoRegular()">
+            <span class="label">Monto Regular (17 al 20 Nov)</span>
+            <span id="pagoMontoRegular" class="val">Calculando Bs...</span>
+            <span class="copy-hint"> a Tasa BCV (Tocar para copiar monto)</span>
+          </div>
         </div>
 
         <button type="button" class="btn-copy-all" onclick="copiarTodo()">
-          📋 Copiar Todos los Datos de Pago Móvil
+          📋 Copiar Todos los Datos de Pago Móvil con Monto en Bs.
         </button>
       </div>
 
       <p style="font-size:0.88rem; color:#94a3b8; font-style:italic;">
-        ⚠️ <strong>Importante:</strong> La tasa aplicable es la oficial del BCV del día. Luego de realizar tu pago, llena el formulario o envíalo por WhatsApp para confirmar la manga de tu piloto.
+        ⚠️ <strong>Importante:</strong> Los montos en Bolívares se calculan automáticamente con la <strong>Tasa Oficial del Banco Central de Venezuela (BCV)</strong> de hoy. Al pagar, guarda el comprobante para adjuntarlo en la planilla o enviarlo al WhatsApp.
       </p>
     </section>
 
@@ -1021,6 +1131,56 @@
   <div id="copyToast">✓ Dato copiado al portapapeles</div>
 
   <script>
+    let tasaBcvActual = 893.22;
+    let montoPreventaBsTxt = '';
+    let montoRegularBsTxt = '';
+
+    function fmtBs(num) {
+      return Number(num).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    async function obtenerTasaBcvDiaria() {
+      const bcvTasaDisplay = document.getElementById('bcvTasaDisplay');
+      const bcvFechaDisplay = document.getElementById('bcvFechaDisplay');
+      const bsPreventa = document.getElementById('bsPreventa');
+      const bsRegular = document.getElementById('bsRegular');
+      const pagoMontoPreventa = document.getElementById('pagoMontoPreventa');
+      const pagoMontoRegular = document.getElementById('pagoMontoRegular');
+
+      try {
+        const ctrl = new AbortController();
+        const timeout = setTimeout(() => ctrl.abort(), 4000);
+        const res = await fetch('https://ve.dolarapi.com/v1/dolares/oficial', { signal: ctrl.signal });
+        clearTimeout(timeout);
+        
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.promedio && data.promedio > 0) {
+            tasaBcvActual = parseFloat(data.promedio);
+            localStorage.setItem('tasa_bcv_boyaca', tasaBcvActual);
+            if (data.fechaActualizacion) {
+              const f = new Date(data.fechaActualizacion);
+              bcvFechaDisplay.textContent = 'ACTUALIZADO: ' + f.toLocaleDateString('es-VE', { day: '2-digit', month: 'short' }).toUpperCase();
+            }
+          }
+        }
+      } catch (err) {
+        const cached = localStorage.getItem('tasa_bcv_boyaca');
+        if (cached) tasaBcvActual = parseFloat(cached);
+      }
+
+      const pBs = (10 * tasaBcvActual);
+      const rBs = (15 * tasaBcvActual);
+      montoPreventaBsTxt = fmtBs(pBs) + ' Bs.';
+      montoRegularBsTxt = fmtBs(rBs) + ' Bs.';
+
+      if (bcvTasaDisplay) bcvTasaDisplay.textContent = fmtBs(tasaBcvActual) + ' Bs. / USD';
+      if (bsPreventa) bsPreventa.textContent = '≈ ' + montoPreventaBsTxt;
+      if (bsRegular) bsRegular.textContent = '≈ ' + montoRegularBsTxt;
+      if (pagoMontoPreventa) pagoMontoPreventa.textContent = montoPreventaBsTxt;
+      if (pagoMontoRegular) pagoMontoRegular.textContent = montoRegularBsTxt;
+    }
+
     function showToast(msg) {
       const toast = document.getElementById('copyToast');
       toast.textContent = '✓ ' + msg + ' copiado';
@@ -1042,13 +1202,31 @@
       });
     }
 
+    function copiarMontoPreventa() {
+      copiarDato(montoPreventaBsTxt, 'Monto Preventa (' + montoPreventaBsTxt + ')');
+    }
+
+    function copiarMontoRegular() {
+      copiarDato(montoRegularBsTxt, 'Monto Regular (' + montoRegularBsTxt + ')');
+    }
+
     function copiarTodo() {
-      const texto = 'PAGO MÓVIL 3ra COPA BMX BOYACÁ:
-• Banco: 0102 (Banco de Venezuela)
-• Teléfono: 04227151251
-• Cédula: V-14765900';
+      const texto = 'PAGO MÓVIL 3.ª COPA BMX BOYACÁ:
+' +
+        '• Banco: 0102 (Banco de Venezuela)
+' +
+        '• Teléfono: 04227151251
+' +
+        '• Cédula: V-14765900
+' +
+        '• Tasa BCV Oficial: ' + fmtBs(tasaBcvActual) + ' Bs./USD
+' +
+        '• Preventa (1-16 Nov): ' + montoPreventaBsTxt + ' ()
+' +
+        '• Regular (17-20 Nov): ' + montoRegularBsTxt + ' ()';
+
       navigator.clipboard.writeText(texto).then(() => {
-        showToast('Datos de Pago Móvil');
+        showToast('Datos de Pago Móvil con Montos');
       }).catch(() => {
         const temp = document.createElement('textarea');
         temp.value = texto;
@@ -1056,9 +1234,12 @@
         temp.select();
         document.execCommand('copy');
         document.body.removeChild(temp);
-        showToast('Datos de Pago Móvil');
+        showToast('Datos de Pago Móvil con Montos');
       });
     }
+
+    document.addEventListener('DOMContentLoaded', obtenerTasaBcvDiaria);
+    obtenerTasaBcvDiaria();
   </script>
 
 </body>
