@@ -13,10 +13,12 @@ import {
   saveConfig,
   isCloudConnected,
   getSupabaseClient,
-  syncFromCloud,
   getInscripcionesValida,
+  guardarInscripcionValida,
   getInscripcionesEscuela,
   getPagosMensualidad,
+  buscarAtletaRegular,
+  registrarPagoMensualidad,
   getCompetenciasEscuela,
   crearCompetenciaEscuela,
   registrarResultadoCompetencia,
@@ -28,6 +30,7 @@ import {
   eliminarInscripcion,
   isAdminLoggedIn,
   getAdminSessionRole,
+  loginAdmin,
   logoutAdmin,
   calcularCategoriaBmx,
   calcularTallaBicicletaBmx,
@@ -35,7 +38,14 @@ import {
   fetchTasaBcv,
   conciliarPendientesConBanco,
   agregarMovimientosBancoLote,
-  generarUsuarioAlumno
+  generarUsuarioAlumno,
+  procesarYSubirCapture,
+  guardarLead,
+  validarReferenciaUnica,
+  generarEnlaceWhatsApp,
+  BANCOS_VENEZUELA,
+  getMovimientosBanco,
+  verificarPagoEnBanco
 } from './js/store.js?v=9';
 
 // Re-exportar todo lo existente de store.js para compatibilidad total
@@ -44,10 +54,12 @@ export {
   saveConfig,
   isCloudConnected,
   getSupabaseClient,
-  syncFromCloud,
   getInscripcionesValida,
+  guardarInscripcionValida,
   getInscripcionesEscuela,
   getPagosMensualidad,
+  buscarAtletaRegular,
+  registrarPagoMensualidad,
   getCompetenciasEscuela,
   crearCompetenciaEscuela,
   registrarResultadoCompetencia,
@@ -59,6 +71,7 @@ export {
   eliminarInscripcion,
   isAdminLoggedIn,
   getAdminSessionRole,
+  loginAdmin,
   logoutAdmin,
   calcularCategoriaBmx,
   calcularTallaBicicletaBmx,
@@ -66,7 +79,14 @@ export {
   fetchTasaBcv,
   conciliarPendientesConBanco,
   agregarMovimientosBancoLote,
-  generarUsuarioAlumno
+  generarUsuarioAlumno,
+  procesarYSubirCapture,
+  guardarLead,
+  validarReferenciaUnica,
+  generarEnlaceWhatsApp,
+  BANCOS_VENEZUELA,
+  getMovimientosBanco,
+  verificarPagoEnBanco
 };
 
 const STORAGE_KEYS = {
@@ -78,6 +98,183 @@ const STORAGE_KEYS = {
   ALUMNO_SESSION: "boyaca_bmx_alumno_session_v1",
   STAFF_USERS: "boyaca_bmx_staff_users_v2"
 };
+
+/**
+ * Sincronización bidireccional segura con Supabase.
+ * Sanea contraseñas contra viñetas ("••••••••") y sincroniza personal de Staff.
+ */
+export async function syncFromCloud() {
+  const sb = getSupabaseClient();
+  if (!sb) return false;
+  try {
+    const [escRes, valRes, pagRes, stfRes] = await Promise.all([
+      sb.from("inscripciones_escuela").select("*").order("creado_en", { ascending: false }),
+      sb.from("inscripciones_valida").select("*").order("creado_en", { ascending: false }),
+      sb.from("pagos_mensualidad").select("*").order("creado_en", { ascending: false }),
+      sb.from("usuarios_staff").select("*").order("creado_en", { ascending: false }).catch(() => ({ data: null }))
+    ]);
+    if (escRes && escRes.data) {
+      const localActual = getInscripcionesEscuela();
+      const saneados = escRes.data.map(r => {
+        let pass = r.clave_acceso;
+        if (!pass || pass === "••••••••") {
+          const prev = localActual.find(l => l.id === r.id);
+          pass = (prev && prev.clave_acceso && prev.clave_acceso !== "••••••••") ? prev.clave_acceso : "1234";
+        }
+        return {
+          ...r,
+          clave_acceso: pass,
+          comprobante_img: r.comprobante_url || r.comprobante_img || ""
+        };
+      });
+      localStorage.setItem(STORAGE_KEYS.INSCRIPCIONES_ESCUELA, JSON.stringify(saneados));
+    }
+    if (pagRes && pagRes.data) {
+      localStorage.setItem(STORAGE_KEYS.PAGOS_MENSUALIDAD, JSON.stringify(
+        pagRes.data.map(r => ({ ...r, comprobante_img: r.comprobante_url || r.comprobante_img || "" }))
+      ));
+    }
+    if (valRes && valRes.data) {
+      localStorage.setItem(STORAGE_KEYS.INSCRIPCIONES_VALIDA, JSON.stringify(
+        valRes.data.map(r => ({ ...r, comprobante_img: r.comprobante_url || r.comprobante_img || "" }))
+      ));
+    }
+    if (stfRes && stfRes.data && Array.isArray(stfRes.data)) {
+      localStorage.setItem(STORAGE_KEYS.STAFF_USERS, JSON.stringify(stfRes.data));
+    }
+    return true;
+  } catch (e) {
+    console.warn("Aviso syncFromCloud:", e);
+    return false;
+  }
+}
+
+/**
+ * Guarda la inscripción pública de un alumno desde registro.html,
+ * cifrando su contraseña en SHA-256 e insertando el registro contable y la ficha en la nube.
+ */
+export async function guardarInscripcionEscuela(registro) {
+  if (registro.referencia) {
+    try {
+      validarReferenciaUnica(registro.referencia);
+    } catch (_) {}
+  }
+  const lista = getInscripcionesEscuela();
+  const rawPlaca = (registro.numero_placa || "").trim().toUpperCase();
+  const placa = rawPlaca ? (rawPlaca.startsWith("#") ? rawPlaca : `#${rawPlaca}`) : "#S/N";
+  const numPlaca = placa.replace(/\D/g, "") || String(Math.floor(10 + Math.random() * 89));
+  const baseUser = ((registro.nombre_atleta || "piloto").split(" ")[0] || "piloto")
+    .toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
+  const defaultUsuario = (registro.usuario || `${baseUser}${numPlaca}`).toLowerCase().trim().replace(/\s+/g, "");
+  const defaultClave = (registro.clave_acceso && registro.clave_acceso !== "••••••••") ? registro.clave_acceso.trim() : "1234";
+  const hashInicial = await hashPassword(defaultClave);
+
+  const idNuevo = registro.id || `ESC-${Date.now().toString().slice(-5)}`;
+  const nuevo = {
+    id: idNuevo,
+    nombre_atleta: (registro.nombre_atleta || "PILOTO").trim().toUpperCase(),
+    apellido_atleta: (registro.apellido_atleta || "").trim().toUpperCase(),
+    cedula_atleta: (registro.cedula_atleta || "").trim(),
+    numero_placa: placa,
+    usuario: defaultUsuario,
+    clave_hash: hashInicial,
+    clave_acceso: defaultClave,
+    fecha_nacimiento: registro.fecha_nacimiento || "2018-01-01",
+    genero: registro.genero || "Masculino",
+    nivel: registro.nivel || "NOVATOS",
+    categoria: registro.categoria || "BMX RACING",
+    talla_bici: registro.talla_bici || "",
+    posee_bici: registro.posee_bici || "SI_COMPLETO",
+    condicion_medica: (registro.condicion_medica || "NINGUNA").trim().toUpperCase(),
+    nombre_rep: (registro.nombre_rep || "").trim().toUpperCase(),
+    cedula_rep: (registro.cedula_rep || "").trim().toUpperCase(),
+    telefono_rep: (registro.telefono_rep || "").trim(),
+    sector_res: (registro.sector_res || "").trim().toUpperCase(),
+    metodo_pago: registro.metodo_pago || "Pago Móvil",
+    referencia: (registro.referencia || "PAGO EN PISTA").trim().toUpperCase(),
+    fecha_pago: registro.fecha_pago || new Date().toISOString().slice(0, 10),
+    mes_pagado: (registro.mes_pagado || "INSCRIPCIÓN INICIAL ($10)").toUpperCase().trim(),
+    comprobante_img: registro.comprobante_img || "",
+    estado_verificacion: "PENDIENTE",
+    solvencia: "EN VERIFICACIÓN",
+    creado_en: new Date().toISOString()
+  };
+
+  lista.unshift(nuevo);
+  localStorage.setItem(STORAGE_KEYS.INSCRIPCIONES_ESCUELA, JSON.stringify(lista));
+
+  // Registrar pago contable de inscripción
+  const pagos = getPagosMensualidad();
+  const nuevoPago = {
+    id: `INS-${Date.now().toString().slice(-5)}`,
+    atleta_id: nuevo.id,
+    nombre_atleta: `${nuevo.nombre_atleta} ${nuevo.apellido_atleta}`.trim(),
+    numero_placa: nuevo.numero_placa,
+    cedula_rep: nuevo.cedula_rep,
+    concepto: "INSCRIPCIÓN INICIAL ESCUELA ($10)",
+    mes_pagado: "INSCRIPCIÓN ESCUELA",
+    monto_usd: getConfig().precioInscripcionEscuela || 10.00,
+    metodo_pago: nuevo.metodo_pago,
+    referencia: nuevo.referencia,
+    fecha_pago: nuevo.fecha_pago,
+    comprobante_img: nuevo.comprobante_img,
+    estado_verificacion: nuevo.estado_verificacion
+  };
+  pagos.unshift(nuevoPago);
+  localStorage.setItem(STORAGE_KEYS.PAGOS_MENSUALIDAD, JSON.stringify(pagos));
+
+  // Sincronizar en la nube con Supabase
+  const sb = getSupabaseClient();
+  if (sb) {
+    try {
+      await Promise.all([
+        sb.from("inscripciones_escuela").insert([{
+          id: nuevo.id,
+          usuario: nuevo.usuario,
+          clave_hash: nuevo.clave_hash,
+          clave_acceso: nuevo.clave_acceso,
+          nombre_atleta: nuevo.nombre_atleta,
+          apellido_atleta: nuevo.apellido_atleta,
+          cedula_atleta: nuevo.cedula_atleta,
+          numero_placa: nuevo.numero_placa,
+          fecha_nacimiento: nuevo.fecha_nacimiento,
+          genero: nuevo.genero,
+          nivel: nuevo.nivel,
+          categoria: nuevo.categoria,
+          talla_bici: nuevo.talla_bici,
+          posee_bici: nuevo.posee_bici,
+          condicion_medica: nuevo.condicion_medica,
+          nombre_rep: nuevo.nombre_rep,
+          cedula_rep: nuevo.cedula_rep,
+          telefono_rep: nuevo.telefono_rep,
+          sector_res: nuevo.sector_res,
+          metodo_pago: nuevo.metodo_pago,
+          referencia: nuevo.referencia,
+          fecha_pago: nuevo.fecha_pago,
+          mes_pagado: nuevo.mes_pagado,
+          comprobante_url: nuevo.comprobante_img || "",
+          estado_verificacion: nuevo.estado_verificacion,
+          solvencia: nuevo.solvencia
+        }]),
+        sb.from("pagos_mensualidad").insert([{
+          id: nuevoPago.id,
+          atleta_id: nuevoPago.atleta_id,
+          nombre_atleta: nuevoPago.nombre_atleta,
+          numero_placa: nuevoPago.numero_placa,
+          cedula_rep: nuevoPago.cedula_rep,
+          mes_pagado: nuevoPago.mes_pagado,
+          monto_usd: nuevoPago.monto_usd,
+          metodo_pago: nuevoPago.metodo_pago,
+          referencia: nuevoPago.referencia,
+          fecha_pago: nuevoPago.fecha_pago,
+          comprobante_url: nuevoPago.comprobante_img || "",
+          estado_verificacion: nuevoPago.estado_verificacion
+        }])
+      ]);
+    } catch (_) {}
+  }
+  return nuevo;
+}
 
 /**
  * Obtiene el alumno actualmente autenticado en la sesión activa.
@@ -421,12 +618,38 @@ export async function guardarUsuarioStaff(datos) {
   }
 
   localStorage.setItem(STORAGE_KEYS.STAFF_USERS, JSON.stringify(staff));
+
+  const sb = getSupabaseClient();
+  if (sb) {
+    try {
+      await sb.from("usuarios_staff").upsert([{
+        id: nuevoStaff.id,
+        rol: nuevoStaff.rol,
+        nombre: nuevoStaff.nombre,
+        usuario: nuevoStaff.usuario,
+        clave_hash: nuevoStaff.clave_hash,
+        clave_acceso: nuevoStaff.clave_acceso,
+        cedula: nuevoStaff.cedula,
+        telefono: nuevoStaff.telefono,
+        creado_en: nuevoStaff.creado_en
+      }]);
+    } catch (_) {}
+  }
+
   return { ok: true, usuario: nuevoStaff, mensaje: `Usuario @${nuevoStaff.usuario} creado y guardado con éxito.` };
 }
 
-export function eliminarUsuarioStaff(id) {
+export async function eliminarUsuarioStaff(id) {
   const staff = getStaffUsers().filter(s => s.id !== id);
   localStorage.setItem(STORAGE_KEYS.STAFF_USERS, JSON.stringify(staff));
+
+  const sb = getSupabaseClient();
+  if (sb) {
+    try {
+      await sb.from("usuarios_staff").delete().eq("id", id);
+    } catch (_) {}
+  }
+
   return { ok: true, mensaje: "Usuario de administración eliminado con éxito." };
 }
 
@@ -616,6 +839,17 @@ export async function reasignarClaveCualquierUsuario({ id, nuevaClave }) {
       staffList[idx].clave = cleanPass;
       staffList[idx].clave_acceso = cleanPass;
       localStorage.setItem(STORAGE_KEYS.STAFF_USERS, JSON.stringify(staffList));
+
+      const sb = getSupabaseClient();
+      if (sb) {
+        try {
+          await sb.from("usuarios_staff").update({
+            clave_hash: hash,
+            clave_acceso: cleanPass
+          }).eq("id", id);
+        } catch (_) {}
+      }
+
       return { ok: true, mensaje: `Contraseña actualizada con éxito para @${staffList[idx].usuario}` };
     }
   }
@@ -919,7 +1153,7 @@ export async function ingresarAlumnoAdmin(datos) {
 
   // Registrar en el libro contable de pagos
   const pagos = getPagosMensualidad();
-  pagos.unshift({
+  const nuevoPago = {
     id: `PAG-${Date.now().toString().slice(-5)}`,
     atleta_id: nuevoAlumno.id,
     nombre_atleta: `${nuevoAlumno.nombre_atleta} ${nuevoAlumno.apellido_atleta}`,
@@ -933,43 +1167,60 @@ export async function ingresarAlumnoAdmin(datos) {
     fecha_pago: nuevoAlumno.fecha_pago,
     comprobante_img: nuevoAlumno.comprobante_img,
     estado_verificacion: nuevoAlumno.estado_verificacion
-  });
+  };
+  pagos.unshift(nuevoPago);
   localStorage.setItem(STORAGE_KEYS.PAGOS_MENSUALIDAD, JSON.stringify(pagos));
 
   // Sincronizar en la nube con Supabase si está disponible
   const sb = getSupabaseClient();
   if (sb) {
     try {
-      await sb.from("inscripciones_escuela").insert([{
-        id: nuevoAlumno.id,
-        usuario: nuevoAlumno.usuario,
-        clave_hash: nuevoAlumno.clave_hash,
-        clave_acceso: defaultClave,
-        nombre_atleta: nuevoAlumno.nombre_atleta,
-        apellido_atleta: nuevoAlumno.apellido_atleta,
-        cedula_atleta: nuevoAlumno.cedula_atleta,
-        numero_placa: nuevoAlumno.numero_placa,
-        fecha_nacimiento: nuevoAlumno.fecha_nacimiento,
-        genero: nuevoAlumno.genero,
-        nivel: nuevoAlumno.nivel,
-        categoria: nuevoAlumno.categoria,
-        talla_bici: nuevoAlumno.talla_bici,
-        posee_bici: nuevoAlumno.posee_bici,
-        condicion_medica: nuevoAlumno.condicion_medica,
-        nombre_rep: nuevoAlumno.nombre_rep,
-        cedula_rep: nuevoAlumno.cedula_rep,
-        telefono_rep: nuevoAlumno.telefono_rep,
-        sector_res: nuevoAlumno.sector_res,
-        metodo_pago: nuevoAlumno.metodo_pago,
-        referencia: nuevoAlumno.referencia,
-        fecha_pago: nuevoAlumno.fecha_pago,
-        mes_pagado: nuevoAlumno.mes_pagado,
-        comprobante_url: nuevoAlumno.comprobante_img || "",
-        estado_verificacion: nuevoAlumno.estado_verificacion,
-        solvencia: nuevoAlumno.solvencia
-      }]);
+      await Promise.all([
+        sb.from("inscripciones_escuela").insert([{
+          id: nuevoAlumno.id,
+          usuario: nuevoAlumno.usuario,
+          clave_hash: nuevoAlumno.clave_hash,
+          clave_acceso: defaultClave,
+          nombre_atleta: nuevoAlumno.nombre_atleta,
+          apellido_atleta: nuevoAlumno.apellido_atleta,
+          cedula_atleta: nuevoAlumno.cedula_atleta,
+          numero_placa: nuevoAlumno.numero_placa,
+          fecha_nacimiento: nuevoAlumno.fecha_nacimiento,
+          genero: nuevoAlumno.genero,
+          nivel: nuevoAlumno.nivel,
+          categoria: nuevoAlumno.categoria,
+          talla_bici: nuevoAlumno.talla_bici,
+          posee_bici: nuevoAlumno.posee_bici,
+          condicion_medica: nuevoAlumno.condicion_medica,
+          nombre_rep: nuevoAlumno.nombre_rep,
+          cedula_rep: nuevoAlumno.cedula_rep,
+          telefono_rep: nuevoAlumno.telefono_rep,
+          sector_res: nuevoAlumno.sector_res,
+          metodo_pago: nuevoAlumno.metodo_pago,
+          referencia: nuevoAlumno.referencia,
+          fecha_pago: nuevoAlumno.fecha_pago,
+          mes_pagado: nuevoAlumno.mes_pagado,
+          comprobante_url: nuevoAlumno.comprobante_img || "",
+          estado_verificacion: nuevoAlumno.estado_verificacion,
+          solvencia: nuevoAlumno.solvencia
+        }]),
+        sb.from("pagos_mensualidad").insert([{
+          id: nuevoPago.id,
+          atleta_id: nuevoPago.atleta_id,
+          nombre_atleta: nuevoPago.nombre_atleta,
+          numero_placa: nuevoPago.numero_placa,
+          cedula_rep: nuevoPago.cedula_rep,
+          mes_pagado: nuevoPago.mes_pagado,
+          monto_usd: nuevoPago.monto_usd,
+          metodo_pago: nuevoPago.metodo_pago,
+          referencia: nuevoPago.referencia,
+          fecha_pago: nuevoPago.fecha_pago,
+          comprobante_url: nuevoPago.comprobante_img || "",
+          estado_verificacion: nuevoPago.estado_verificacion
+        }])
+      ]);
     } catch (e) {
-      console.warn("Aviso guardando alumno en Supabase:", e);
+      console.warn("Aviso guardando alumno o pago en Supabase:", e);
     }
   }
 

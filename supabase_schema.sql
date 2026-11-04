@@ -49,8 +49,11 @@ CREATE TABLE IF NOT EXISTS public.inscripciones_escuela (
 
 -- Migración segura por si la tabla ya existe
 ALTER TABLE public.inscripciones_escuela ADD COLUMN IF NOT EXISTS usuario TEXT;
-ALTER TABLE public.inscripciones_escuela ADD COLUMN IF NOT EXISTS clave_acceso TEXT DEFAULT '••••••••';
+ALTER TABLE public.inscripciones_escuela ADD COLUMN IF NOT EXISTS clave_acceso TEXT DEFAULT '1234';
 ALTER TABLE public.inscripciones_escuela ADD COLUMN IF NOT EXISTS clave_hash TEXT;
+
+-- Saneamiento correctivo de contraseñas previamente enmascaradas con viñetas
+UPDATE public.inscripciones_escuela SET clave_acceso = '1234' WHERE clave_acceso = '••••••••' OR clave_acceso IS NULL;
 
 
 -- 3. Tabla de Pagos de Mensualidades (Alumnos Regulares)
@@ -120,6 +123,26 @@ CREATE POLICY "Eliminar inscripcion escuela" ON public.inscripciones_escuela FOR
 CREATE POLICY "Insertar pago mensualidad" ON public.pagos_mensualidad FOR INSERT WITH CHECK (true);
 CREATE POLICY "Leer pago mensualidad" ON public.pagos_mensualidad FOR SELECT USING (true);
 CREATE POLICY "Actualizar pago mensualidad" ON public.pagos_mensualidad FOR UPDATE USING (true);
+CREATE POLICY "Eliminar pago mensualidad" ON public.pagos_mensualidad FOR DELETE USING (true);
+
+-- 4.1 Tabla de Personal Directivo / Staff (Directores, Administradores, Entrenadores)
+CREATE TABLE IF NOT EXISTS public.usuarios_staff (
+  id TEXT PRIMARY KEY,
+  rol TEXT NOT NULL,
+  nombre TEXT NOT NULL,
+  usuario TEXT UNIQUE NOT NULL,
+  clave_hash TEXT,
+  clave_acceso TEXT DEFAULT '1234',
+  cedula TEXT,
+  telefono TEXT,
+  creado_en TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.usuarios_staff ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Lectura publica usuarios_staff" ON public.usuarios_staff FOR SELECT USING (true);
+CREATE POLICY "Insertar usuarios_staff" ON public.usuarios_staff FOR INSERT WITH CHECK (true);
+CREATE POLICY "Actualizar usuarios_staff" ON public.usuarios_staff FOR UPDATE USING (true);
+CREATE POLICY "Eliminar usuarios_staff" ON public.usuarios_staff FOR DELETE USING (true);
 
 CREATE POLICY "Insertar inscripcion valida" ON public.inscripciones_valida FOR INSERT WITH CHECK (true);
 CREATE POLICY "Leer inscripcion valida" ON public.inscripciones_valida FOR SELECT USING (true);
