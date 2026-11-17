@@ -267,7 +267,7 @@
       transition: transform 0.2s ease, border-color 0.2s ease;
     }
 
-    .price-card.preventa {
+    .price-card.activo {
       border-color: var(--blue-bright);
       box-shadow: 0 0 20px rgba(0, 153, 255, 0.2);
     }
@@ -276,7 +276,7 @@
       transform: translateY(-3px);
     }
 
-    .price-badge-preventa {
+    .price-badge-activo {
       position: absolute;
       top: 12px;
       right: 12px;
@@ -872,22 +872,14 @@
         Asegura el cupo de tu corredor antes del cierre oficial de las listas de partida:
       </p>
 
-      <div class="pricing-grid">
-        <!-- Preventa -->
-        <div class="price-card preventa">
-          <span class="price-badge-preventa">🔥 PREVENTA</span>
-          <div class="dates">1 al 16 de Noviembre</div>
-          <div class="amount">$10 <span>USD</span></div>
-          <div id="bsPreventa" class="amount-bs">≈ 8.932,17 Bs.</div>
-          <p class="sub">Tarifa especial por inscripción anticipada (Tasa BCV)</p>
-        </div>
-
-        <!-- Regular -->
-        <div class="price-card">
-          <div class="dates">17 al 20 de Noviembre</div>
+      <div class="pricing-grid" style="display:flex; justify-content:center;">
+        <!-- Inscripción Regular Oficial -->
+        <div class="price-card activo" style="max-width: 460px; width: 100%;">
+          <span class="price-badge-activo">⚡ INSCRIPCIÓN OFICIAL</span>
+          <div class="dates">Hasta el 20 de Noviembre</div>
           <div class="amount">$15 <span>USD</span></div>
           <div id="bsRegular" class="amount-bs">≈ 13.398,26 Bs.</div>
-          <p class="sub">Cierre definitivo de inscripciones y mangas (Tasa BCV)</p>
+          <p class="sub">Inscripción oficial y confección de mangas (Tasa Oficial BCV)</p>
         </div>
       </div>
 
@@ -938,15 +930,9 @@
             <span class="copy-hint">Tocar para copiar</span>
           </div>
 
-          <div class="pago-field" onclick="copiarMontoPreventa()">
-            <span class="label">Monto Preventa ($10 USD • 1 al 16 Nov)</span>
-            <span id="pagoMontoPreventa" class="val accent">8.932,17 Bs.</span>
-            <span class="copy-hint">Tasa BCV Oficial (Tocar para copiar monto)</span>
-          </div>
-
           <div class="pago-field" onclick="copiarMontoRegular()">
-            <span class="label">Monto Regular ($15 USD • 17 al 20 Nov)</span>
-            <span id="pagoMontoRegular" class="val">13.398,26 Bs.</span>
+            <span class="label">Monto de Inscripción ($15 USD • Hasta 20 Nov)</span>
+            <span id="pagoMontoRegular" class="val accent">13.398,26 Bs.</span>
             <span class="copy-hint">Tasa BCV Oficial (Tocar para copiar monto)</span>
           </div>
         </div>
@@ -1132,7 +1118,6 @@
 
   <script>
     let tasaBcvActual = 893.22;
-    let montoPreventaBsTxt = '8.932,17 Bs.';
     let montoRegularBsTxt = '13.398,26 Bs.';
 
     function fmtBs(num) {
@@ -1142,9 +1127,7 @@
     async function obtenerTasaBcvDiaria() {
       const bcvTasaDisplay = document.getElementById('bcvTasaDisplay');
       const bcvFechaDisplay = document.getElementById('bcvFechaDisplay');
-      const bsPreventa = document.getElementById('bsPreventa');
       const bsRegular = document.getElementById('bsRegular');
-      const pagoMontoPreventa = document.getElementById('pagoMontoPreventa');
       const pagoMontoRegular = document.getElementById('pagoMontoRegular');
 
       try {
@@ -1172,15 +1155,11 @@
         if (cached) tasaBcvActual = parseFloat(cached);
       }
 
-      const pBs = 10 * tasaBcvActual;
       const rBs = 15 * tasaBcvActual;
-      montoPreventaBsTxt = fmtBs(pBs) + ' Bs.';
       montoRegularBsTxt = fmtBs(rBs) + ' Bs.';
 
       if (bcvTasaDisplay) bcvTasaDisplay.textContent = fmtBs(tasaBcvActual) + ' Bs. / USD';
-      if (bsPreventa) bsPreventa.textContent = '≈ ' + montoPreventaBsTxt;
       if (bsRegular) bsRegular.textContent = '≈ ' + montoRegularBsTxt;
-      if (pagoMontoPreventa) pagoMontoPreventa.textContent = montoPreventaBsTxt;
       if (pagoMontoRegular) pagoMontoRegular.textContent = montoRegularBsTxt;
     }
 
@@ -1218,12 +1197,12 @@
       document.body.removeChild(temp);
     }
 
-    function copiarMontoPreventa() {
-      copiarDato(montoPreventaBsTxt, 'Monto Preventa (' + montoPreventaBsTxt + ')');
+    function copiarMontoRegular() {
+      copiarDato(montoRegularBsTxt, 'Monto Inscripción (' + montoRegularBsTxt + ')');
     }
 
-    function copiarMontoRegular() {
-      copiarDato(montoRegularBsTxt, 'Monto Regular (' + montoRegularBsTxt + ')');
+    function copiarMontoPreventa() {
+      copiarMontoRegular();
     }
 
     function copiarTodo() {
@@ -1233,8 +1212,7 @@
         '• Teléfono: 04227151251',
         '• Cédula: V-14765900',
         '• Tasa BCV Oficial: ' + fmtBs(tasaBcvActual) + ' Bs./USD',
-        '• Preventa (1-16 Nov): $10 USD = ' + montoPreventaBsTxt,
-        '• Regular (17-20 Nov): $15 USD = ' + montoRegularBsTxt
+        '• Monto Inscripción ($15 USD): ' + montoRegularBsTxt
       ];
       copiarDato(lineas.join('\n'), 'Datos de Pago Móvil con Montos');
     }
